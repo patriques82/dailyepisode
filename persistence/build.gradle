@@ -1,0 +1,27 @@
+apply {
+    plugin("kotlin-jpa")
+    plugin("kotlin-spring")
+    plugin('org.springframework.boot')
+    plugin('io.spring.dependency-management')
+}
+
+bootJar.enabled = false
+jar.enabled = true
+
+repositories {
+    mavenCentral()
+    maven { setUrl("https://repo.spring.io/milestone") }
+    maven { setUrl("https://repo.spring.io/snapshot") }
+}
+
+dependencies {
+    compile project(':domain')
+
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile("org.springframework:spring-jdbc")
+
+    runtime('com.h2database:h2')
+    runtime('mysql:mysql-connector-java')
+
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
