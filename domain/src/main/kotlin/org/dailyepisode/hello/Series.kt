@@ -1,4 +1,4 @@
-package org.dailyepisode.series
+package org.dailyepisode.hello
 
 sealed class Series
 data class SeriesShort(val name: String,

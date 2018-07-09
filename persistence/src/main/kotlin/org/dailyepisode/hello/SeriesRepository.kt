@@ -1,4 +1,4 @@
-package org.dailyepisode.series
+package org.dailyepisode.hello
 
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository

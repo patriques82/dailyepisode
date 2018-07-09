@@ -1,4 +1,4 @@
-package org.dailyepisode
+package org.dailyepisode.hello
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder

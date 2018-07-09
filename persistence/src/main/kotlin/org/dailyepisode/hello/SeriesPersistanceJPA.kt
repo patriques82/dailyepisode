@@ -1,5 +1,8 @@
-package org.dailyepisode.series
+package org.dailyepisode.hello
 
+import org.dailyepisode.hello.Series
+import org.dailyepisode.hello.SeriesPersistance
+import org.dailyepisode.hello.SeriesShort
 import org.springframework.stereotype.Service
 import java.util.*
 

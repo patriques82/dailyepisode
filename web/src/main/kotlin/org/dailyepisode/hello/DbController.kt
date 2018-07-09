@@ -1,7 +1,7 @@
-package org.dailyepisode
+package org.dailyepisode.hello
 
-import org.dailyepisode.series.SeriesPersistance
-import org.dailyepisode.series.SeriesRepository
+import org.dailyepisode.hello.SeriesPersistance
+import org.dailyepisode.hello.SeriesRepository
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController

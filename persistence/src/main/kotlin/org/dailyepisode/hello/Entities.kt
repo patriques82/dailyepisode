@@ -1,4 +1,4 @@
-package org.dailyepisode.series
+package org.dailyepisode.hello
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
