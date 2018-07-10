@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    compile project(':persistence')
+    compile project(':infrastructure')
     compile project(':domain')
 
     //compile('org.springframework.boot:spring-boot-starter-cache')

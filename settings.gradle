@@ -1,6 +1,6 @@
 rootProject.name = 'dailyepisode'
 include 'web'
 include 'domain'
-include 'persistence'
+include 'infrastructure'
 rootProject.buildFileName = 'build.gradle'
 
