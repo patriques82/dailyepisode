@@ -4,8 +4,12 @@ interface SeriesSearcher<in REQ: SearchRequest, out RES: SearchResult> {
   fun search(searchRequest: REQ): RES
 }
 
-interface SearchRequest
+interface SearchRequest {
+  val query: String
+}
 
-interface SearchResult
+interface SearchResult {
+  val result: String
+}
 
 
