@@ -5,7 +5,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
-class SubscriptionDto(
+class SubscriptionEntity(
   @Id
   @GeneratedValue
   val id: Int,

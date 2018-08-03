@@ -1,10 +1,9 @@
 package org.dailyepisode.subscription
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class AppSubscriptionService(@Autowired val subscriptionRepository: SubscriptionRepository): SubscriptionService {
+internal class SubscriptionServiceImpl(val subscriptionRepository: SubscriptionRepository): SubscriptionService {
 
   override fun getAll(): List<Subscription> {
     return subscriptionRepository.findAll()
@@ -13,15 +12,15 @@ class AppSubscriptionService(@Autowired val subscriptionRepository: Subscription
   }
 
   override fun createSubscription(subscription: Subscription): Subscription {
-    return subscriptionRepository.save(subscription.toDto())
+    return subscriptionRepository.save(subscription.toEntity())
       .toSubscription()
   }
 }
 
-fun Subscription.toDto(): SubscriptionDto {
-  return SubscriptionDto(id, name)
+fun Subscription.toEntity(): SubscriptionEntity {
+  return SubscriptionEntity(id, name)
 }
 
-fun SubscriptionDto.toSubscription(): Subscription {
+fun SubscriptionEntity.toSubscription(): Subscription {
   return Subscription(id, name)
 }

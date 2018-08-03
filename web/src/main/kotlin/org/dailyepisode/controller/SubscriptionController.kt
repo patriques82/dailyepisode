@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.*
 class SubscriptionController(val subscriptionService: SubscriptionService) {
 
   @PostMapping
-  fun createSubscription(@RequestBody data: Subscription?): ResponseEntity<Subscription> {
-    if (data != null) {
-      return ResponseEntity.ok(subscriptionService.createSubscription(data))
+  fun createSubscription(@RequestBody subscription: Subscription?): ResponseEntity<Subscription> {
+    if (subscription != null) {
+      val subscriptionResponse = subscriptionService.createSubscription(subscription)
+      return ResponseEntity.ok(subscriptionResponse)
     } else {
       return ResponseEntity.unprocessableEntity().build()
     }
