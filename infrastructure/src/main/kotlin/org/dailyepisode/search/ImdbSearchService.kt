@@ -6,8 +6,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class ImdbSearchService(templateBuilder: RestTemplateBuilder,
-                        @Value("\${themoviedb.base_url}") val baseUrl: String,
-                        @Value("\${themoviedb.api_key}") val apiKey: String) : SearchService {
+                        @Value("\${themoviedb.base_url}") baseUrl: String,
+                        @Value("\${themoviedb.image_base_url}") val imageBaseUrl: String,
+                        private @Value("\${themoviedb.api_key}") val apiKey: String) : SearchService {
 
   private val restTemplate = templateBuilder.rootUri(baseUrl).build()
 
@@ -15,11 +16,13 @@ class ImdbSearchService(templateBuilder: RestTemplateBuilder,
     val resource = "/search/tv?api_key=$apiKey&query=${seriesSearchRequest.query}"
     val searchResult = restTemplate.getForEntity(resource, ImdbSeriesSearchResult::class.java)
       .body!!.results
-    return SeriesSearchResult(searchResult.map { it.toSeriesInfo() })
+    return SeriesSearchResult(searchResult.map { it.toSeriesInfo(imageBaseUrl) })
   }
+
 }
 
-private fun ImdbSeriesInfo.toSeriesInfo(): SeriesInfo {
-  return SeriesInfo(id, name, overview)
+private fun ImdbSeriesInfo.toSeriesInfo(imageBaseUrl: String): SeriesInfo {
+  val thumbnailUrl = "${imageBaseUrl}/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg"
+  return SeriesInfo(id, name, overview, thumbnailUrl, vote_count, vote_average)
 }
 
