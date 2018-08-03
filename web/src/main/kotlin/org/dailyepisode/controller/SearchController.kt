@@ -15,8 +15,9 @@ class SearchController(val searchService: SearchService) {
 
   @GetMapping
   fun search(@RequestParam("query") query: String?): ResponseEntity<SeriesSearchResult> {
-    val searchRequest = SeriesSearchRequest(query ?: "Breaking")
-    val searchResult = searchService.search(searchRequest)
+    val searchResult = query?.let {
+      searchService.search(SeriesSearchRequest(it))
+    } ?: SeriesSearchResult(listOf())
     return ResponseEntity.ok(searchResult)
   }
 }

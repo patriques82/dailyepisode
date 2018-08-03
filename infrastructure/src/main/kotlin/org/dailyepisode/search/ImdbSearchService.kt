@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.stereotype.Service
 
+class SeriesSearchRequest(val query: String)
+class SeriesSearchResult(val results: List<ImdbSeriesInfoDto>)
+
 @Service
 class ImdbSearchService(templateBuilder: RestTemplateBuilder,
                         @Value("\${themoviedb.base_url}") baseUrl: String,
@@ -14,15 +17,12 @@ class ImdbSearchService(templateBuilder: RestTemplateBuilder,
 
   override fun search(seriesSearchRequest: SeriesSearchRequest): SeriesSearchResult {
     val resource = "/search/tv?api_key=$apiKey&query=${seriesSearchRequest.query}"
-    val searchResult = restTemplate.getForEntity(resource, ImdbSeriesSearchResult::class.java)
+    val searchResult = restTemplate.getForEntity(resource, SeriesSearchResult::class.java)
       .body!!.results
-    return SeriesSearchResult(searchResult.map { it.toSeriesInfo(imageBaseUrl) })
+    return SeriesSearchResult(appendBaseUrlToPosterPath(searchResult))
   }
 
-}
+  private fun appendBaseUrlToPosterPath(searchResult: List<ImdbSeriesInfoDto>) =
+    searchResult.map { it.copy(poster_path = "$imageBaseUrl${it.poster_path}") }
 
-private fun ImdbSeriesInfo.toSeriesInfo(imageBaseUrl: String): SeriesInfo {
-  val thumbnailUrl = "${imageBaseUrl}/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg"
-  return SeriesInfo(id, name, overview, thumbnailUrl, vote_count, vote_average)
 }
-

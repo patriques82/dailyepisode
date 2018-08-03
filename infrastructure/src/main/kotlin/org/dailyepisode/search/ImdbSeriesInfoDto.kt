@@ -3,7 +3,7 @@ package org.dailyepisode.search
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-internal class ImdbSeriesInfo(
+data class ImdbSeriesInfoDto(
   val id: Int,
   val name: String,
   val overview: String,
