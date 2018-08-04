@@ -1,9 +1,11 @@
 package org.dailyepisode.dto
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import org.dailyepisode.subscription.Subscription
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 data class SubscriptionDto(
-  val id: Int?,
+  val id: Long?,
   val remoteId: Int,
   val name: String,
   val overview: String,
@@ -11,7 +13,7 @@ data class SubscriptionDto(
 )
 
 fun SubscriptionDto.toSubscription(): Subscription {
-  return Subscription(id ?: 0, remoteId, name, overview, imageUrl)
+  return Subscription(id, remoteId, name, overview, imageUrl)
 }
 
 fun Subscription.toDto(): SubscriptionDto {

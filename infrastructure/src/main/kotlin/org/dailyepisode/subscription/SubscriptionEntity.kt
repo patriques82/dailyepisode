@@ -1,15 +1,15 @@
 package org.dailyepisode.subscription
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity
+@Table(name = "subscription")
 data class SubscriptionEntity(
+
   @Id
-  @GeneratedValue
-  val id: Int,
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  val id: Long? = null,
+
   val remoteId: Int,
   val name: String,
 
