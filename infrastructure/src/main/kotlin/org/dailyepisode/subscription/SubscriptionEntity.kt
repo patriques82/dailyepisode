@@ -15,5 +15,5 @@ data class SubscriptionEntity(
 
   @Column(length = 1000)
   val overview: String,
-  val thumbnailUrl: String
+  val imageUrl: String
 )

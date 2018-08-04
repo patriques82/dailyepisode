@@ -19,9 +19,9 @@ internal class SubscriptionServiceImpl(val subscriptionRepository: SubscriptionR
 }
 
 fun Subscription.toEntity(): SubscriptionEntity {
-  return SubscriptionEntity(id, remoteId, name, overview, thumbnailUrl)
+  return SubscriptionEntity(id, remoteId, name, overview, imageUrl)
 }
 
 fun SubscriptionEntity.toSubscription(): Subscription {
-  return Subscription(id, remoteId, name, overview, thumbnailUrl)
+  return Subscription(id, remoteId, name, overview, imageUrl)
 }

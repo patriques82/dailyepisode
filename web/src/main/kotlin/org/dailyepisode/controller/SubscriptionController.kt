@@ -1,9 +1,9 @@
 package org.dailyepisode.controller
 
-import org.dailyepisode.subscription.SubscriptionDto
+import org.dailyepisode.dto.SubscriptionDto
 import org.dailyepisode.subscription.SubscriptionService
-import org.dailyepisode.subscription.toSubscription
-import org.dailyepisode.subscription.toSubscriptionDto
+import org.dailyepisode.dto.toSubscription
+import org.dailyepisode.dto.toDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -15,7 +15,7 @@ class SubscriptionController(val subscriptionService: SubscriptionService) {
   fun createSubscription(@RequestBody subscription: SubscriptionDto?): ResponseEntity<SubscriptionDto> {
     if (subscription != null) {
       val subscriptionResponse = subscriptionService.createSubscription(subscription.toSubscription())
-      return ResponseEntity.ok(subscriptionResponse.toSubscriptionDto())
+      return ResponseEntity.ok(subscriptionResponse.toDto())
     } else {
       return ResponseEntity.unprocessableEntity().build()
     }
@@ -23,7 +23,7 @@ class SubscriptionController(val subscriptionService: SubscriptionService) {
 
   @GetMapping
   fun getAllSubscriptions(): ResponseEntity<List<SubscriptionDto>> =
-    ResponseEntity.ok(subscriptionService.getAll().map { it.toSubscriptionDto() })
+    ResponseEntity.ok(subscriptionService.getAll().map { it.toDto() })
 
 }
 

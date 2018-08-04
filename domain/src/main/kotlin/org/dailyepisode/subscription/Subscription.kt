@@ -5,6 +5,6 @@ data class Subscription(
   val remoteId: Int,
   val name: String,
   val overview: String,
-  val thumbnailUrl: String
+  val imageUrl: String
 )
 

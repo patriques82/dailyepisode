@@ -4,11 +4,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.stereotype.Service
 
-class SeriesSearchRequest(val query: String)
-class SeriesSearchResult(val results: List<ImdbSeriesInfoDto>)
-
 @Service
-class ImdbSearchService(templateBuilder: RestTemplateBuilder,
+internal class ImdbSearchService(templateBuilder: RestTemplateBuilder,
                         @Value("\${themoviedb.base_url}") baseUrl: String,
                         @Value("\${themoviedb.image_base_url}") val imageBaseUrl: String,
                         private @Value("\${themoviedb.api_key}") val apiKey: String) : SearchService {
@@ -17,12 +14,11 @@ class ImdbSearchService(templateBuilder: RestTemplateBuilder,
 
   override fun search(seriesSearchRequest: SeriesSearchRequest): SeriesSearchResult {
     val resource = "/search/tv?api_key=$apiKey&query=${seriesSearchRequest.query}"
-    val searchResult = restTemplate.getForEntity(resource, SeriesSearchResult::class.java)
+    val searchResult = restTemplate.getForEntity(resource, ImdbSeriesSearchResultDto::class.java)
       .body!!.results
-    return SeriesSearchResult(appendBaseUrlToPosterPath(searchResult))
+    return SeriesSearchResult(searchResult.map { it.toSeriesInfo() })
   }
 
-  private fun appendBaseUrlToPosterPath(searchResult: List<ImdbSeriesInfoDto>) =
-    searchResult.map { it.copy(poster_path = "$imageBaseUrl${it.poster_path}") }
-
+  private fun ImdbSeriesInfoDto.toSeriesInfo() =
+    SeriesInfo(id, name, overview, "$imageBaseUrl${poster_path}", vote_count, vote_average)
 }
