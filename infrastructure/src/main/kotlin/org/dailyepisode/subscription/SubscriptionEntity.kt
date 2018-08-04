@@ -1,6 +1,8 @@
 package org.dailyepisode.subscription
 
+import org.dailyepisode.account.AccountEntity
 import javax.persistence.*
+import kotlin.jvm.Transient
 
 @Entity
 @Table(name = "subscription")
@@ -8,12 +10,19 @@ data class SubscriptionEntity(
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  val id: Long? = null,
+  var id: Long? = null,
 
-  val remoteId: Int,
-  val name: String,
+  var remoteId: Int,
+  var name: String,
 
   @Column(length = 1000)
-  val overview: String,
-  val imageUrl: String
-)
+  var overview: String,
+  var imageUrl: String,
+
+  @ManyToMany(mappedBy = "subscriptions")
+  var accounts: List<AccountEntity>
+
+) {
+  @Transient
+  val subscription: Subscription = Subscription(id, remoteId, name, overview, imageUrl, accounts.map { it.account })
+}

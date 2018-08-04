@@ -1,17 +1,17 @@
 buildscript {
-	ext {
-		kotlinVersion = properties["kotlin.version"]
+    ext {
+        kotlinVersion = properties["kotlin.version"]
         springBootVersion = properties["spring.boot.version"]
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion")
         classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion"
-	}
+    }
 }
 
 allprojects {
