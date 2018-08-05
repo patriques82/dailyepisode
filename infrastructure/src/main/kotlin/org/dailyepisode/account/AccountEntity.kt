@@ -2,7 +2,6 @@ package org.dailyepisode.account
 
 import org.dailyepisode.subscription.SubscriptionEntity
 import javax.persistence.*
-import kotlin.jvm.Transient
 
 @Entity
 @Table(name = "account")
@@ -21,8 +20,4 @@ class AccountEntity(
     inverseJoinColumns = arrayOf(JoinColumn(name = "subscription_id", referencedColumnName = "id")))
   var subscriptions: List<SubscriptionEntity>
 )
-{
-  @Transient
-  val account: Account = Account(id, username, email, password, subscriptions.map { it.subscription })
-}
 

@@ -1,9 +1,8 @@
 package org.dailyepisode.controller
 
-import org.dailyepisode.dto.SeriesInfoDto
 import org.dailyepisode.dto.SeriesSearchResultDto
+import org.dailyepisode.dto.toDto
 import org.dailyepisode.search.SearchService
-import org.dailyepisode.search.SeriesInfo
 import org.dailyepisode.search.SeriesSearchRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -24,6 +23,3 @@ class SearchController(val searchService: SearchService) {
     return ResponseEntity.ok(searchResult)
   }
 }
-
-fun SeriesInfo.toDto(): SeriesInfoDto =
-  SeriesInfoDto(remoteId, name, overview, imageUrl, voteCount, voteAverage)

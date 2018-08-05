@@ -13,7 +13,7 @@ data class SubscriptionDto(
 )
 
 fun SubscriptionDto.toSubscription(): Subscription {
-  return Subscription(id, remoteId, name, overview, imageUrl, emptyList())
+  return Subscription(id, remoteId, name, overview, imageUrl)
 }
 
 fun Subscription.toDto(): SubscriptionDto {

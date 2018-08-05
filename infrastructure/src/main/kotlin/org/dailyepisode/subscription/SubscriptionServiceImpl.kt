@@ -1,29 +1,31 @@
 package org.dailyepisode.subscription
 
-import org.dailyepisode.account.Account
-import org.dailyepisode.account.AccountEntity
 import org.springframework.stereotype.Service
 
 @Service
-internal class SubscriptionServiceImpl(val subscriptionRepository: SubscriptionRepository): SubscriptionService {
+internal class SubscriptionServiceImpl(val subscriptionRepository: SubscriptionRepository) : SubscriptionService {
 
   override fun createSubscription(subscription: Subscription): Subscription {
-    return subscriptionRepository.save(subscription.toEntity())
-      .subscription
+    val storedSubscription =
+      subscriptionRepository.findByRemoteId(subscription.remoteId) ?:
+      subscriptionRepository.save(subscription.toEntity())
+    return storedSubscription.toSubscription()
   }
 
-  override fun getAll(): List<Subscription> {
-    return subscriptionRepository.findAll()
-      .map { it.subscription }
+  override fun findAll(): List<Subscription> =
+    subscriptionRepository.findAll()
+      .map { it.toSubscription() }
       .toList()
-  }
+
+  override fun findById(subscriptionId: Long): Subscription? =
+    subscriptionRepository.findById(subscriptionId)
+      .map { it.toSubscription() }
+      .orElse(null)
 
 }
 
-fun Account.toEntity(): AccountEntity {
-  return AccountEntity(id, username, email, password, subscriptions.map { it.toEntity() })
-}
+private fun SubscriptionEntity.toSubscription(): Subscription =
+  Subscription(id, remoteId, name, overview, imageUrl)
 
-fun Subscription.toEntity(): SubscriptionEntity {
-  return SubscriptionEntity(id, remoteId, name, overview, imageUrl, accounts.map { it.toEntity() })
-}
+private fun Subscription.toEntity(): SubscriptionEntity =
+  SubscriptionEntity(id, remoteId, name, overview, imageUrl, emptyList())

@@ -7,7 +7,6 @@ data class Subscription(
   val remoteId: Int,
   val name: String,
   val overview: String,
-  val imageUrl: String,
-  val accounts: List<Account>
+  val imageUrl: String
 )
 

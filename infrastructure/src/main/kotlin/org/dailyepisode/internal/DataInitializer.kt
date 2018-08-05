@@ -2,6 +2,7 @@ package org.dailyepisode.internal
 
 import org.dailyepisode.account.AccountEntity
 import org.dailyepisode.account.AccountRepository
+import org.dailyepisode.subscription.SubscriptionEntity
 import org.dailyepisode.subscription.SubscriptionRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
@@ -12,15 +13,18 @@ import org.springframework.stereotype.Component
 internal class DataInitializer(
   val accountRepository: AccountRepository,
   val subscriptionRepository: SubscriptionRepository
-): CommandLineRunner {
+) : CommandLineRunner {
 
   override fun run(vararg args: String?) {
 
+    val gameOfThrones = SubscriptionEntity(null, 1, "game of thrones", "winter is coming", "image", emptyList())
+    val breakingBad = SubscriptionEntity(null, 2, "breaking bad", "meth", "image", emptyList())
+    val lineOfDuty = SubscriptionEntity(null, 3, "line of duty", "corrupt police", "image", emptyList())
+
     val accounts = mutableListOf<AccountEntity>()
-    accounts.add(AccountEntity(null, "Patrik", "patrik@gmail.com", "kirtap", emptyList()))
-    accounts.add(AccountEntity(null, "Sixten", "sixten@gmail.com", "netxis", emptyList()))
-    accounts.add(AccountEntity(null, "Alexia", "alexia@gmail.com", "aixela", emptyList()))
-    accounts.add(AccountEntity(null, "Kristoffer", "kristoffer@gmail.com", "reffotsirk", emptyList()))
+    accounts.add(AccountEntity(null, "Patrik", "patrik@gmail.com", "kirtap", listOf(breakingBad, lineOfDuty)))
+    accounts.add(AccountEntity(null, "Alexia", "alexia@gmail.com", "aixela", listOf(breakingBad, gameOfThrones)))
+    accounts.add(AccountEntity(null, "Kristoffer", "kristoffer@gmail.com", "reffotsirk", listOf(lineOfDuty, gameOfThrones)))
 
     val storedAccounts = accountRepository.saveAll(accounts)
     storedAccounts.forEach { println(it) }
