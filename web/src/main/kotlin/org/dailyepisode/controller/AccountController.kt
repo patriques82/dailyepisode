@@ -2,6 +2,7 @@ package org.dailyepisode.controller
 
 import org.dailyepisode.account.AccountService
 import org.dailyepisode.dto.AccountDto
+import org.dailyepisode.dto.AccountRegistrationDto
 import org.dailyepisode.dto.toAccount
 import org.dailyepisode.dto.toDto
 import org.springframework.http.ResponseEntity
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.*
 class AccountController(val accountService: AccountService) {
 
   @PostMapping
-  fun createAccount(@RequestBody accountDto: AccountDto?): ResponseEntity<AccountDto> {
-    if (accountDto != null) {
-      val accountResponse = accountService.createAccount(accountDto.toAccount())
+  fun createAccount(@RequestBody registrationDto: AccountRegistrationDto?): ResponseEntity<AccountDto> {
+    if (registrationDto != null) {
+      val accountResponse = with(registrationDto) {
+        accountService.createAccount(toAccount(), password)
+      }
       return ResponseEntity.ok(accountResponse.toDto())
     } else {
       return ResponseEntity.noContent().build()
@@ -27,6 +30,4 @@ class AccountController(val accountService: AccountService) {
     return ResponseEntity.ok(accounts)
   }
 
-
 }
-
