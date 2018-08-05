@@ -1,4 +1,22 @@
+buildscript {
+    ext {
+        kotlinVersion = properties["kotlin.version"]
+        springBootVersion = properties["spring.boot.version"]
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion")
+        classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion"
+    }
+}
+
 apply {
+    plugin("kotlin") // kotlin-gradle-plugin: compile kotlin code
+
     plugin("kotlin-jpa") // kotlin-noarg: no-arg constructor
 
     plugin("kotlin-spring") // kotlin-allopen: opens classes for spring
@@ -9,6 +27,15 @@ apply {
     // automatically import the spring-boot-dependencies bom from the version of Spring Boot currently used
 }
 
+bootJar.mainClassName = "org.dailyepisode.ApplicationKt"
+sourceCompatibility = 1.8
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
 repositories {
     mavenCentral()
     maven { setUrl("https://repo.spring.io/milestone") }
@@ -16,6 +43,9 @@ repositories {
 }
 
 dependencies {
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile("org.jetbrains.kotlin:kotlin-reflect")
     compile project(':infrastructure')
     compile project(':domain')
 
@@ -23,6 +53,5 @@ dependencies {
     compile('com.fasterxml.jackson.module:jackson-module-kotlin')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
-    //testCompile('org.springframework.security:spring-security-test')
 }
 
