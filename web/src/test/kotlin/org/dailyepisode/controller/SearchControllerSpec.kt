@@ -28,28 +28,25 @@ class SearchControllerSpec : Spek({
 
     val searchController = SearchController(searchServiceMock)
 
-    on("a series query with existing result") {
-      val query = "breaking"
-      val responseEntity: ResponseEntity<SeriesSearchResultDto> = searchController.search(query)
-      val actualSeriesSearchResultDto = responseEntity.body
+    on("calling a search query with one existing result") {
+      val responseEntity: ResponseEntity<SeriesSearchResultDto> = searchController.search("breaking")
+      val seriesSearchResultDto = responseEntity.body
 
       it("should return the existing result") {
         val expectedSeriesInfoDto = SeriesInfoDto(1, "breaking bad", "overview", "imageurl", 9, 8.7)
         val expectedSearchResultDto = SeriesSearchResultDto(listOf(expectedSeriesInfoDto))
-        assertThat(actualSeriesSearchResultDto, equalTo(expectedSearchResultDto))
+        assertThat(seriesSearchResultDto, equalTo(expectedSearchResultDto))
       }
     }
 
-    on("a series query with non-existing result") {
-      val query = "never heard of this..."
-      val responseEntity: ResponseEntity<SeriesSearchResultDto> = searchController.search(query)
-      val actualSeriesSearchResultDto = responseEntity.body
+    on("calling a search query with non-existing result") {
+      val responseEntity: ResponseEntity<SeriesSearchResultDto> = searchController.search("never heard of this...")
+      val seriesSearchResultDto = responseEntity.body
 
       it("should return a empty result") {
         val expectedSearchResultDto = SeriesSearchResultDto(emptyList())
-        assertThat(actualSeriesSearchResultDto, equalTo(expectedSearchResultDto))
+        assertThat(seriesSearchResultDto, equalTo(expectedSearchResultDto))
       }
     }
   }
-
 })

@@ -2,6 +2,10 @@ buildscript {
     ext {
         kotlinVersion = properties["kotlin.version"]
         springBootVersion = properties["spring.boot.version"]
+        junitVersion = properties["junit.version"]
+        junitPlatformVersion = properties["junit.platform.version"]
+        spekVersion = properties["spek.version"]
+        mockkVersion = properties["mockk.version"]
     }
     repositories {
         mavenCentral()
@@ -22,9 +26,6 @@ apply {
     plugin "io.spring.dependency-management"
 }
 
-bootJar.enabled = false
-jar.enabled = true
-
 sourceCompatibility = 1.8
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
@@ -32,6 +33,9 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+bootJar.enabled = false
+jar.enabled = true
 
 repositories {
     mavenCentral()
@@ -56,4 +60,11 @@ dependencies {
     runtime "mysql:mysql-connector-java"
 
     testCompile "org.springframework.boot:spring-boot-starter-test"
+
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "org.junit.platform:junit-platform-engine:$junitPlatformVersion"
+
+    testCompile "org.jetbrains.spek:spek-api:$spekVersion"
+    testRuntime "org.jetbrains.spek:spek-junit-platform-engine:$spekVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
 }

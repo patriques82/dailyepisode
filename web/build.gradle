@@ -2,6 +2,10 @@ buildscript {
     ext {
         kotlinVersion = properties["kotlin.version"]
         springBootVersion = properties["spring.boot.version"]
+        junitVersion = properties["junit.version"]
+        junitPlatformVersion = properties["junit.platform.version"]
+        spekVersion = properties["spek.version"]
+        mockkVersion = properties["mockk.version"]
     }
     repositories {
         mavenCentral()
@@ -23,7 +27,6 @@ apply {
     // automatically import the spring-boot-dependencies bom from the version of Spring Boot currently used
 }
 
-bootJar.mainClassName = "org.dailyepisode.ApplicationKt"
 sourceCompatibility = 1.8
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
@@ -31,6 +34,8 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+bootJar.mainClassName = "org.dailyepisode.ApplicationKt"
 
 test {
     useJUnitPlatform {
@@ -54,9 +59,11 @@ dependencies {
     compile "com.fasterxml.jackson.module:jackson-module-kotlin"
 
     testCompile "org.springframework.boot:spring-boot-starter-test"
-    testCompile "org.junit.jupiter:junit-jupiter-api:5.0.0-M2"
-    testCompile "org.jetbrains.spek:spek-api:1.1.5"
-    testImplementation("io.mockk:mockk:1.8.6")
-    testImplementation "org.junit.platform:junit-platform-engine:1.2.0"
-    testRuntime "org.jetbrains.spek:spek-junit-platform-engine:1.1.5"
+
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "org.junit.platform:junit-platform-engine:$junitPlatformVersion"
+
+    testCompile "org.jetbrains.spek:spek-api:$spekVersion"
+    testRuntime "org.jetbrains.spek:spek-junit-platform-engine:$spekVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
 }
