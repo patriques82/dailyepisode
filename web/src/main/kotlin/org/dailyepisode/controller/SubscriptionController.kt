@@ -9,11 +9,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/subscription")
+@RequestMapping("/api/subscription", produces = ["application/json"])
 class SubscriptionController(val subscriptionService: SubscriptionService,
                              val accountService: AccountService) {
 
-  @PostMapping
+  @PostMapping(consumes = ["application/json"])
   fun createSubscription(@RequestBody subscriptionDto: SubscriptionDto?): ResponseEntity<SubscriptionDto> {
     if (subscriptionDto != null) {
       val subscriptionResponse = subscriptionService.createSubscription(subscriptionDto.toSubscription())
