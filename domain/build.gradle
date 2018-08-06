@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
 
@@ -15,7 +15,7 @@ repositories {
 }
 
 apply {
-    plugin("kotlin") // kotlin-gradle-plugin: compile kotlin code
+    plugin "kotlin" // kotlin-gradle-plugin: compile kotlin code
 }
 
 sourceCompatibility = 1.8
@@ -28,5 +28,5 @@ compileTestKotlin {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    compile("org.jetbrains.kotlin:kotlin-reflect")
+    compile "org.jetbrains.kotlin:kotlin-reflect"
 }

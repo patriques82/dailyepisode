@@ -7,23 +7,19 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion")
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion"
     }
 }
 
 apply {
-    plugin("kotlin") // kotlin-gradle-plugin: compile kotlin code
-
-    plugin("kotlin-jpa") // kotlin-noarg: no-arg constructor
-
-    plugin("kotlin-spring") // kotlin-allopen: opens classes for spring
-
-    plugin('org.springframework.boot') // spring-boot-gradle-plugin
-
-    plugin('io.spring.dependency-management') // spring-boot-gradle-plugin (transitive): not automatically applied
+    plugin "kotlin" // kotlin-gradle-plugin: compile kotlin code
+    plugin "kotlin-jpa" // kotlin-noarg: no-arg constructor
+    plugin "kotlin-spring" // kotlin-allopen: opens classes for spring
+    plugin "org.springframework.boot" // spring-boot-gradle-plugin
+    plugin "io.spring.dependency-management" // spring-boot-gradle-plugin (transitive): not automatically applied
     // automatically import the spring-boot-dependencies bom from the version of Spring Boot currently used
 }
 
@@ -45,13 +41,13 @@ repositories {
 dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    compile("org.jetbrains.kotlin:kotlin-reflect")
+    compile "org.jetbrains.kotlin:kotlin-reflect"
     compile project(':infrastructure')
     compile project(':domain')
 
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('com.fasterxml.jackson.module:jackson-module-kotlin')
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin"
 
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile "org.springframework.boot:spring-boot-starter-test"
 }
 

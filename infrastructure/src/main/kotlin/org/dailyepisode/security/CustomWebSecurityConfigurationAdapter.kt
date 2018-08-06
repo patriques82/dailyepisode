@@ -13,13 +13,23 @@ class CustomWebSecurityConfigurationAdapter(val userDetailsService: UserDetailsS
 ): WebSecurityConfigurerAdapter() {
 
   override fun configure(http: HttpSecurity) {
-    http.csrf().disable()
-    http.headers().frameOptions().sameOrigin() // to enable h2-console ???
-    http.authorizeRequests()
-      .antMatchers("/api/*").authenticated()
-      .anyRequest().permitAll()
-      .and()
-      .formLogin().permitAll()
+    http
+      .csrf()
+        .disable()
+        .headers().frameOptions().sameOrigin() // to enable h2-console ???
+        .and()
+      .authorizeRequests()
+        //.antMatchers("/api/*").authenticated()
+        .antMatchers("/resources/**").permitAll()
+        .anyRequest().permitAll()
+        .and()
+      .formLogin()
+        .loginPage("/login")
+        .defaultSuccessUrl("/api/subscription")
+        .permitAll()
+        .and()
+      .logout()
+        .logoutSuccessUrl("/login.html");
   }
 
   override fun configure(auth: AuthenticationManagerBuilder) {
