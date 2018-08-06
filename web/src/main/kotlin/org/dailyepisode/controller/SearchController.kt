@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/search", produces = ["application/json"])
-class SearchController(val searchService: SearchService) {
+class SearchController(private val searchService: SearchService) {
 
   @GetMapping(consumes = ["application/json"])
   fun search(@RequestParam("query") query: String?): ResponseEntity<SeriesSearchResultDto> {

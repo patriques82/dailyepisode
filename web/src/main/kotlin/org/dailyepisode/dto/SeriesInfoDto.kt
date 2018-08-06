@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import org.dailyepisode.search.SeriesInfo
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class SeriesInfoDto(
+data class SeriesInfoDto(
   val remoteId: Int,
   val name: String,
   val overview: String,

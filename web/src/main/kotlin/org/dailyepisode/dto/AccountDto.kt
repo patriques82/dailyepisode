@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import org.dailyepisode.account.Account
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class AccountRegistrationDto(
+data class AccountRegistrationDto(
   val id: Long?,
   val username: String,
   val email: String,
@@ -15,7 +15,7 @@ fun AccountRegistrationDto.toAccount(): Account =
   Account(id, username, email)
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class AccountDto(
+data class AccountDto(
   val id: Long?,
   val username: String,
   val email: String
