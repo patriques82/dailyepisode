@@ -4,8 +4,8 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-internal class AccountServiceImpl(val accountRepository: AccountRepository,
-                                  val passwordEncoder: PasswordEncoder): AccountService {
+internal class AccountServiceImpl(private val accountRepository: AccountRepository,
+                                  private val passwordEncoder: PasswordEncoder): AccountService {
 
   override fun createAccount(account: Account, password: String): Account {
     val storedAccount =
@@ -19,7 +19,7 @@ internal class AccountServiceImpl(val accountRepository: AccountRepository,
   }
 
   private fun AccountEntity.toAccount(): Account =
-    Account(id, username, email)
+    Account(id, username, email, password = null)
 
   private fun Account.toEntity(password: String): AccountEntity =
     AccountEntity(id, username, email, passwordEncoder.encode(password), emptyList())

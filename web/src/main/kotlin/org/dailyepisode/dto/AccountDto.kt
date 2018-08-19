@@ -5,14 +5,13 @@ import org.dailyepisode.account.Account
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class AccountRegistrationDto(
-  val id: Long?,
-  val username: String,
-  val email: String,
-  val password: String
+  val username: String?,
+  val email: String?,
+  val password: String?
 )
 
 fun AccountRegistrationDto.toAccount(): Account =
-  Account(id, username, email)
+  Account(null, username ?: "", email ?: "", password)
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class AccountDto(
@@ -22,7 +21,7 @@ data class AccountDto(
 )
 
 fun AccountDto.toAccount(): Account =
-  Account(id, username, email)
+  Account(id, username, email, password = null)
 
 fun Account.toDto(): AccountDto =
   AccountDto(id, username, email)

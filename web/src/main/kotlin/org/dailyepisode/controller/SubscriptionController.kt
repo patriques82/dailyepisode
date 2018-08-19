@@ -5,6 +5,7 @@ import org.dailyepisode.dto.SubscriptionDto
 import org.dailyepisode.subscription.SubscriptionService
 import org.dailyepisode.dto.toSubscription
 import org.dailyepisode.dto.toDto
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -19,7 +20,7 @@ class SubscriptionController(val subscriptionService: SubscriptionService,
       val subscriptionResponse = subscriptionService.createSubscription(subscriptionDto.toSubscription())
       return ResponseEntity.ok(subscriptionResponse.toDto())
     } else {
-      return ResponseEntity.noContent().build()
+      return ResponseEntity(HttpStatus.NO_CONTENT)
     }
   }
 
@@ -35,7 +36,7 @@ class SubscriptionController(val subscriptionService: SubscriptionService,
     if (subscription != null) {
       return ResponseEntity.ok(subscription.toDto())
     } else {
-      return ResponseEntity.notFound().build()
+      return ResponseEntity(HttpStatus.NOT_FOUND)
     }
   }
 }

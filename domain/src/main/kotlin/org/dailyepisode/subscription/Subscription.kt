@@ -1,7 +1,5 @@
 package org.dailyepisode.subscription
 
-import org.dailyepisode.account.Account
-
 data class Subscription(
   val id: Long?,
   val remoteId: Int,

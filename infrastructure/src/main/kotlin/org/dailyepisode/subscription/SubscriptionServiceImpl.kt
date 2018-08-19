@@ -3,7 +3,7 @@ package org.dailyepisode.subscription
 import org.springframework.stereotype.Service
 
 @Service
-internal class SubscriptionServiceImpl(val subscriptionRepository: SubscriptionRepository) : SubscriptionService {
+internal class SubscriptionServiceImpl(private val subscriptionRepository: SubscriptionRepository) : SubscriptionService {
 
   override fun createSubscription(subscription: Subscription): Subscription {
     val storedSubscription =
@@ -22,10 +22,11 @@ internal class SubscriptionServiceImpl(val subscriptionRepository: SubscriptionR
       .map { it.toSubscription() }
       .orElse(null)
 
+  private fun SubscriptionEntity.toSubscription(): Subscription =
+    Subscription(id, remoteId, name, overview, imageUrl)
+
+  private fun Subscription.toEntity(): SubscriptionEntity =
+    SubscriptionEntity(id, remoteId, name, overview, imageUrl, emptyList())
+
 }
 
-private fun SubscriptionEntity.toSubscription(): Subscription =
-  Subscription(id, remoteId, name, overview, imageUrl)
-
-private fun Subscription.toEntity(): SubscriptionEntity =
-  SubscriptionEntity(id, remoteId, name, overview, imageUrl, emptyList())

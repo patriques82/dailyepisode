@@ -20,13 +20,20 @@ apply {
 
 sourceCompatibility = 1.8
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions {
+        freeCompilerArgs = ["-Xjsr305=strict"]
+        jvmTarget = "1.8"
+    }
 }
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions {
+        freeCompilerArgs = ["-Xjsr305=strict"]
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile "org.jetbrains.kotlin:kotlin-reflect"
+    compile "commons-validator:commons-validator:1.4.0"
 }
