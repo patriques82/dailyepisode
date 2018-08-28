@@ -1,5 +1,6 @@
 package org.dailyepisode.account
 
+import org.dailyepisode.role.RoleRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -19,10 +20,10 @@ internal class AccountServiceImpl(private val accountRepository: AccountReposito
   }
 
   private fun AccountEntity.toAccount(): Account =
-    Account(id, username, email, password = null)
+    Account(id, username, email, password, securityLevel)
 
   private fun Account.toEntity(password: String): AccountEntity =
-    AccountEntity(id, username, email, passwordEncoder.encode(password), emptyList())
+    AccountEntity(id, username, email, passwordEncoder.encode(password))
 }
 
 

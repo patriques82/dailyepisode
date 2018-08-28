@@ -11,7 +11,7 @@ data class AccountRegistrationDto(
 )
 
 fun AccountRegistrationDto.toAccount(): Account =
-  Account(null, username ?: "", email ?: "", password)
+  Account(null, username ?: "", email ?: "", password, securityLevel = null)
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class AccountDto(
@@ -21,7 +21,7 @@ data class AccountDto(
 )
 
 fun AccountDto.toAccount(): Account =
-  Account(id, username, email, password = null)
+  Account(id, username, email, password = null, securityLevel = null)
 
 fun Account.toDto(): AccountDto =
   AccountDto(id, username, email)

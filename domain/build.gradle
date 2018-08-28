@@ -1,6 +1,7 @@
 buildscript {
     ext {
         kotlinVersion = properties["kotlin.version"]
+        commonsValidatorVersion = properties["commons.validator.version"]
     }
     repositories {
         mavenCentral()
@@ -35,5 +36,5 @@ compileTestKotlin {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile "org.jetbrains.kotlin:kotlin-reflect"
-    compile "commons-validator:commons-validator:1.4.0"
+    compile "commons-validator:commons-validator:$commonsValidatorVersion"
 }

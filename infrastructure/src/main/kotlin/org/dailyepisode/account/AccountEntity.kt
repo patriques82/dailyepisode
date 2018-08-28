@@ -1,5 +1,6 @@
 package org.dailyepisode.account
 
+import org.dailyepisode.role.RoleEntity
 import org.dailyepisode.subscription.SubscriptionEntity
 import javax.persistence.*
 
@@ -15,9 +16,19 @@ class AccountEntity(
 
   @ManyToMany(cascade = arrayOf(CascadeType.ALL))
   @JoinTable(
+    name = "account_role",
+    joinColumns = arrayOf(JoinColumn(name = "account_id", referencedColumnName = "id")),
+    inverseJoinColumns = arrayOf(JoinColumn(name = "role_id", referencedColumnName = "id")))
+  var roles: Set<RoleEntity> = hashSetOf(),
+
+  @ManyToMany(cascade = arrayOf(CascadeType.ALL))
+  @JoinTable(
     name = "account_subscription",
     joinColumns = arrayOf(JoinColumn(name = "account_id", referencedColumnName = "id")),
     inverseJoinColumns = arrayOf(JoinColumn(name = "subscription_id", referencedColumnName = "id")))
-  var subscriptions: List<SubscriptionEntity>
-)
+  var subscriptions: List<SubscriptionEntity> = emptyList()
+) {
+  val securityLevel: String?
+    get() = roles.maxBy { it.securityLevel }?.roleName
+}
 

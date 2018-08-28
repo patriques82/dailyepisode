@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/search", produces = ["application/json"])
+@RequestMapping("/api/search")
 class SearchController(private val searchService: SearchService) {
 
-  @GetMapping(consumes = ["application/json"])
+  @GetMapping
   fun search(@RequestParam("query") query: String?): ResponseEntity<SeriesSearchResultDto> {
     val searchResult = query?.let {
       val seriesResult = searchService.search(SeriesSearchRequest(it))

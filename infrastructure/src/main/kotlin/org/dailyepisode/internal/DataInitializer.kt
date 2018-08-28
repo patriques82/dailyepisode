@@ -2,6 +2,8 @@ package org.dailyepisode.internal
 
 import org.dailyepisode.account.AccountEntity
 import org.dailyepisode.account.AccountRepository
+import org.dailyepisode.role.RoleEntity
+import org.dailyepisode.role.RoleRepository
 import org.dailyepisode.subscription.SubscriptionEntity
 import org.dailyepisode.subscription.SubscriptionRepository
 import org.springframework.boot.CommandLineRunner
@@ -13,8 +15,7 @@ import org.springframework.stereotype.Component
 @Profile("dev")
 internal class DataInitializer(val passwordEncoder: PasswordEncoder,
                                val accountRepository: AccountRepository,
-                               val subscriptionRepository: SubscriptionRepository
-): CommandLineRunner {
+                               val roleRepository: RoleRepository): CommandLineRunner {
 
   override fun run(vararg args: String?) {
 
@@ -22,10 +23,14 @@ internal class DataInitializer(val passwordEncoder: PasswordEncoder,
     val breakingBad = SubscriptionEntity(null, 2, "breaking bad", "meth", "image", emptyList())
     val lineOfDuty = SubscriptionEntity(null, 3, "line of duty", "corrupt police", "image", emptyList())
 
+    val user = RoleEntity(null, "USER", 0)
+    val admin = RoleEntity(null, "ADMIN", 1)
+    //roleRepository.saveAll(listOf(user, admin))
+
     val accounts = mutableListOf<AccountEntity>()
-    accounts.add(AccountEntity(null, "Patrik", "patrik@gmail.com", passwordEncoder.encode("kirtap"), listOf(breakingBad, lineOfDuty)))
-    accounts.add(AccountEntity(null, "Alexia", "alexia@gmail.com", passwordEncoder.encode("aixela"), listOf(breakingBad, gameOfThrones)))
-    accounts.add(AccountEntity(null, "Kristoffer", "kristoffer@gmail.com", passwordEncoder.encode("reffotsirk"), listOf(lineOfDuty, gameOfThrones)))
+    accounts.add(AccountEntity(null,  "Patrik", "patrik@gmail.com", passwordEncoder.encode("kirtap"), hashSetOf(user, admin), listOf(breakingBad, lineOfDuty)))
+    accounts.add(AccountEntity(null, "Alexia", "alexia@gmail.com", passwordEncoder.encode("aixela"), hashSetOf(user), listOf(breakingBad, gameOfThrones)))
+    accounts.add(AccountEntity(null, "Kristoffer", "kristoffer@gmail.com", passwordEncoder.encode("reffotsirk"), hashSetOf(user), listOf(lineOfDuty, gameOfThrones)))
 
     val storedAccounts = accountRepository.saveAll(accounts)
     storedAccounts.forEach { println(it) }

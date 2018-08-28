@@ -4,6 +4,7 @@ data class Account(
   val id: Long?,
   val username: String,
   val email: String,
-  val password: String?
+  val password: String?,
+  val securityLevel: String?
 )
 

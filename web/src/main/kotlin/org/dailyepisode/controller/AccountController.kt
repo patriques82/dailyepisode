@@ -11,10 +11,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/user", produces = ["application/json"])
+@RequestMapping("/api/user")
 class AccountController(val accountService: AccountService) {
 
-  @PostMapping(consumes = ["application/json"])
+  @PostMapping
   fun createAccount(@RequestBody registrationDto: AccountRegistrationDto?): ResponseEntity<AccountDto> {
     if (registrationDto != null && isValidRegistrationData(registrationDto)) {
       val accountResponse = with(registrationDto) {
