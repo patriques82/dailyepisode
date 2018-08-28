@@ -16,7 +16,7 @@ class CustomWebSecurityConfigurationAdapter(val userDetailsService: UserDetailsS
     http
       .csrf()
         .disable()
-        .headers().frameOptions().sameOrigin() // to enable h2-console ???
+        .headers().frameOptions().sameOrigin() // to enable h2-console
         .and()
       .authorizeRequests()
         //.antMatchers("/api/*").authenticated()
@@ -25,11 +25,7 @@ class CustomWebSecurityConfigurationAdapter(val userDetailsService: UserDetailsS
         .and()
       .formLogin()
         .loginPage("/login")
-        .defaultSuccessUrl("/api/subscription")
         .permitAll()
-        .and()
-      .logout()
-        .logoutSuccessUrl("/login.html");
   }
 
   override fun configure(auth: AuthenticationManagerBuilder) {

@@ -23,8 +23,8 @@ internal class DataInitializer(val passwordEncoder: PasswordEncoder,
     val breakingBad = SubscriptionEntity(null, 2, "breaking bad", "meth", "image", emptyList())
     val lineOfDuty = SubscriptionEntity(null, 3, "line of duty", "corrupt police", "image", emptyList())
 
-    val user = RoleEntity(null, "USER", 0)
-    val admin = RoleEntity(null, "ADMIN", 1)
+    val user = RoleEntity(null, "ROLE_USER", 0)
+    val admin = RoleEntity(null, "ROLE_ADMIN", 1)
     //roleRepository.saveAll(listOf(user, admin))
 
     val accounts = mutableListOf<AccountEntity>()

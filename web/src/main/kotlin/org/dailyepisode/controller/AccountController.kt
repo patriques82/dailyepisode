@@ -8,6 +8,7 @@ import org.dailyepisode.dto.toAccount
 import org.dailyepisode.dto.toDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -31,8 +32,9 @@ class AccountController(val accountService: AccountService) {
     return AccountValidator.isValid(account)
   }
 
+  @PreAuthorize("hasAnyRole('ADMIN')")
   @GetMapping
-  fun findAll(): ResponseEntity<List<AccountDto>> {
+  fun findAllAccounts(): ResponseEntity<List<AccountDto>> {
     val accounts = accountService.findAll().map { it.toDto()}
     return ResponseEntity.ok(accounts)
   }
