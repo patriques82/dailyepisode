@@ -1,6 +1,5 @@
 package org.dailyepisode.account
 
-import org.dailyepisode.role.RoleEntity
 import org.dailyepisode.subscription.SubscriptionEntity
 import javax.persistence.*
 

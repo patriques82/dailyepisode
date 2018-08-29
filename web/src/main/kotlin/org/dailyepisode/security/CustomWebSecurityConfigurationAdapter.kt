@@ -32,10 +32,6 @@ class CustomWebSecurityConfigurationAdapter(val userDetailsService: UserDetailsS
         .and()
       .httpBasic()
         .authenticationEntryPoint(authEntryPoint)
-        .and()
-      .formLogin()
-        .loginPage("/login")
-        .permitAll()
   }
 
   override fun configure(auth: AuthenticationManagerBuilder) {

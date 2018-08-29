@@ -1,7 +1,9 @@
-package org.dailyepisode.role
+package org.dailyepisode.account
 
-import org.dailyepisode.account.AccountEntity
-import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
+import javax.persistence.ManyToMany
 
 @Entity
 data class RoleEntity(
@@ -10,7 +12,6 @@ data class RoleEntity(
   val id: Long? = null,
 
   var roleName: String = "",
-  var securityLevel: Int,
 
   @ManyToMany(mappedBy = "roles")
   var accounts: List<AccountEntity> = emptyList())
