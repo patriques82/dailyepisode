@@ -11,7 +11,7 @@ data class AccountRegistrationDto(
 )
 
 fun AccountRegistrationDto.toAccount(): Account =
-  Account(null, username ?: "", email ?: "", password, roles = emptyList<String>())
+  Account(null, username ?: "", email ?: "", password, roles = emptyList<String>(), subscriptions = emptyList())
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class AccountLoginDto(
@@ -25,9 +25,6 @@ data class AccountDto(
   val username: String,
   val email: String
 )
-
-fun AccountDto.toAccount(): Account =
-  Account(id, username, email, password = null, roles = emptyList<String>())
 
 fun Account.toDto(): AccountDto =
   AccountDto(id, username, email)

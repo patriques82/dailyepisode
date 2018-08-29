@@ -27,4 +27,9 @@ class AccountEntity(
     joinColumns = arrayOf(JoinColumn(name = "account_id", referencedColumnName = "id")),
     inverseJoinColumns = arrayOf(JoinColumn(name = "subscription_id", referencedColumnName = "id")))
   var subscriptions: List<SubscriptionEntity> = emptyList()
-)
+) {
+
+  fun toAccount(): Account =
+    Account(id, username, email, password, roles.map { it.roleName }, subscriptions.map { it.toSubscription() })
+
+}

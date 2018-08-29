@@ -26,9 +26,6 @@ internal class AccountServiceImpl(private val accountRepository: AccountReposito
     return accountRepository.findAll().map { it.toAccount() }
   }
 
-  private fun AccountEntity.toAccount(): Account =
-    Account(id, username, email, password, roles.map { it.roleName })
-
   private fun Account.toEntity(password: String): AccountEntity =
     AccountEntity(id, username, email, passwordEncoder.encode(password))
 }

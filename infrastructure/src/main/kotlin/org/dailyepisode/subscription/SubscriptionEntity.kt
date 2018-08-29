@@ -20,5 +20,9 @@ data class SubscriptionEntity(
 
   @ManyToMany(mappedBy = "subscriptions")
   var accounts: List<AccountEntity>
-)
+) {
+  fun toSubscription(): Subscription =
+    Subscription(id, remoteId, name, overview, imageUrl)
+
+}
 

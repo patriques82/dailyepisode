@@ -22,9 +22,6 @@ internal class SubscriptionServiceImpl(private val subscriptionRepository: Subsc
       .map { it.toSubscription() }
       .orElse(null)
 
-  private fun SubscriptionEntity.toSubscription(): Subscription =
-    Subscription(id, remoteId, name, overview, imageUrl)
-
   private fun Subscription.toEntity(): SubscriptionEntity =
     SubscriptionEntity(id, remoteId, name, overview, imageUrl, emptyList())
 

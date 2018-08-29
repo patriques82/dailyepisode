@@ -28,13 +28,13 @@ class AccountControllerSpec: Spek({
     val invalidAccountRegistrationDto = AccountRegistrationDto( "t?", "invalid@invalid", invalidPassword)
     every { accountServiceMock.createAccount(validAccountRegistrationDto.toAccount(), any()) } returns validAccountRegistrationDto.toAccount()
 
-    val exampleAccounts = listOf(Account(1, "user1", "u1@email.com", validPassword), Account(2, "user2", "u2@email.com", validPassword))
+    val exampleAccounts = listOf(Account(1, "user1", "u1@email.com", validPassword, emptyList(), emptyList()), Account(2, "user2", "u2@email.com", validPassword, emptyList(), emptyList()))
     every { accountServiceMock.findAll() } returns exampleAccounts
 
     val accountController = AccountController(accountServiceMock)
 
     on("calling create account with valid registration data") {
-      val responseEntity = accountController.createAccount(validAccountRegistrationDto)
+      val responseEntity = accountController.register(validAccountRegistrationDto)
       val accountDto = responseEntity.body
 
       it("should return a status code 201 (created)") {
@@ -48,7 +48,7 @@ class AccountControllerSpec: Spek({
     }
 
     on("calling create account with no registration data") {
-      val responseEntity = accountController.createAccount(null)
+      val responseEntity = accountController.register(null)
 
       it("should return a status code 400 (bad request)") {
         assertThat(responseEntity.statusCode, equalTo(HttpStatus.BAD_REQUEST))
@@ -56,25 +56,12 @@ class AccountControllerSpec: Spek({
     }
 
     on("calling create account with invalid registration data") {
-      val responseEntity = accountController.createAccount(invalidAccountRegistrationDto)
+      val responseEntity = accountController.register(invalidAccountRegistrationDto)
 
       it("should return a status code 400 (bad request)") {
         assertThat(responseEntity.statusCode, equalTo(HttpStatus.BAD_REQUEST))
       }
     }
 
-    on("calling find all accounts") {
-      val responseEntity = accountController.findAll()
-      val accountDtos = responseEntity.body
-
-      it("should return a status code 200 (ok)") {
-        assertThat(responseEntity.statusCode, equalTo(HttpStatus.OK))
-      }
-
-      it("should return a list of active accounts") {
-        val expectedAccountDtos = listOf(AccountDto(1, "user1", "u1@email.com"), AccountDto(2, "user2", "u2@email.com"))
-        assertThat(accountDtos, equalTo(expectedAccountDtos))
-      }
-    }
   }
 })

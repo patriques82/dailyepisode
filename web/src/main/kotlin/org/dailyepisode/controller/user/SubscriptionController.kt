@@ -10,7 +10,6 @@ import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@Secured("ROLE_USER")
 @RequestMapping("/api/subscription")
 class SubscriptionController(val subscriptionService: SubscriptionService) {
 
@@ -25,13 +24,8 @@ class SubscriptionController(val subscriptionService: SubscriptionService) {
   }
 
   @GetMapping
-  fun getSubscription(@PathVariable subscriptionId: Long): ResponseEntity<SubscriptionDto> {
-    val subscription = subscriptionService.findById(subscriptionId)
-    if (subscription != null) {
-      return ResponseEntity.ok(subscription.toDto())
-    } else {
-      return ResponseEntity(HttpStatus.NOT_FOUND)
-    }
+  fun getSubscription(): ResponseEntity<List<SubscriptionDto>> {
+    return ResponseEntity.ok(emptyList())
   }
 }
 
