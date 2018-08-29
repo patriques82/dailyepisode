@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/subscription/{userId}")
+@RequestMapping("/api/subscription")
 class SubscriptionController(val subscriptionService: SubscriptionService,
                              val accountService: AccountService) {
 
