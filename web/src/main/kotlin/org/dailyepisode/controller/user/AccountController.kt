@@ -6,16 +6,16 @@ import org.dailyepisode.dto.AccountDto
 import org.dailyepisode.dto.AccountRegistrationDto
 import org.dailyepisode.dto.toAccount
 import org.dailyepisode.dto.toDto
+import org.dailyepisode.security.UserNameResolver
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/api/user")
-class AccountController(val accountService: AccountService) {
+class AccountController(val accountService: AccountService,
+                        val userNameResolver: UserNameResolver) {
 
   @PostMapping("/register")
   fun register(@RequestBody registrationDto: AccountRegistrationDto?): ResponseEntity<AccountDto> {
@@ -32,6 +32,12 @@ class AccountController(val accountService: AccountService) {
   private fun isValidRegistrationData(registrationDto: AccountRegistrationDto): Boolean {
     val account = registrationDto.toAccount()
     return AccountValidator.isValid(account)
+  }
+
+  @GetMapping("/current")
+  fun currentUser(servletRequest: HttpServletRequest): ResponseEntity<AccountDto> {
+    val account = accountService.findByUserName(userNameResolver.get())
+    return ResponseEntity.ok(account!!.toDto())
   }
 
 }

@@ -1,17 +1,21 @@
 package org.dailyepisode.controller.user
 
+import org.dailyepisode.account.AccountService
 import org.dailyepisode.dto.SubscriptionDto
 import org.dailyepisode.dto.toDto
 import org.dailyepisode.dto.toSubscription
+import org.dailyepisode.security.UserNameResolver
 import org.dailyepisode.subscription.SubscriptionService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/api/subscription")
-class SubscriptionController(val subscriptionService: SubscriptionService) {
+class SubscriptionController(val subscriptionService: SubscriptionService,
+                             val accountService: AccountService,
+                             val userNameResolver: UserNameResolver) {
 
   @PostMapping
   fun createSubscription(@RequestBody subscriptionDto: SubscriptionDto?): ResponseEntity<SubscriptionDto> {
@@ -24,8 +28,9 @@ class SubscriptionController(val subscriptionService: SubscriptionService) {
   }
 
   @GetMapping
-  fun getSubscription(): ResponseEntity<List<SubscriptionDto>> {
-    return ResponseEntity.ok(emptyList())
+  fun getSubscription(servletRequest: HttpServletRequest): ResponseEntity<List<SubscriptionDto>> {
+    val account = accountService.findByUserName(userNameResolver.get())
+    return ResponseEntity.ok(account!!.subscriptions.map { it.toDto() })
   }
 }
 
