@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Secured("ROLE_ADMIN")
-@RequestMapping("/api/subscription")
-class SubscriptionController(val subscriptionService: SubscriptionService) {
+@RequestMapping("/admin/subscription")
+class AdminSubscriptionController(val subscriptionService: SubscriptionService) {
 
   @GetMapping
   fun getAllSubscriptions(): ResponseEntity<List<SubscriptionDto>> {

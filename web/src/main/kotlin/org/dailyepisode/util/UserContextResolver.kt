@@ -1,4 +1,6 @@
 package org.dailyepisode.util
 
-class UserContextResolver {
+interface UserContextResolver {
+  fun getUser(): String?
+  fun getSecurityLevel(): String?
 }

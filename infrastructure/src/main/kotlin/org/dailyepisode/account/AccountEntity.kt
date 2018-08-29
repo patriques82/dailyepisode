@@ -19,7 +19,7 @@ class AccountEntity(
     name = "account_role",
     joinColumns = arrayOf(JoinColumn(name = "account_id", referencedColumnName = "id")),
     inverseJoinColumns = arrayOf(JoinColumn(name = "role_id", referencedColumnName = "id")))
-  var roles: Set<RoleEntity> = hashSetOf(),
+  var roles: List<RoleEntity> = emptyList(),
 
   @ManyToMany(cascade = arrayOf(CascadeType.ALL))
   @JoinTable(
@@ -27,8 +27,4 @@ class AccountEntity(
     joinColumns = arrayOf(JoinColumn(name = "account_id", referencedColumnName = "id")),
     inverseJoinColumns = arrayOf(JoinColumn(name = "subscription_id", referencedColumnName = "id")))
   var subscriptions: List<SubscriptionEntity> = emptyList()
-) {
-  val securityLevel: String?
-    get() = roles.maxBy { it.securityLevel }?.roleName
-}
-
+)

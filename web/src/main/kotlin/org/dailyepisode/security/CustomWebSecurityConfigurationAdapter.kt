@@ -1,14 +1,18 @@
 package org.dailyepisode.security
 
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.stereotype.Component
+import org.springframework.security.web.AuthenticationEntryPoint
 
-@Component
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
 class CustomWebSecurityConfigurationAdapter(val userDetailsService: UserDetailsService,
+                                            val authEntryPoint: AuthenticationEntryPoint,
                                             val passwordEncoder: PasswordEncoder
 ): WebSecurityConfigurerAdapter() {
 
@@ -19,9 +23,13 @@ class CustomWebSecurityConfigurationAdapter(val userDetailsService: UserDetailsS
         .headers().frameOptions().sameOrigin() // to enable h2-console
         .and()
       .authorizeRequests()
-        //.antMatchers("/api/*").authenticated()
+        .antMatchers("/api/user/register").permitAll()
+        .antMatchers("/api/**").authenticated()
         .antMatchers("/resources/**").permitAll()
-        .anyRequest().permitAll()
+        .anyRequest().authenticated()
+        .and()
+      .httpBasic()
+        .authenticationEntryPoint(authEntryPoint)
         .and()
       .formLogin()
         .loginPage("/login")

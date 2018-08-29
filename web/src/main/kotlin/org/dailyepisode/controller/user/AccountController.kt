@@ -1,19 +1,21 @@
-package org.dailyepisode.controller
+package org.dailyepisode.controller.user
 
 import org.dailyepisode.account.AccountService
 import org.dailyepisode.account.AccountValidator
-import org.dailyepisode.dto.*
-import org.dailyepisode.util.UserContextResolver
+import org.dailyepisode.dto.AccountDto
+import org.dailyepisode.dto.AccountRegistrationDto
+import org.dailyepisode.dto.toAccount
+import org.dailyepisode.dto.toDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/user")
-class AccountController(val accountService: AccountService,
-                        val userContextResolver: UserContextResolver) {
+class AccountController(val accountService: AccountService) {
 
   @PostMapping("/register")
   fun register(@RequestBody registrationDto: AccountRegistrationDto?): ResponseEntity<AccountDto> {
@@ -30,15 +32,6 @@ class AccountController(val accountService: AccountService,
   private fun isValidRegistrationData(registrationDto: AccountRegistrationDto): Boolean {
     val account = registrationDto.toAccount()
     return AccountValidator.isValid(account)
-  }
-
-  @PreAuthorize("hasAnyRole('ADMIN')")
-  @GetMapping
-  fun findAllAccounts(): ResponseEntity<List<AccountDto>> {
-    val authentication = SecurityContextHolder.getContext().authentication
-    authentication.credentials
-    val accounts = accountService.findAll().map { it.toDto()}
-    return ResponseEntity.ok(accounts)
   }
 
 }

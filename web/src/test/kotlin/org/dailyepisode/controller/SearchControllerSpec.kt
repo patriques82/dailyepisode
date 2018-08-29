@@ -2,6 +2,7 @@ package org.dailyepisode.controller
 
 import io.mockk.every
 import io.mockk.mockk
+import org.dailyepisode.controller.user.SearchController
 import org.dailyepisode.dto.SeriesInfoDto
 import org.dailyepisode.dto.SeriesSearchResultDto
 import org.dailyepisode.search.SearchService

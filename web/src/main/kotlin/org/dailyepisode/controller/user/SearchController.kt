@@ -1,4 +1,4 @@
-package org.dailyepisode.controller
+package org.dailyepisode.controller.user
 
 import org.dailyepisode.dto.SeriesSearchResultDto
 import org.dailyepisode.dto.toDto

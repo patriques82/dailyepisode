@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.dailyepisode.account.Account
 import org.dailyepisode.account.AccountService
+import org.dailyepisode.controller.user.AccountController
 import org.dailyepisode.dto.AccountDto
 import org.dailyepisode.dto.AccountRegistrationDto
 import org.dailyepisode.dto.toAccount
