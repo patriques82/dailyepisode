@@ -11,9 +11,9 @@ import org.springframework.security.web.AuthenticationEntryPoint
 
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
-class CustomWebSecurityConfigurationAdapter(val userDetailsService: UserDetailsService,
-                                            val authEntryPoint: AuthenticationEntryPoint,
-                                            val passwordEncoder: PasswordEncoder
+class CustomWebSecurityConfigurationAdapter(private val userDetailsService: UserDetailsService,
+                                            private val authEntryPoint: AuthenticationEntryPoint,
+                                            private val passwordEncoder: PasswordEncoder
 ): WebSecurityConfigurerAdapter() {
 
   override fun configure(http: HttpSecurity) {

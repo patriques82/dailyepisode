@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/admin/subscription")
-class AdminSubscriptionController(val subscriptionService: SubscriptionService) {
+class AdminSubscriptionController(private val subscriptionService: SubscriptionService) {
 
   @GetMapping
   fun getAllSubscriptions(): ResponseEntity<List<SubscriptionDto>> {

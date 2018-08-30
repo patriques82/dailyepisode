@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/admin/user")
-class AdminAccountController(val accountService: AccountService) {
+class AdminAccountController(private val accountService: AccountService) {
 
   @GetMapping
   fun findAllAccounts(): ResponseEntity<List<AccountDto>> {

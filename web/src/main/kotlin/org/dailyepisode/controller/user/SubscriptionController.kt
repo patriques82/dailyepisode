@@ -1,10 +1,9 @@
 package org.dailyepisode.controller.user
 
-import org.dailyepisode.account.AccountService
+import org.dailyepisode.account.AccountResolver
 import org.dailyepisode.dto.SubscriptionDto
 import org.dailyepisode.dto.toDto
 import org.dailyepisode.dto.toSubscription
-import org.dailyepisode.security.UserNameResolver
 import org.dailyepisode.subscription.SubscriptionService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,16 +12,15 @@ import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/api/subscription")
-class SubscriptionController(val subscriptionService: SubscriptionService,
-                             val accountService: AccountService,
-                             val userNameResolver: UserNameResolver) {
+class SubscriptionController(private val subscriptionService: SubscriptionService,
+                             private val accountResolver: AccountResolver) {
 
   @PostMapping
-  fun createSubscription(@RequestBody subscriptionDto: SubscriptionDto?): ResponseEntity<SubscriptionDto> {
+  fun createSubscription(@RequestBody subscriptionDto: SubscriptionDto?): ResponseEntity<Unit> {
     if (subscriptionDto != null) {
-      val account = accountService.findByUserName(userNameResolver.get())
-      val subscriptionResponse = subscriptionService.createSubscription(subscriptionDto.toSubscription(), account?.id!!)
-      return ResponseEntity.ok(subscriptionResponse.toDto())
+      val account = accountResolver.resolve()
+      subscriptionService.createSubscription(subscriptionDto.toSubscription(), account?.id!!)
+      return ResponseEntity(HttpStatus.CREATED)
     } else {
       return ResponseEntity(HttpStatus.NO_CONTENT)
     }
@@ -30,8 +28,14 @@ class SubscriptionController(val subscriptionService: SubscriptionService,
 
   @GetMapping
   fun getSubscription(servletRequest: HttpServletRequest): ResponseEntity<List<SubscriptionDto>> {
-    val account = accountService.findByUserName(userNameResolver.get())
-    return ResponseEntity.ok(account!!.subscriptions.map { it.toDto() })
+    val account = accountResolver.resolve()
+    val subscriptions = account!!.subscriptions.map { it.toDto() }
+    return ResponseEntity.ok(subscriptions)
+  }
+
+  @DeleteMapping
+  fun removeSubscription(@RequestBody subscriptionDto: SubscriptionDto?): ResponseEntity<Unit> {
+    return ResponseEntity.ok(Unit)
   }
 }
 

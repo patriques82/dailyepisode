@@ -8,12 +8,11 @@ import org.springframework.stereotype.Service
 internal class SubscriptionServiceImpl(private val subscriptionRepository: SubscriptionRepository,
                                        private val accountRepository: AccountRepository) : SubscriptionService {
 
-  override fun createSubscription(subscription: Subscription, accountId: Long): Subscription {
+  override fun createSubscription(subscription: Subscription, accountId: Long) {
     val subscriptionEntity = subscriptionRepository.findByRemoteId(subscription.remoteId) ?: subscription.toEntity()
     val account: AccountEntity = accountRepository.findById(accountId).get()
     account.subscriptions += subscriptionEntity
     accountRepository.save(account)
-    return subscriptionEntity.toSubscription()
   }
 
   override fun findAll(): List<Subscription> =
