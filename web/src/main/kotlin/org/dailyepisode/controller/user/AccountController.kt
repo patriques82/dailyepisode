@@ -35,7 +35,7 @@ class AccountController(private val accountService: AccountService,
   }
 
   @GetMapping("/current")
-  fun currentUser(servletRequest: HttpServletRequest): ResponseEntity<AccountDto> {
+  fun current(servletRequest: HttpServletRequest): ResponseEntity<AccountDto> {
     val account = accountResolver.resolve()
     return ResponseEntity.ok(account!!.toDto())
   }

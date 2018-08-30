@@ -3,6 +3,7 @@ package org.dailyepisode.controller
 import io.mockk.every
 import io.mockk.mockk
 import org.dailyepisode.account.Account
+import org.dailyepisode.account.AccountResolver
 import org.dailyepisode.account.AccountService
 import org.dailyepisode.controller.user.AccountController
 import org.dailyepisode.dto.AccountDto
@@ -15,6 +16,7 @@ import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import org.springframework.http.HttpStatus
+import java.io.BufferedReader
 
 class AccountControllerSpec: Spek({
 
@@ -28,10 +30,17 @@ class AccountControllerSpec: Spek({
     val invalidAccountRegistrationDto = AccountRegistrationDto( "t?", "invalid@invalid", invalidPassword)
     every { accountServiceMock.createAccount(validAccountRegistrationDto.toAccount(), any()) } returns validAccountRegistrationDto.toAccount()
 
-    val exampleAccounts = listOf(Account(1, "user1", "u1@email.com", validPassword, emptyList(), emptyList()), Account(2, "user2", "u2@email.com", validPassword, emptyList(), emptyList()))
+    val exampleAccounts = listOf(
+      Account(1, "user1", "u1@email.com", validPassword, emptyList(), emptyList()),
+      Account(2, "user2", "u2@email.com", validPassword, emptyList(), emptyList())
+    )
     every { accountServiceMock.findAll() } returns exampleAccounts
 
-    val accountController = AccountController(accountServiceMock)
+    val dummyAccountResolver = object: AccountResolver {
+      override fun resolve(): Account? = null
+    }
+
+    val accountController = AccountController(accountServiceMock, dummyAccountResolver)
 
     on("calling create account with valid registration data") {
       val responseEntity = accountController.register(validAccountRegistrationDto)
