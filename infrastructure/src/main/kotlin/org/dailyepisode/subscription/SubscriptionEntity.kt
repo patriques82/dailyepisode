@@ -23,6 +23,5 @@ data class SubscriptionEntity(
 ) {
   fun toSubscription(): Subscription =
     Subscription(id, remoteId, name, overview, imageUrl)
-
 }
 

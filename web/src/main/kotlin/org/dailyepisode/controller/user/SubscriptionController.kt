@@ -20,7 +20,8 @@ class SubscriptionController(val subscriptionService: SubscriptionService,
   @PostMapping
   fun createSubscription(@RequestBody subscriptionDto: SubscriptionDto?): ResponseEntity<SubscriptionDto> {
     if (subscriptionDto != null) {
-      val subscriptionResponse = subscriptionService.createSubscription(subscriptionDto.toSubscription())
+      val account = accountService.findByUserName(userNameResolver.get())
+      val subscriptionResponse = subscriptionService.createSubscription(subscriptionDto.toSubscription(), account?.id!!)
       return ResponseEntity.ok(subscriptionResponse.toDto())
     } else {
       return ResponseEntity(HttpStatus.NO_CONTENT)

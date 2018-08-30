@@ -1,15 +1,19 @@
 package org.dailyepisode.subscription
 
+import org.dailyepisode.account.AccountEntity
+import org.dailyepisode.account.AccountRepository
 import org.springframework.stereotype.Service
 
 @Service
-internal class SubscriptionServiceImpl(private val subscriptionRepository: SubscriptionRepository) : SubscriptionService {
+internal class SubscriptionServiceImpl(private val subscriptionRepository: SubscriptionRepository,
+                                       private val accountRepository: AccountRepository) : SubscriptionService {
 
-  override fun createSubscription(subscription: Subscription): Subscription {
-    val storedSubscription =
-      subscriptionRepository.findByRemoteId(subscription.remoteId) ?:
-      subscriptionRepository.save(subscription.toEntity())
-    return storedSubscription.toSubscription()
+  override fun createSubscription(subscription: Subscription, accountId: Long): Subscription {
+    val subscriptionEntity = subscriptionRepository.findByRemoteId(subscription.remoteId) ?: subscription.toEntity()
+    val account: AccountEntity = accountRepository.findById(accountId).get()
+    account.subscriptions += subscriptionEntity
+    accountRepository.save(account)
+    return subscriptionEntity.toSubscription()
   }
 
   override fun findAll(): List<Subscription> =
