@@ -15,11 +15,11 @@ internal class AccountServiceImpl(private val accountRepository: AccountReposito
     return account.map { it.toAccount() }.orElse(null)
   }
 
-  override fun createAccount(account: Account, password: String): Account {
-    val storedAccount =
-      accountRepository.findByEmail(account.email) ?:
+  override fun createAccount(account: Account, password: String) {
+    val storedAccount = accountRepository.findByEmail(account.email)
+    if (storedAccount == null) {
       accountRepository.save(account.toEntity(password))
-    return storedAccount.toAccount()
+    }
   }
 
   override fun findAll(): List<Account> {

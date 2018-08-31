@@ -27,14 +27,16 @@ class SubscriptionController(private val subscriptionService: SubscriptionServic
   }
 
   @GetMapping
-  fun getSubscription(servletRequest: HttpServletRequest): ResponseEntity<List<SubscriptionDto>> {
+  fun getSubscriptions(servletRequest: HttpServletRequest): ResponseEntity<List<SubscriptionDto>> {
     val account = accountResolver.resolve()
     val subscriptions = account!!.subscriptions.map { it.toDto() }
     return ResponseEntity.ok(subscriptions)
   }
 
-  @DeleteMapping
-  fun removeSubscription(@RequestBody subscriptionDto: SubscriptionDto?): ResponseEntity<Unit> {
+  @DeleteMapping("/{subscriptionId}")
+  fun removeSubscription(@PathVariable subscriptionId: Long): ResponseEntity<Unit> {
+    val account = accountResolver.resolve()
+    subscriptionService.deleteSubscription(subscriptionId, account?.id!!)
     return ResponseEntity.ok(Unit)
   }
 }

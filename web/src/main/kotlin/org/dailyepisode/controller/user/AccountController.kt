@@ -18,12 +18,10 @@ class AccountController(private val accountService: AccountService,
                         private val accountResolver: AccountResolver) {
 
   @PostMapping("/register")
-  fun register(@RequestBody registrationDto: AccountRegistrationDto?): ResponseEntity<AccountDto> {
+  fun register(@RequestBody registrationDto: AccountRegistrationDto?): ResponseEntity<Unit> {
     if (registrationDto != null && isValidRegistrationData(registrationDto)) {
-      val accountResponse = with(registrationDto) {
-        accountService.createAccount(toAccount(), password!!)
-      }
-      return ResponseEntity(accountResponse.toDto(), HttpStatus.CREATED)
+      with(registrationDto) { accountService.createAccount(toAccount(), password!!) }
+      return ResponseEntity(HttpStatus.CREATED)
     } else {
       return ResponseEntity(HttpStatus.BAD_REQUEST)
     }
