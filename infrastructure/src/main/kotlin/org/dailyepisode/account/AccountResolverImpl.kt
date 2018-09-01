@@ -12,3 +12,7 @@ internal class AccountResolverImpl(private val accountService: AccountService): 
     return account.toFulfilledAccount()
   }
 }
+
+@Throws(NullPointerException::class)
+private fun Account.toFulfilledAccount(): FulfilledAccount =
+  FulfilledAccount(id!!, username, email, notificationIntervalInDays, roles, subscriptions)

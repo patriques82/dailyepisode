@@ -20,6 +20,3 @@ data class FulfilledAccount(
   val roles: List<String>,
   val subscriptions: List<Subscription>
 )
-
-fun Account.toFulfilledAccount(): FulfilledAccount =
-  FulfilledAccount(id ?: 0, username, email, notificationIntervalInDays, roles, subscriptions)

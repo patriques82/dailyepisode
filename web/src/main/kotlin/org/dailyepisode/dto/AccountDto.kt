@@ -18,11 +18,12 @@ fun AccountRegistrationDto.toAccount(): Account =
 data class AccountDto(
   val id: Long?,
   val username: String,
-  val email: String
+  val email: String,
+  val notificationIntervalInDays: Int
 )
 
 fun Account.toDto(): AccountDto =
-  AccountDto(id, username, email)
+  AccountDto(id, username, email, notificationIntervalInDays)
 
 fun FulfilledAccount.toDto(): AccountDto =
-  AccountDto(id, username, email)
+  AccountDto(id, username, email, notificationIntervalInDays)
