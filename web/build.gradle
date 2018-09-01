@@ -63,6 +63,7 @@ dependencies {
 
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin"
+    compile "org.springframework.boot:spring-boot-starter-mail"
 
     testCompile "org.springframework.boot:spring-boot-starter-test"
 
