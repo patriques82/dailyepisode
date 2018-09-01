@@ -5,21 +5,23 @@ import org.dailyepisode.exception.AccountHasNoMatchingSubscriptionException
 import org.dailyepisode.exception.NoAccountFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import javax.servlet.ServletRequest
 
 @ControllerAdvice
 class ErrorHandler {
 
+  @ExceptionHandler(HttpMessageNotReadableException::class)
+  fun jsonParseException(exception: Exception): ResponseEntity<ErrorDto> =
+    ResponseEntity(ErrorDto("json parse error"), HttpStatus.BAD_REQUEST)
+
   @ExceptionHandler(AccountHasNoMatchingSubscriptionException::class)
-  fun accountHasNoMatchingSubscription(servletRequest: ServletRequest,
-                                       exception: Exception): ResponseEntity<ErrorDto> =
+  fun accountHasNoMatchingSubscription(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.CONFLICT)
 
   @ExceptionHandler(NoAccountFoundException::class)
-  fun noAccountFound(servletRequest: ServletRequest,
-                     exception: Exception): ResponseEntity<ErrorDto> =
+  fun noAccountFound(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.CONFLICT)
 
 }

@@ -4,7 +4,6 @@ import org.dailyepisode.account.AccountEntity
 import org.dailyepisode.account.AccountRepository
 import org.dailyepisode.exception.AccountHasNoMatchingSubscriptionException
 import org.dailyepisode.exception.NoAccountFoundException
-import org.dailyepisode.exception.NoSubscriptionFoundException
 import org.springframework.stereotype.Service
 
 @Service

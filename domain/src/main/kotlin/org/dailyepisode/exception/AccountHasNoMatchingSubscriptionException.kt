@@ -1,3 +1,3 @@
 package org.dailyepisode.exception
 
-class AccountHasNoMatchingSubscriptionException(message: String?) : RuntimeException(message)
+class AccountHasNoMatchingSubscriptionException(message: String): RuntimeException(message)
