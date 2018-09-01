@@ -18,16 +18,16 @@ class AdminSubscriptionController(private val subscriptionService: SubscriptionS
   @GetMapping
   fun getAllSubscriptions(): ResponseEntity<List<SubscriptionDto>> {
     val subscriptions = subscriptionService.findAll().map { it.toDto() }
-    return ResponseEntity.ok(subscriptions)
+    return ResponseEntity(subscriptions, HttpStatus.OK)
   }
 
   @GetMapping("/{subscriptionId}")
   fun getSubscription(@PathVariable subscriptionId: Long): ResponseEntity<SubscriptionDto> {
     val subscription = subscriptionService.findById(subscriptionId)
-    if (subscription != null) {
-      return ResponseEntity.ok(subscription.toDto())
+    return if (subscription != null) {
+      ResponseEntity(subscription.toDto(), HttpStatus.OK)
     } else {
-      return ResponseEntity(HttpStatus.NOT_FOUND)
+      ResponseEntity(HttpStatus.NOT_FOUND)
     }
   }
 }

@@ -2,25 +2,38 @@ package org.dailyepisode.controller.admin
 
 import org.dailyepisode.account.Account
 import org.dailyepisode.account.AccountService
+import org.dailyepisode.account.AccountValidator
 import org.dailyepisode.dto.AccountDto
+import org.dailyepisode.dto.AccountRegistrationDto
+import org.dailyepisode.dto.toAccount
 import org.dailyepisode.dto.toDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.annotation.Secured
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/admin/user")
 class AdminAccountController(private val accountService: AccountService) {
 
+  @PostMapping
+  fun register(@RequestBody registrationDto: AccountRegistrationDto?): ResponseEntity<Unit> {
+    return if (registrationDto != null && isValidRegistrationData(registrationDto)) {
+      with(registrationDto) { accountService.createAccount(toAccount(), password!!) }
+      ResponseEntity(HttpStatus.CREATED)
+    } else {
+      ResponseEntity(HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  private fun isValidRegistrationData(registrationDto: AccountRegistrationDto): Boolean {
+    val account = registrationDto.toAccount()
+    return AccountValidator.isValid(account)
+  }
+
   @GetMapping
   fun findAllAccounts(): ResponseEntity<List<AccountDto>> {
     val accounts = accountService.findAll().map { it.toDto()}
-    return ResponseEntity.ok(accounts)
+    return ResponseEntity(accounts, HttpStatus.OK)
   }
 
   @GetMapping("/{accountId}")
@@ -29,7 +42,7 @@ class AdminAccountController(private val accountService: AccountService) {
     if (account == null) {
       return ResponseEntity(HttpStatus.NO_CONTENT)
     }
-    return ResponseEntity.ok(account.toDto())
+    return ResponseEntity(account.toDto(), HttpStatus.OK)
   }
 
 }

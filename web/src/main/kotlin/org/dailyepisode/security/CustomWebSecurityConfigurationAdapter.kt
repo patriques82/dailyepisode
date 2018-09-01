@@ -16,6 +16,7 @@ class CustomWebSecurityConfigurationAdapter(private val userDetailsService: User
                                             private val passwordEncoder: PasswordEncoder
 ): WebSecurityConfigurerAdapter() {
 
+  // Authorization
   override fun configure(http: HttpSecurity) {
     http
       .csrf()
@@ -23,7 +24,6 @@ class CustomWebSecurityConfigurationAdapter(private val userDetailsService: User
         .headers().frameOptions().sameOrigin() // to enable h2-console
         .and()
       .authorizeRequests()
-        .antMatchers("/api/user/register").permitAll()
         .antMatchers("/api/search").permitAll()
         .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
         .antMatchers("/admin/**").hasRole("ADMIN")
@@ -34,6 +34,7 @@ class CustomWebSecurityConfigurationAdapter(private val userDetailsService: User
         .authenticationEntryPoint(authEntryPoint)
   }
 
+  // Authentication
   override fun configure(auth: AuthenticationManagerBuilder) {
     auth
       .userDetailsService(userDetailsService)

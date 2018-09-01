@@ -1,4 +1,4 @@
-package org.dailyepisode.controller
+package org.dailyepisode.controller.user
 
 import io.mockk.every
 import io.mockk.mockk

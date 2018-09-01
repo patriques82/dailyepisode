@@ -12,6 +12,7 @@ class AccountEntity(
   var username: String,
   var email: String,
   var password: String,
+  var notificationIntervalInDays: Int = 0,
 
   @ManyToMany(cascade = arrayOf(CascadeType.ALL))
   @JoinTable(

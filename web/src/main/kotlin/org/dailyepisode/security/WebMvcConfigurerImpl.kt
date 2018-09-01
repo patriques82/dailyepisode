@@ -6,8 +6,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-internal class WebMvcConfigurerImpl(@Value("\${cors.allowed.origin}") private val allowedOrigin: String):
-  WebMvcConfigurer {
+internal class WebMvcConfigurerImpl(@Value("\${cors.allowed.origin}") private val allowedOrigin: String)
+  : WebMvcConfigurer {
   override fun addCorsMappings(registry: CorsRegistry) {
     registry
       .addMapping("/api/*")

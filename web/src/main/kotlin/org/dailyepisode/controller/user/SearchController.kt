@@ -4,6 +4,7 @@ import org.dailyepisode.dto.SeriesSearchResultDto
 import org.dailyepisode.dto.toDto
 import org.dailyepisode.search.SearchService
 import org.dailyepisode.search.SeriesSearchRequest
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,6 +21,6 @@ class SearchController(private val searchService: SearchService) {
       val seriesResult = searchService.search(SeriesSearchRequest(it))
       SeriesSearchResultDto(results = seriesResult.results.map { it.toDto() })
     } ?: SeriesSearchResultDto(results = listOf())
-    return ResponseEntity.ok(searchResult)
+    return ResponseEntity(searchResult, HttpStatus.OK)
   }
 }

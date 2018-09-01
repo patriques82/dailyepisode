@@ -11,3 +11,13 @@ data class Account(
   val subscriptions: List<Subscription>
 )
 
+data class FulfilledAccount(
+  val id: Long,
+  val username: String,
+  val email: String,
+  val roles: List<String>,
+  val subscriptions: List<Subscription>
+)
+
+fun Account.toFulfilledAccount(): FulfilledAccount =
+  FulfilledAccount(id ?: -1, username, email, roles, subscriptions)

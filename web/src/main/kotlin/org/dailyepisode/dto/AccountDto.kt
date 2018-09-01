@@ -2,6 +2,7 @@ package org.dailyepisode.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import org.dailyepisode.account.Account
+import org.dailyepisode.account.FulfilledAccount
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class AccountRegistrationDto(
@@ -23,3 +24,5 @@ data class AccountDto(
 fun Account.toDto(): AccountDto =
   AccountDto(id, username, email)
 
+fun FulfilledAccount.toDto(): AccountDto =
+  AccountDto(id, username, email)
