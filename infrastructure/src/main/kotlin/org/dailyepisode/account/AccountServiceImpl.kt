@@ -1,5 +1,7 @@
 package org.dailyepisode.account
 
+import org.dailyepisode.exception.EmailAlreadyInUseException
+import org.dailyepisode.exception.InvalidAccountException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -7,14 +9,16 @@ import org.springframework.stereotype.Service
 internal class AccountServiceImpl(private val accountRepository: AccountRepository,
                                   private val passwordEncoder: PasswordEncoder): AccountService {
 
-  override fun createAccount(account: Account, password: String) {
+  override fun createAccount(account: Account) {
+    AccountValidator.validate(account)
     val storedAccount = accountRepository.findByEmail(account.email)
-    if (storedAccount == null) {
-      accountRepository.save(account.toEntity(password))
+    if (storedAccount != null) {
+      throw EmailAlreadyInUseException("Account with email: ${account.email} is already in use")
     }
+    accountRepository.save(account.toEntity())
   }
 
-  private fun Account.toEntity(password: String): AccountEntity =
+  private fun Account.toEntity(): AccountEntity =
     AccountEntity(id, username, email, passwordEncoder.encode(password))
 
   override fun findByUserName(userName: String): Account? {

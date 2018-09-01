@@ -17,17 +17,12 @@ class AdminAccountController(private val accountService: AccountService) {
 
   @PostMapping
   fun register(@RequestBody registrationDto: AccountRegistrationDto?): ResponseEntity<Unit> {
-    return if (registrationDto != null && isValidRegistrationData(registrationDto)) {
-      with(registrationDto) { accountService.createAccount(toAccount(), password!!) }
+    return if (registrationDto != null) {
+      accountService.createAccount(registrationDto.toAccount())
       ResponseEntity(HttpStatus.CREATED)
     } else {
       ResponseEntity(HttpStatus.BAD_REQUEST)
     }
-  }
-
-  private fun isValidRegistrationData(registrationDto: AccountRegistrationDto): Boolean {
-    val account = registrationDto.toAccount()
-    return AccountValidator.isValid(account)
   }
 
   @GetMapping

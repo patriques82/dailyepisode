@@ -2,6 +2,8 @@ package org.dailyepisode.controller
 
 import org.dailyepisode.dto.ErrorDto
 import org.dailyepisode.exception.AccountHasNoMatchingSubscriptionException
+import org.dailyepisode.exception.EmailAlreadyInUseException
+import org.dailyepisode.exception.InvalidAccountException
 import org.dailyepisode.exception.NoAccountFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -23,5 +25,13 @@ class ErrorHandler {
   @ExceptionHandler(NoAccountFoundException::class)
   fun noAccountFound(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.CONFLICT)
+
+  @ExceptionHandler(EmailAlreadyInUseException::class)
+  fun emailAlreadyInUse(exception: Exception): ResponseEntity<ErrorDto> =
+    ResponseEntity(ErrorDto(exception.message!!), HttpStatus.CONFLICT)
+
+  @ExceptionHandler(InvalidAccountException::class)
+  fun invalidAccount(exception: Exception): ResponseEntity<ErrorDto> =
+    ResponseEntity(ErrorDto(exception.message!!), HttpStatus.BAD_REQUEST)
 
 }

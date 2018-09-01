@@ -30,7 +30,7 @@ class AccountEntity(
 ) {
 
   fun toAccount(): Account =
-    Account(id, username, email, password, roles.map { it.roleName }, subscriptions.map { it.toSubscription() })
+    Account(id, username, email, password, notificationIntervalInDays, roles.map { it.roleName }, subscriptions.map { it.toSubscription() })
 
   fun subscribesTo(subscriptionId: Long): Boolean =
     subscriptions.any { it.id == subscriptionId }

@@ -24,11 +24,11 @@ class AdminAccountControllerSpec: Spek({
     val accountServiceMock = mockk<AccountService>()
     val validAccountRegistrationDto = AccountRegistrationDto( "tester", "tester@email.com", validPassword)
     val invalidAccountRegistrationDto = AccountRegistrationDto( "t?", "invalid@invalid", invalidPassword)
-    every { accountServiceMock.createAccount(validAccountRegistrationDto.toAccount(), any()) } returns Unit
+    every { accountServiceMock.createAccount(validAccountRegistrationDto.toAccount()) } returns Unit
 
     val exampleAccounts = listOf(
-      Account(1, "user1", "u1@email.com", validPassword, emptyList(), emptyList()),
-      Account(2, "user2", "u2@email.com", validPassword, emptyList(), emptyList())
+      Account(1, "user1", "u1@email.com", validPassword, 10, emptyList(), emptyList()),
+      Account(2, "user2", "u2@email.com", validPassword, 20, emptyList(), emptyList())
     )
     every { accountServiceMock.findAll() } returns exampleAccounts
 

@@ -1,6 +1,7 @@
 package org.dailyepisode.account
 
 import org.apache.commons.validator.routines.EmailValidator
+import org.dailyepisode.exception.InvalidAccountException
 
 object AccountValidator {
   /*
@@ -11,32 +12,49 @@ object AccountValidator {
   - Does not contain space, tab, etc.
   */
   val VALID_PASSWORD_PATTERN = Regex("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}")
-  val VALID_USERNAME_PATTERN = Regex("^[a-zA-Z0-9._-]{3,}\$")
+  val VALID_USERNAME_PATTERN = Regex("^[a-z0-9_-]{3,15}\$")
+  val emailValidator = EmailValidator.getInstance()
 
-  fun isValid(account: Account): Boolean {
-    return with(account) {
-      validUsername(username) && validEmail(email) && validPassword(password)
+  fun validate(account: Account) {
+    with(account) {
+      validateUsername(username)
+      validateEmail(email)
+      validatePassword(password)
     }
   }
 
-  private fun validPassword(password: String?): Boolean {
+  private fun validatePassword(password: String?) {
     if (password == null) {
-      return false
+        throw InvalidAccountException("No password received")
     } else {
-      return password.matches(VALID_PASSWORD_PATTERN)
+      if (!password.matches(VALID_PASSWORD_PATTERN)) {
+        throw InvalidAccountException("""Invalid password
+        - At least 8 chars
+        - Contains at least one digit
+        - Contains at least one lower alpha char and one upper alpha char
+        - Contains at least one char within a set of special chars (@#%${'$'}^ etc.)
+        - Does not contain space, tab, etc.
+      """.trimIndent())
+      }
     }
   }
 
-  private fun validEmail(email: String?): Boolean {
-    val emailValidator = EmailValidator.getInstance()
-    return emailValidator.isValid(email)
+  private fun validateEmail(email: String?) {
+    if (!emailValidator.isValid(email)) {
+      throw InvalidAccountException("Invalid email address")
+    }
   }
 
-  private fun validUsername(username: String?): Boolean {
+  private fun validateUsername(username: String?) {
     if (username == null) {
-      return false
+      throw InvalidAccountException("No user name received")
     } else {
-      return username.matches(VALID_USERNAME_PATTERN)
+      if (username.matches(VALID_USERNAME_PATTERN)) {
+        throw InvalidAccountException("""Invalid username
+        - Between 3 to 15 characters
+        - Contains any lower case character, digit or special symbol “_-” only
+      """.trimIndent())
+      }
     }
   }
 }

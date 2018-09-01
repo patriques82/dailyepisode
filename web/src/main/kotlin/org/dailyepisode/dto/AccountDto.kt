@@ -12,7 +12,7 @@ data class AccountRegistrationDto(
 )
 
 fun AccountRegistrationDto.toAccount(): Account =
-  Account(null, username ?: "", email ?: "", password, roles = emptyList<String>(), subscriptions = emptyList())
+  Account(null, username ?: "", email ?: "", password, 0, emptyList(), emptyList())
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class AccountDto(

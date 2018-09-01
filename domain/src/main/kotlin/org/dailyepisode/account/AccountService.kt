@@ -1,7 +1,7 @@
 package org.dailyepisode.account
 
 interface AccountService {
-  fun createAccount(account: Account, password: String)
+  fun createAccount(account: Account)
   fun updateNotificationIntervaInlDays(accountId: Long, notificationIntervaInlDays: Int)
   fun findAll(): List<Account>
   fun findById(accountId: Long): Account?
