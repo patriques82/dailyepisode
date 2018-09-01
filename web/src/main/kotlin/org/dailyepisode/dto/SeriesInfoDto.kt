@@ -15,3 +15,5 @@ data class SeriesInfoDto(
 
 fun SeriesInfo.toDto(): SeriesInfoDto =
   SeriesInfoDto(remoteId, name, overview, imageUrl, voteCount, voteAverage)
+
+data class SeriesSearchResultDto(val results: List<SeriesInfoDto>)

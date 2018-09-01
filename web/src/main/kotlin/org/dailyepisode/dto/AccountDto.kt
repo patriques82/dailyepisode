@@ -14,12 +14,6 @@ fun AccountRegistrationDto.toAccount(): Account =
   Account(null, username ?: "", email ?: "", password, roles = emptyList<String>(), subscriptions = emptyList())
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class AccountLoginDto(
-  val username: String?,
-  val password: String?
-)
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 data class AccountDto(
   val id: Long?,
   val username: String,
