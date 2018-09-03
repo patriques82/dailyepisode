@@ -2,7 +2,6 @@ package org.dailyepisode.controller.admin
 
 import org.dailyepisode.account.Account
 import org.dailyepisode.account.AccountService
-import org.dailyepisode.account.AccountValidator
 import org.dailyepisode.dto.AccountDto
 import org.dailyepisode.dto.AccountRegistrationDto
 import org.dailyepisode.dto.toAccount

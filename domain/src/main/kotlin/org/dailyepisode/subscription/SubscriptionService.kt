@@ -6,3 +6,11 @@ interface SubscriptionService {
   fun findById(subscriptionId: Long): Subscription?
   fun deleteSubscription(subscriptionId: Long, accountId: Long)
 }
+
+data class Subscription(
+  val id: Long?,
+  val remoteId: Int,
+  val name: String,
+  val overview: String,
+  val imageUrl: String
+)

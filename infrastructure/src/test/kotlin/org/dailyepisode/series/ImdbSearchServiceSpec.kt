@@ -1,4 +1,4 @@
-package org.dailyepisode.search
+package org.dailyepisode.series
 
 import io.mockk.every
 import io.mockk.mockk
@@ -20,7 +20,7 @@ class ImdbSearchServiceSpec: Spek({
     val imageUrl = "dummy-image-url"
     val existingResultQuery = "friends"
     val nonExistingResultQuery = "non-friends"
-    val imdbSeriesInfo = ImdbSeriesInfo(1, "friends", "a couple of friends", "/friends.com/111", 11, 9.1)
+    val imdbSeriesInfo = ImdbSeriesSearchInfo(1, "friends", "a couple of friends", "/friends.com/111", 11, 9.1)
     val successImdbSeriesSearchResult = ImdbSeriesSearchResult(listOf(imdbSeriesInfo))
     val failureImdbSeriesSearchResult = ImdbSeriesSearchResult(emptyList())
 
@@ -36,13 +36,13 @@ class ImdbSearchServiceSpec: Spek({
     every { restTemplateBuilderMock.rootUri(baseUrl) } returns restTemplateBuilderMock
     every { restTemplateBuilderMock.build() } returns restTemplateMock
 
-    val imdbSearchService = ImdbSearchService(restTemplateBuilderMock, baseUrl, imageUrl, apiKey)
+    val imdbSearchService = ImdbSeriesSearchService(restTemplateBuilderMock, baseUrl, imageUrl, apiKey)
 
     on("calling a search query with one existing result") {
       val seriesSearchResult = imdbSearchService.search(SeriesSearchRequest(existingResultQuery))
 
       it("should return the existing result") {
-        val expectedSeriesInfo = SeriesInfo(1, "friends", "a couple of friends", "${imageUrl}/friends.com/111", 11, 9.1)
+        val expectedSeriesInfo = SeriesSearchInfo(1, "friends", "a couple of friends", "${imageUrl}/friends.com/111", 11, 9.1)
         val expectedSearchResult = SeriesSearchResult(listOf(expectedSeriesInfo))
         assertThat(seriesSearchResult, equalTo(expectedSearchResult))
       }

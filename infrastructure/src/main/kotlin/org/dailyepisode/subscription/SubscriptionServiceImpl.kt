@@ -2,8 +2,8 @@ package org.dailyepisode.subscription
 
 import org.dailyepisode.account.AccountEntity
 import org.dailyepisode.account.AccountRepository
-import org.dailyepisode.exception.AccountHasNoMatchingSubscriptionException
-import org.dailyepisode.exception.NoAccountFoundException
+import org.dailyepisode.account.AccountHasNoMatchingSubscriptionException
+import org.dailyepisode.account.NoAccountFoundException
 import org.springframework.stereotype.Service
 
 @Service

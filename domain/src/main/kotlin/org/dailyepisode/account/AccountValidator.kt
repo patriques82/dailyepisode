@@ -1,7 +1,6 @@
 package org.dailyepisode.account
 
 import org.apache.commons.validator.routines.EmailValidator
-import org.dailyepisode.exception.InvalidAccountException
 
 object AccountValidator {
   /*

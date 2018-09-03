@@ -1,10 +1,9 @@
 package org.dailyepisode.controller
 
-import org.dailyepisode.dto.ErrorDto
-import org.dailyepisode.exception.AccountHasNoMatchingSubscriptionException
-import org.dailyepisode.exception.EmailAlreadyInUseException
-import org.dailyepisode.exception.InvalidAccountException
-import org.dailyepisode.exception.NoAccountFoundException
+import org.dailyepisode.account.AccountHasNoMatchingSubscriptionException
+import org.dailyepisode.account.EmailAlreadyInUseException
+import org.dailyepisode.account.InvalidAccountException
+import org.dailyepisode.account.NoAccountFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -35,3 +34,7 @@ class ErrorHandler {
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.BAD_REQUEST)
 
 }
+
+data class ErrorDto(
+  val message: String
+)

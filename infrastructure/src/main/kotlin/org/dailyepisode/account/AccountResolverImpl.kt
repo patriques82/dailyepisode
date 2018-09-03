@@ -1,6 +1,5 @@
 package org.dailyepisode.account
 
-import org.dailyepisode.exception.NoAccountFoundException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 

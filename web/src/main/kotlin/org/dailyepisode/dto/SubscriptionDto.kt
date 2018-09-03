@@ -19,3 +19,5 @@ fun SubscriptionDto.toSubscription(): Subscription {
 fun Subscription.toDto(): SubscriptionDto {
   return SubscriptionDto(id, remoteId, name, overview, imageUrl)
 }
+
+data class SubscriptionPreferencesDto(val notificationIntervalInDays: Int)

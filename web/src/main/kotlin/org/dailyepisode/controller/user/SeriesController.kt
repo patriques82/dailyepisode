@@ -2,8 +2,8 @@ package org.dailyepisode.controller.user
 
 import org.dailyepisode.dto.SeriesSearchResultDto
 import org.dailyepisode.dto.toDto
-import org.dailyepisode.search.SearchService
-import org.dailyepisode.search.SeriesSearchRequest
+import org.dailyepisode.series.SeriesSearchService
+import org.dailyepisode.series.SeriesSearchRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/search")
-class SearchController(private val searchService: SearchService) {
+class SeriesController(private val seriesSearchService: SeriesSearchService) {
 
   @GetMapping
   fun search(@RequestParam("query") query: String?): ResponseEntity<SeriesSearchResultDto> {
     val searchResult = query?.let {
-      val seriesResult = searchService.search(SeriesSearchRequest(it))
+      val seriesResult = seriesSearchService.search(SeriesSearchRequest(it))
       SeriesSearchResultDto(results = seriesResult.results.map { it.toDto() })
     } ?: SeriesSearchResultDto(results = listOf())
     return ResponseEntity(searchResult, HttpStatus.OK)

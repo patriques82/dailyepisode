@@ -1,0 +1,108 @@
+package org.dailyepisode.security
+
+import org.dailyepisode.account.Account
+import org.dailyepisode.account.AccountService
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.core.AuthenticationException
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
+class WebSecurityConfiguration(private val userDetailsService: UserDetailsService,
+                               private val authEntryPoint: AuthenticationEntryPoint,
+                               private val passwordEncoder: PasswordEncoder
+): WebSecurityConfigurerAdapter() {
+
+  // Authorization
+  override fun configure(http: HttpSecurity) {
+    http
+      .csrf()
+        .disable()
+        .headers().frameOptions().sameOrigin() // to enable h2-console
+        .and()
+      .authorizeRequests()
+        .antMatchers("/api/search").permitAll()
+        .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
+        .antMatchers("/admin/**").hasRole("ADMIN")
+        .antMatchers("/resources/**").permitAll()
+        .anyRequest().authenticated()
+        .and()
+      .httpBasic()
+        .authenticationEntryPoint(authEntryPoint)
+  }
+
+  // Authentication
+  override fun configure(auth: AuthenticationManagerBuilder) {
+    auth
+      .userDetailsService(userDetailsService)
+      .passwordEncoder(passwordEncoder)
+  }
+
+}
+
+@Service
+internal class UserDetailsServiceImpl(private val accountService: AccountService) : UserDetailsService {
+
+  override fun loadUserByUsername(username: String?): UserDetails {
+    val account = username?.let { accountService.findByUserName(it) }
+    if (account == null) {
+      throw UsernameNotFoundException("Username: '$username' does not exists")
+    }
+    return createUserDetails(account)
+  }
+
+  private fun createUserDetails(account: Account): UserDetails {
+    return object : UserDetails {
+      override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
+        val grantedAuthorities = mutableListOf<GrantedAuthority>()
+        account.roles.forEach {
+          grantedAuthorities.add(SimpleGrantedAuthority(it))
+        }
+        return grantedAuthorities
+      }
+      override fun getUsername() = account.username
+      override fun getPassword() = account.password
+      override fun isEnabled() = true
+      override fun isCredentialsNonExpired() = true
+      override fun isAccountNonExpired() = true
+      override fun isAccountNonLocked() = true
+    }
+  }
+
+}
+
+@Component
+internal class AuthenticationEntryPointImpl: AuthenticationEntryPoint {
+  override fun commence(request: HttpServletRequest?,
+                        response: HttpServletResponse?,
+                        authException: AuthenticationException?) {
+    response?.status = HttpServletResponse.SC_UNAUTHORIZED
+  }
+}
+
+@Component
+internal class PasswordEncoderImpl: PasswordEncoder {
+  private val encoder = BCryptPasswordEncoder()
+
+  override fun encode(rawPassword: CharSequence?): String =
+    encoder.encode(rawPassword)
+
+  override fun matches(rawPassword: CharSequence?, encodedPassword: String?): Boolean =
+    encoder.matches(rawPassword, encodedPassword)
+
+}

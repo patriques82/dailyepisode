@@ -1,7 +1,7 @@
 package org.dailyepisode.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import org.dailyepisode.search.SeriesInfo
+import org.dailyepisode.series.SeriesSearchInfo
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SeriesInfoDto(
@@ -13,7 +13,7 @@ data class SeriesInfoDto(
   val voteAverage: Double
 )
 
-fun SeriesInfo.toDto(): SeriesInfoDto =
+fun SeriesSearchInfo.toDto(): SeriesInfoDto =
   SeriesInfoDto(remoteId, name, overview, imageUrl, voteCount, voteAverage)
 
 data class SeriesSearchResultDto(val results: List<SeriesInfoDto>)
