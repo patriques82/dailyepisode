@@ -50,13 +50,6 @@ class AdminAccountControllerSpec: Spek({
       }
     }
 
-    on("calling create account with invalid registration data") {
-      val responseEntity = accountController.register(invalidAccountRegistrationDto)
-
-      it("should return a status code 400 (bad request)") {
-        assertThat(responseEntity.statusCode, equalTo(HttpStatus.BAD_REQUEST))
-      }
-    }
 
   }
 })
