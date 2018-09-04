@@ -36,7 +36,7 @@ class ImdbSearchServiceSpec: Spek({
     every { restTemplateBuilderMock.rootUri(baseUrl) } returns restTemplateBuilderMock
     every { restTemplateBuilderMock.build() } returns restTemplateMock
 
-    val imdbSearchService = TheMovieDBSeriesService(restTemplateBuilderMock, baseUrl, imageUrl, apiKey)
+    val imdbSearchService = TheMovieDBSeriesService(restTemplateBuilderMock, baseUrl, "", imageUrl, apiKey)
 
     on("calling a search query with one existing result") {
       val seriesSearchResult = imdbSearchService.search(SeriesSearchRequest(existingResultQuery))

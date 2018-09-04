@@ -21,7 +21,7 @@ internal class TheMovieDBSeriesService(templateBuilder: RestTemplateBuilder,
   }
 
   fun TheMovieDBSeriesSearchInfo.toSeriesSearchInfo() =
-    SeriesSearchInfo(id, name, overview, "$imageBaseUrl/w$thumbnailSize$poster_path", vote_count, vote_average)
+    SeriesSearchInfo(id, name, overview, createImageUrl(poster_path), vote_count, vote_average)
 
   override fun lookup(remoteId: Int): SeriesLookupInfo? {
     val resource = "/tv/$remoteId?api_key=$apiKey"
@@ -31,12 +31,15 @@ internal class TheMovieDBSeriesService(templateBuilder: RestTemplateBuilder,
 
   fun TheMovieDBLookupResult.toSeriesLookupInfo() =
     SeriesLookupInfo(
-      id, name, overview, "$imageBaseUrl/w$thumbnailSize$poster_path", vote_count, vote_average, first_air_date,
+      id, name, overview, createImageUrl(poster_path), vote_count, vote_average, first_air_date,
       last_air_date, genres.map { it.name }, homepage, number_of_episodes, number_of_seasons)
 
   override fun changes(): SeriesChangedResult {
     TODO("not implemented")
   }
+
+  private fun createImageUrl(poster_path: String?): String =
+    "$imageBaseUrl/w$thumbnailSize$poster_path"
 
 }
 

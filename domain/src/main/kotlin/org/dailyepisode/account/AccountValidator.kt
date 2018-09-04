@@ -11,8 +11,12 @@ object AccountValidator {
   - Does not contain space, tab, etc.
   */
   val VALID_PASSWORD_PATTERN = Regex("(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}")
+  /*
+   - Between 3 to 15 characters
+   - Contains any lower case character, digit or special symbol “_-” only
+   */
   val VALID_USERNAME_PATTERN = Regex("^[a-z0-9_-]{3,15}\$")
-  val emailValidator = EmailValidator.getInstance()
+  val EMAIL_VALIDATOR = EmailValidator.getInstance()
 
   fun validate(account: Account) {
     with(account) {
@@ -39,7 +43,7 @@ object AccountValidator {
   }
 
   private fun validateEmail(email: String?) {
-    if (!emailValidator.isValid(email)) {
+    if (!EMAIL_VALIDATOR.isValid(email)) {
       throw InvalidAccountException("Invalid email address")
     }
   }

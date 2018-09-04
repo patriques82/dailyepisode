@@ -23,10 +23,17 @@ import javax.servlet.http.HttpServletResponse
 
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
-class WebSecurityConfiguration(private val userDetailsService: UserDetailsService,
-                               private val authEntryPoint: AuthenticationEntryPoint,
-                               private val passwordEncoder: PasswordEncoder
+class WebSecurityConfigurationImpl(private val userDetailsService: UserDetailsService,
+                                   private val authEntryPoint: AuthenticationEntryPoint,
+                                   private val passwordEncoder: PasswordEncoder
 ): WebSecurityConfigurerAdapter() {
+
+  // Authentication
+  override fun configure(auth: AuthenticationManagerBuilder) {
+    auth
+      .userDetailsService(userDetailsService)
+      .passwordEncoder(passwordEncoder)
+  }
 
   // Authorization
   override fun configure(http: HttpSecurity) {
@@ -40,17 +47,10 @@ class WebSecurityConfiguration(private val userDetailsService: UserDetailsServic
         .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
         .antMatchers("/admin/**").hasRole("ADMIN")
         .antMatchers("/resources/**").permitAll()
-        .anyRequest().authenticated()
+        .anyRequest().permitAll()
         .and()
       .httpBasic()
         .authenticationEntryPoint(authEntryPoint)
-  }
-
-  // Authentication
-  override fun configure(auth: AuthenticationManagerBuilder) {
-    auth
-      .userDetailsService(userDetailsService)
-      .passwordEncoder(passwordEncoder)
   }
 
 }
