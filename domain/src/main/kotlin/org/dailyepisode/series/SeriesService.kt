@@ -3,7 +3,7 @@ package org.dailyepisode.series
 interface SeriesService {
   fun search(seriesSearchRequest: SeriesSearchRequest): SeriesSearchResult
   fun lookup(remoteId: Int): SeriesLookupInfo?
-  fun changes(): SeriesChangedResult
+  fun changesSinceYesterday(): SeriesChangedResult
 }
 
 data class SeriesSearchRequest(val query: String)

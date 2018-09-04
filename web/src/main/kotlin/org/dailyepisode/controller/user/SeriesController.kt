@@ -30,4 +30,5 @@ class SeriesController(private val seriesService: SeriesService) {
     }
     return ResponseEntity(lookupResult.toDto(), HttpStatus.OK)
   }
+
 }
