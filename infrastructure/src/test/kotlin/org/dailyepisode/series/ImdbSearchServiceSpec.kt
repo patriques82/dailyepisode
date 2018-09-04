@@ -20,23 +20,23 @@ class ImdbSearchServiceSpec: Spek({
     val imageUrl = "dummy-image-url"
     val existingResultQuery = "friends"
     val nonExistingResultQuery = "non-friends"
-    val imdbSeriesInfo = ImdbSeriesSearchInfo(1, "friends", "a couple of friends", "/friends.com/111", 11, 9.1)
-    val successImdbSeriesSearchResult = ImdbSeriesSearchResult(listOf(imdbSeriesInfo))
-    val failureImdbSeriesSearchResult = ImdbSeriesSearchResult(emptyList())
+    val imdbSeriesInfo = TheMovieDBSeriesSearchInfo(1, "friends", "a couple of friends", "/friends.com/111", 11, 9.1)
+    val successImdbSeriesSearchResult = TheMovieDBSeriesSearchResult(listOf(imdbSeriesInfo))
+    val failureImdbSeriesSearchResult = TheMovieDBSeriesSearchResult(emptyList())
 
     val restTemplateMock = mockk<RestTemplate>()
     every {
-      restTemplateMock.getForEntity("/search/tv?api_key=$apiKey&query=$existingResultQuery", ImdbSeriesSearchResult::class.java)
+      restTemplateMock.getForEntity("/search/tv?api_key=$apiKey&query=$existingResultQuery", TheMovieDBSeriesSearchResult::class.java)
     } returns ResponseEntity.ok(successImdbSeriesSearchResult)
     every {
-      restTemplateMock.getForEntity("/search/tv?api_key=$apiKey&query=$nonExistingResultQuery", ImdbSeriesSearchResult::class.java)
+      restTemplateMock.getForEntity("/search/tv?api_key=$apiKey&query=$nonExistingResultQuery", TheMovieDBSeriesSearchResult::class.java)
     } returns ResponseEntity.ok(failureImdbSeriesSearchResult)
 
     val restTemplateBuilderMock = mockk<RestTemplateBuilder>()
     every { restTemplateBuilderMock.rootUri(baseUrl) } returns restTemplateBuilderMock
     every { restTemplateBuilderMock.build() } returns restTemplateMock
 
-    val imdbSearchService = ImdbSeriesSearchService(restTemplateBuilderMock, baseUrl, imageUrl, apiKey)
+    val imdbSearchService = TheMovieDBSeriesService(restTemplateBuilderMock, baseUrl, imageUrl, apiKey)
 
     on("calling a search query with one existing result") {
       val seriesSearchResult = imdbSearchService.search(SeriesSearchRequest(existingResultQuery))

@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 
 
 @SpringBootApplication(exclude = arrayOf(SecurityAutoConfiguration::class))
-@EnableScheduling
+//@EnableScheduling
 class Application
 
 fun main(args: Array<String>) {
