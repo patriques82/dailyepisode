@@ -21,4 +21,5 @@ class NotificationController(val emailSender: JavaMailSender) {
     emailSender.send(message)
     return ResponseEntity("message sent", HttpStatus.OK)
   }
+
 }

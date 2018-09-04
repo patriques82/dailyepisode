@@ -39,5 +39,6 @@ class SubscriptionController(private val subscriptionService: SubscriptionServic
     subscriptionService.deleteSubscription(subscriptionId, account.id)
     return ResponseEntity(HttpStatus.OK)
   }
+
 }
 

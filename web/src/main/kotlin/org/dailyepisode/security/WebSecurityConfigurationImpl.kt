@@ -88,21 +88,14 @@ internal class UserDetailsServiceImpl(private val accountService: AccountService
 
 @Component
 internal class AuthenticationEntryPointImpl: AuthenticationEntryPoint {
+
   override fun commence(request: HttpServletRequest?,
                         response: HttpServletResponse?,
                         authException: AuthenticationException?) {
     response?.status = HttpServletResponse.SC_UNAUTHORIZED
   }
+
 }
 
 @Component
-internal class PasswordEncoderImpl: PasswordEncoder {
-  private val encoder = BCryptPasswordEncoder()
-
-  override fun encode(rawPassword: CharSequence?): String =
-    encoder.encode(rawPassword)
-
-  override fun matches(rawPassword: CharSequence?, encodedPassword: String?): Boolean =
-    encoder.matches(rawPassword, encodedPassword)
-
-}
+internal class PasswordEncoderImpl: PasswordEncoder by BCryptPasswordEncoder()

@@ -17,4 +17,5 @@ class AdminSeriesController(val seriesService: SeriesService) {
     val changes = seriesService.changesSinceYesterday()
     return ResponseEntity(changes, HttpStatus.OK)
   }
+
 }

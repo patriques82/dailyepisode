@@ -30,4 +30,5 @@ class AdminSubscriptionController(private val subscriptionService: SubscriptionS
       ResponseEntity(HttpStatus.NOT_FOUND)
     }
   }
+
 }
