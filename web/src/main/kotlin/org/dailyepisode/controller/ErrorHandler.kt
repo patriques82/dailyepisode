@@ -4,6 +4,10 @@ import org.dailyepisode.account.AccountHasNoMatchingSubscriptionException
 import org.dailyepisode.account.EmailAlreadyInUseException
 import org.dailyepisode.account.InvalidAccountException
 import org.dailyepisode.account.NoAccountFoundException
+import org.dailyepisode.subscription.ConflictingSubscriptionImageUrlException
+import org.dailyepisode.subscription.ConflictingSubscriptionNameException
+import org.dailyepisode.subscription.ConflictingSubscriptionOverviewException
+import org.dailyepisode.subscription.SubscriptionRemoteIdNullPointerException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -32,6 +36,22 @@ class ErrorHandler {
   @ExceptionHandler(InvalidAccountException::class)
   fun invalidAccount(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.BAD_REQUEST)
+
+  @ExceptionHandler(SubscriptionRemoteIdNullPointerException::class)
+  fun subscriptionRemoteIdNullPointer(exception: Exception): ResponseEntity<ErrorDto> =
+    ResponseEntity(ErrorDto(exception.message!!), HttpStatus.CONFLICT)
+
+  @ExceptionHandler(ConflictingSubscriptionNameException::class)
+  fun conflictingSubscriptionName(exception: Exception): ResponseEntity<ErrorDto> =
+    ResponseEntity(ErrorDto(exception.message!!), HttpStatus.CONFLICT)
+
+  @ExceptionHandler(ConflictingSubscriptionOverviewException::class)
+  fun conflictingSubscriptionOverview(exception: Exception): ResponseEntity<ErrorDto> =
+    ResponseEntity(ErrorDto(exception.message!!), HttpStatus.CONFLICT)
+
+  @ExceptionHandler(ConflictingSubscriptionImageUrlException::class)
+  fun conflictingSubscriptionImageUrl(exception: Exception): ResponseEntity<ErrorDto> =
+    ResponseEntity(ErrorDto(exception.message!!), HttpStatus.CONFLICT)
 
 }
 

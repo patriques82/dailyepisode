@@ -8,7 +8,7 @@ class SubscriptionResolver(val seriesService: SeriesService) {
   fun resolve(subscriptionRequest: SubscriptionRequest): Subscription {
     val seriesLookupInfo: SeriesLookupInfo? = seriesService.lookup(subscriptionRequest.remoteId)
     if (seriesLookupInfo == null) {
-      throw IllegalSubscriptionRemoteIdException("Non existent series id")
+      throw SubscriptionRemoteIdNullPointerException("Non existent series id")
     }
     verify(seriesLookupInfo, subscriptionRequest)
     return seriesLookupInfo.toSubscription()
@@ -20,17 +20,17 @@ class SubscriptionResolver(val seriesService: SeriesService) {
 
   private fun verify(seriesLookupInfo: SeriesLookupInfo, subscriptionRequest: SubscriptionRequest) {
     if (seriesLookupInfo.name != subscriptionRequest.name) {
-      throw IllegalSubscriptionNameException("Illegal subscription name: ${subscriptionRequest.name}")
+      throw ConflictingSubscriptionNameException("Illegal subscription name: ${subscriptionRequest.name}")
     }
     if (seriesLookupInfo.overview != subscriptionRequest.overview) {
       when(subscriptionRequest.overview?.length) {
-        null -> throw IllegalSubscriptionOverviewException("Illegal subscription overview")
-        in 0..20 -> throw IllegalSubscriptionOverviewException("Illegal subscription overview: ${subscriptionRequest.overview}")
-        else -> throw IllegalSubscriptionOverviewException("Illegal subscription overview: ${subscriptionRequest.overview.subSequence(0,20)}...")
+        null -> throw ConflictingSubscriptionOverviewException("Illegal subscription overview")
+        in 0..20 -> throw ConflictingSubscriptionOverviewException("Illegal subscription overview: ${subscriptionRequest.overview}")
+        else -> throw ConflictingSubscriptionOverviewException("Illegal subscription overview: ${subscriptionRequest.overview.subSequence(0,20)}...")
       }
     }
     if (seriesLookupInfo.imageUrl != subscriptionRequest.imageUrl) {
-      throw IllegalSubscriptionImageUrlException("Illegal subscription image url: ${subscriptionRequest.imageUrl}")
+      throw ConflictingSubscriptionImageUrlException("Illegal subscription image url: ${subscriptionRequest.imageUrl}")
     }
   }
 
