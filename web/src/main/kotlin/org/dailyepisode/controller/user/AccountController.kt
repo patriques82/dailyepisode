@@ -1,9 +1,10 @@
 package org.dailyepisode.controller.user
 
+import org.dailyepisode.account.Account
 import org.dailyepisode.account.AccountResolver
 import org.dailyepisode.account.AccountService
-import org.dailyepisode.account.FulfilledAccount
-import org.dailyepisode.dto.*
+import org.dailyepisode.dto.AccountDto
+import org.dailyepisode.dto.SubscriptionPreferencesDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -20,6 +21,9 @@ class AccountController(private val accountService: AccountService,
     return ResponseEntity(account.toDto(), HttpStatus.OK)
   }
 
+  private fun Account.toDto(): AccountDto =
+    AccountDto(id, username, email, notificationIntervalInDays)
+
   @PutMapping("/preferences")
   fun updatePreferences(@RequestBody preferencesDto: SubscriptionPreferencesDto): ResponseEntity<Unit> {
     val account = accountResolver.resolve()
@@ -33,9 +37,6 @@ class AccountController(private val accountService: AccountService,
 
   private fun isValidSubscriptionPreferences(preferencesDto: SubscriptionPreferencesDto) =
     preferencesDto.notificationIntervalInDays > 0
-
-  private fun FulfilledAccount.toDto(): AccountDto =
-    AccountDto(id, username, email, notificationIntervalInDays)
 
 }
 

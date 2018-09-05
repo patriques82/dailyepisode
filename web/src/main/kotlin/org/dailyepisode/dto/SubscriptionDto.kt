@@ -2,22 +2,43 @@ package org.dailyepisode.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import org.dailyepisode.subscription.Subscription
+import org.dailyepisode.subscription.SubscriptionRequest
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class SubscriptionDto(
-  val id: Long?,
+data class SubscriptionRequestDto(
   val remoteId: Int,
   val name: String,
   val overview: String,
   val imageUrl: String
 )
 
-fun SubscriptionDto.toSubscription(): Subscription {
-  return Subscription(id, remoteId, name, overview, imageUrl)
+fun SubscriptionRequestDto.toSubscriptionRequest(): SubscriptionRequest {
+  return SubscriptionRequest(remoteId, name, overview, imageUrl)
 }
 
-fun Subscription.toDto(): SubscriptionDto {
-  return SubscriptionDto(id, remoteId, name, overview, imageUrl)
-}
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class SubscriptionDto(
+  val id: Long?,
+  val remoteId: Int,
+  val name: String,
+  val overview: String?,
+  val imageUrl: String?,
+  val voteCount: Int,
+  val voteAverage: Double,
+  val firstAirDate: String?,
+  val lastAirDate: String?,
+  val genres: List<String>,
+  val homepage: String?,
+  val numberOfEpisodes: Int,
+  val numberOfSeasons: Int
+)
+
+fun SubscriptionDto.toSubscription(): Subscription =
+  Subscription(id, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
+    genres, homepage, numberOfEpisodes, numberOfSeasons)
+
+fun Subscription.toDto(): SubscriptionDto =
+  SubscriptionDto(id, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
+    genres, homepage, numberOfEpisodes, numberOfSeasons)
 
 data class SubscriptionPreferencesDto(val notificationIntervalInDays: Int)

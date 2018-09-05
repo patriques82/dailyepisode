@@ -18,8 +18,8 @@ object AccountValidator {
   val VALID_USERNAME_PATTERN = Regex("^[a-z0-9_-]{3,15}\$")
   val EMAIL_VALIDATOR = EmailValidator.getInstance()
 
-  fun validate(account: Account) {
-    with(account) {
+  fun validate(accountRegistrationRequest: AccountRegistrationRequest) {
+    with(accountRegistrationRequest) {
       validateUsername(username)
       validateEmail(email)
       validatePassword(password)

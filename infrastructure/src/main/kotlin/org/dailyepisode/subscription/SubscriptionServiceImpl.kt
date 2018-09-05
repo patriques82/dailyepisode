@@ -12,24 +12,25 @@ internal class SubscriptionServiceImpl(private val subscriptionRepository: Subsc
                                        private val accountRepository: AccountRepository,
                                        private val seriesService: SeriesService) : SubscriptionService {
 
-  override fun createSubscription(subscription: Subscription, accountId: Long) {
+  override fun createSubscription(subscriptionRequest: SubscriptionRequest, accountId: Long) {
     val accountEntity: AccountEntity? = accountRepository.findById(accountId).orElse(null)
     if (accountEntity == null) {
       throw NoAccountFoundException("No account found for id")
     }
-    val subscriptionEntity: SubscriptionEntity? = subscriptionRepository.findByRemoteId(subscription.remoteId)
+    val subscriptionEntity: SubscriptionEntity? = subscriptionRepository.findByRemoteId(subscriptionRequest.remoteId)
     if (subscriptionEntity != null) {
       accountEntity.subscriptions += subscriptionEntity
     } else {
-      val subscriptionVerifier = SubscriptionVerifier(seriesService)
-      subscriptionVerifier.verify(subscription)
+      val subscriptionResolver = SubscriptionResolver(seriesService)
+      val subscription = subscriptionResolver.resolve(subscriptionRequest)
       accountEntity.subscriptions += subscription.toEntity()
     }
     accountRepository.save(accountEntity)
   }
 
   private fun Subscription.toEntity(): SubscriptionEntity =
-    SubscriptionEntity(id, remoteId, name, overview, imageUrl, emptyList())
+    SubscriptionEntity(id, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
+      genres, homepage, numberOfEpisodes, numberOfSeasons, emptyList())
 
   override fun findAll(): List<Subscription> =
     subscriptionRepository.findAll()
@@ -53,4 +54,5 @@ internal class SubscriptionServiceImpl(private val subscriptionRepository: Subsc
   }
 
 }
+
 

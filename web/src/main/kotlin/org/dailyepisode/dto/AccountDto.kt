@@ -1,7 +1,6 @@
 package org.dailyepisode.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import org.dailyepisode.account.Account
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class AccountDto(
@@ -11,15 +10,10 @@ data class AccountDto(
   val notificationIntervalInDays: Int
 )
 
-fun Account.toDto(): AccountDto =
-  AccountDto(id, username, email, notificationIntervalInDays)
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class AccountRegistrationDto(
+data class AccountRegistrationRequestDto(
   val username: String?,
   val email: String?,
-  val password: String?
+  val password: String?,
+  val notificationIntervalInDays: Int?
 )
-
-fun AccountRegistrationDto.toAccount(): Account =
-  Account(null, username ?: "", email ?: "", password, 0, emptyList(), emptyList())

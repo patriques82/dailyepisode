@@ -22,12 +22,24 @@ data class SubscriptionEntity(
   var name: String,
 
   @Column(length = 1000)
-  var overview: String,
-  var imageUrl: String,
+  var overview: String?,
+  var imageUrl: String?,
+  var voteCount: Int,
+  var voteAverage: Double,
+  var firstAirDate: String?,
+  var lastAirDate: String?,
+
+  @Column
+  @ElementCollection
+  var genres: List<String>,
+  var homepage: String?,
+  var numberOfEpisodes: Int,
+  var numberOfSeasons: Int,
 
   @ManyToMany(mappedBy = "subscriptions")
   var accounts: List<AccountEntity>
 ) {
   fun toSubscription(): Subscription =
-    Subscription(id, remoteId, name, overview, imageUrl)
+    Subscription(id, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
+      genres, homepage, numberOfEpisodes, numberOfSeasons)
 }

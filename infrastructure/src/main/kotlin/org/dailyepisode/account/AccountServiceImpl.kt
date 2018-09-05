@@ -7,17 +7,17 @@ import org.springframework.stereotype.Service
 internal class AccountServiceImpl(private val accountRepository: AccountRepository,
                                   private val passwordEncoder: PasswordEncoder): AccountService {
 
-  override fun createAccount(account: Account) {
-    AccountValidator.validate(account)
-    val storedAccount = accountRepository.findByEmail(account.email)
+  override fun createAccount(accountRegistrationRequest: AccountRegistrationRequest) {
+    AccountValidator.validate(accountRegistrationRequest)
+    val storedAccount = accountRepository.findByEmail(accountRegistrationRequest.email!!)
     if (storedAccount != null) {
-      throw EmailAlreadyInUseException("Account with email: ${account.email} is already in use")
+      throw EmailAlreadyInUseException("Account with email: ${accountRegistrationRequest.email} is already in use")
     }
-    accountRepository.save(account.toEntity())
+    accountRepository.save(accountRegistrationRequest.toEntity())
   }
 
-  private fun Account.toEntity(): AccountEntity =
-    AccountEntity(id, username, email, passwordEncoder.encode(password))
+  private fun AccountRegistrationRequest.toEntity(): AccountEntity =
+    AccountEntity(null, username!!, email!!, passwordEncoder.encode(password))
 
   override fun findByUserName(userName: String): Account? {
     return accountRepository.findByUsername(userName)?.toAccount()
@@ -32,13 +32,11 @@ internal class AccountServiceImpl(private val accountRepository: AccountReposito
     return accountRepository.findAll().map { it.toAccount() }
   }
 
-  override fun updateNotificationIntervaInlDays(accountId: Long, notificationIntervaInlDays: Int) {
+  override fun updateNotificationIntervaInlDays(accountId: Long, notificationIntervalInlDays: Int) {
     val storedAccount = accountRepository.findById(accountId).orElse(null)
     if (storedAccount != null) {
-      storedAccount.notificationIntervalInDays = notificationIntervaInlDays
+      storedAccount.notificationIntervalInDays = notificationIntervalInlDays
       accountRepository.save(storedAccount)
     }
   }
 }
-
-

@@ -36,6 +36,5 @@ data class SeriesLookupInfoDto(
 )
 
 fun SeriesLookupInfo.toDto(): SeriesLookupInfoDto =
-  SeriesLookupInfoDto(
-    remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate, genres,
-    homepage, numberOfEpisodes, numberOfSeasons)
+  SeriesLookupInfoDto(remoteId, name, overview, imageUrl, voteCount, voteAverage,
+    firstAirDate, lastAirDate, genres, homepage, numberOfEpisodes, numberOfSeasons)

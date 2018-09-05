@@ -5,13 +5,8 @@ import org.springframework.stereotype.Service
 
 @Service
 internal class AccountResolverImpl(private val accountService: AccountService): AccountResolver {
-  override fun resolve(): FulfilledAccount {
+  override fun resolve(): Account {
     val userName = SecurityContextHolder.getContext().authentication.name
-    val account = accountService.findByUserName(userName) ?: throw NoAccountFoundException("No account found")
-    return account.toFulfilledAccount()
+    return accountService.findByUserName(userName) ?: throw NoAccountFoundException("No account found")
   }
 }
-
-@Throws(NullPointerException::class)
-private fun Account.toFulfilledAccount(): FulfilledAccount =
-  FulfilledAccount(id!!, username, email, notificationIntervalInDays, roles, subscriptions)
