@@ -4,7 +4,6 @@ import org.dailyepisode.account.AccountResolver
 import org.dailyepisode.dto.SubscriptionDto
 import org.dailyepisode.dto.SubscriptionRequestDto
 import org.dailyepisode.dto.toDto
-import org.dailyepisode.dto.toSubscriptionRequest
 import org.dailyepisode.subscription.SubscriptionService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,7 +19,7 @@ class SubscriptionController(private val subscriptionService: SubscriptionServic
   fun createSubscription(@RequestBody subscriptionRequestDto: SubscriptionRequestDto?): ResponseEntity<Unit> {
     return if (subscriptionRequestDto != null) {
       val account = accountResolver.resolve()
-      subscriptionService.createSubscription(subscriptionRequestDto.toSubscriptionRequest(), account.id)
+      subscriptionService.createSubscription(subscriptionRequestDto.remoteIds, account.id)
       ResponseEntity(HttpStatus.CREATED)
     } else {
       ResponseEntity(HttpStatus.NO_CONTENT)

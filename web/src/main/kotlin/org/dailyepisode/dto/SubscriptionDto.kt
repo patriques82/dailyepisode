@@ -2,19 +2,11 @@ package org.dailyepisode.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import org.dailyepisode.subscription.Subscription
-import org.dailyepisode.subscription.SubscriptionRequest
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SubscriptionRequestDto(
-  val remoteId: Int,
-  val name: String,
-  val overview: String,
-  val imageUrl: String
+  val remoteIds: List<Int>
 )
-
-fun SubscriptionRequestDto.toSubscriptionRequest(): SubscriptionRequest {
-  return SubscriptionRequest(remoteId, name, overview, imageUrl)
-}
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SubscriptionDto(

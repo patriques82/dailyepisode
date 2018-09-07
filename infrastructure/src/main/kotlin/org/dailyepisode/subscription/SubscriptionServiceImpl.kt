@@ -1,8 +1,8 @@
 package org.dailyepisode.subscription
 
 import org.dailyepisode.account.AccountEntity
-import org.dailyepisode.account.AccountRepository
 import org.dailyepisode.account.AccountHasNoMatchingSubscriptionException
+import org.dailyepisode.account.AccountRepository
 import org.dailyepisode.account.NoAccountFoundException
 import org.dailyepisode.series.SeriesService
 import org.springframework.stereotype.Service
@@ -12,20 +12,23 @@ internal class SubscriptionServiceImpl(private val subscriptionRepository: Subsc
                                        private val accountRepository: AccountRepository,
                                        private val seriesService: SeriesService) : SubscriptionService {
 
-  override fun createSubscription(subscriptionRequest: SubscriptionRequest, accountId: Long) {
+  override fun createSubscription(remoteIds: List<Int>, accountId: Long) {
     val accountEntity: AccountEntity? = accountRepository.findById(accountId).orElse(null)
     if (accountEntity == null) {
       throw NoAccountFoundException("No account found for id")
     }
-    val subscriptionEntity: SubscriptionEntity? = subscriptionRepository.findByRemoteId(subscriptionRequest.remoteId)
-    if (subscriptionEntity != null) {
-      accountEntity.subscriptions += subscriptionEntity
-    } else {
-      val subscriptionResolver = SubscriptionResolver(seriesService)
-      val subscription = subscriptionResolver.resolve(subscriptionRequest)
-      accountEntity.subscriptions += subscription.toEntity()
-    }
+    val subscriptions = getStoredAndCreatedSubscriptions(remoteIds)
+    accountEntity.subscriptions += subscriptions.map { it.toEntity() }
     accountRepository.save(accountEntity)
+  }
+
+  private fun getStoredAndCreatedSubscriptions(remoteIds: List<Int>): List<Subscription> {
+    val (notStoredIds, storedSubscriptions) = SubscriptionLoadService(this).load(remoteIds)
+    val (notFoundIds, newSubscriptions) = SubscriptionFetchService(seriesService).fetch(notStoredIds)
+    if (notFoundIds.isNotEmpty()) {
+      throw SubscriptionRemoteIdNullPointerException("Not found IDs: ${notFoundIds.joinToString(prefix = "[", postfix = "]")}")
+    }
+    return storedSubscriptions + newSubscriptions
   }
 
   private fun Subscription.toEntity(): SubscriptionEntity =
@@ -42,6 +45,10 @@ internal class SubscriptionServiceImpl(private val subscriptionRepository: Subsc
       .map { it.toSubscription() }
       .orElse(null)
 
+  override fun findByRemoteId(remoteId: Int): Subscription? =
+    subscriptionRepository.findByRemoteId(remoteId)
+      ?.toSubscription()
+
   override fun deleteSubscription(subscriptionId: Long, accountId: Long) {
     val accountEntity: AccountEntity =
       accountRepository.findById(accountId).orElse(null)
@@ -54,5 +61,3 @@ internal class SubscriptionServiceImpl(private val subscriptionRepository: Subsc
   }
 
 }
-
-
