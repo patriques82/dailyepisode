@@ -33,4 +33,4 @@ fun Subscription.toDto(): SubscriptionDto =
   SubscriptionDto(id, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
     genres, homepage, numberOfEpisodes, numberOfSeasons)
 
-data class SubscriptionPreferencesDto(val notificationIntervalInDays: Int)
+data class SubscriptionPreferencesRequestDto(val notificationIntervalInDays: Int)

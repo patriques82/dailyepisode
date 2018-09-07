@@ -24,10 +24,7 @@ internal class SubscriptionServiceImpl(private val subscriptionRepository: Subsc
 
   private fun getStoredAndCreatedSubscriptions(remoteIds: List<Int>): List<Subscription> {
     val (notStoredIds, storedSubscriptions) = SubscriptionLoadService(this).load(remoteIds)
-    val (notFoundIds, newSubscriptions) = SubscriptionFetchService(seriesService).fetch(notStoredIds)
-    if (notFoundIds.isNotEmpty()) {
-      throw SubscriptionRemoteIdNullPointerException("Not found IDs: ${notFoundIds.joinToString(prefix = "[", postfix = "]")}")
-    }
+    val newSubscriptions = SubscriptionFetchService(seriesService).fetch(notStoredIds)
     return storedSubscriptions + newSubscriptions
   }
 

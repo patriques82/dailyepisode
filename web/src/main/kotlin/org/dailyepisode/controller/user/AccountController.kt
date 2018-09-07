@@ -4,11 +4,10 @@ import org.dailyepisode.account.Account
 import org.dailyepisode.account.AccountResolver
 import org.dailyepisode.account.AccountService
 import org.dailyepisode.dto.AccountDto
-import org.dailyepisode.dto.SubscriptionPreferencesDto
+import org.dailyepisode.dto.SubscriptionPreferencesRequestDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/api/user")
@@ -16,7 +15,7 @@ class AccountController(private val accountService: AccountService,
                         private val accountResolver: AccountResolver) {
 
   @GetMapping
-  fun current(servletRequest: HttpServletRequest): ResponseEntity<AccountDto> {
+  fun getCurrentAccount(): ResponseEntity<AccountDto> {
     val account = accountResolver.resolve()
     return ResponseEntity(account.toDto(), HttpStatus.OK)
   }
@@ -25,18 +24,18 @@ class AccountController(private val accountService: AccountService,
     AccountDto(id, username, email, notificationIntervalInDays)
 
   @PutMapping("/preferences")
-  fun updatePreferences(@RequestBody preferencesDto: SubscriptionPreferencesDto): ResponseEntity<Unit> {
+  fun updatePreferences(@RequestBody preferencesRequestDto: SubscriptionPreferencesRequestDto): ResponseEntity<Unit> {
     val account = accountResolver.resolve()
-    return if (isValidSubscriptionPreferences(preferencesDto)) {
-      accountService.updateNotificationIntervaInlDays(account.id, preferencesDto.notificationIntervalInDays)
+    return if (isValidSubscriptionPreferences(preferencesRequestDto)) {
+      accountService.updateNotificationIntervaInlDays(account.id, preferencesRequestDto.notificationIntervalInDays)
       ResponseEntity(HttpStatus.CREATED)
     } else {
       ResponseEntity(HttpStatus.BAD_REQUEST)
     }
   }
 
-  private fun isValidSubscriptionPreferences(preferencesDto: SubscriptionPreferencesDto) =
-    preferencesDto.notificationIntervalInDays > 0
+  private fun isValidSubscriptionPreferences(preferencesRequestDto: SubscriptionPreferencesRequestDto) =
+    preferencesRequestDto.notificationIntervalInDays > 0
 
 }
 

@@ -27,7 +27,7 @@ class SubscriptionController(private val subscriptionService: SubscriptionServic
   }
 
   @GetMapping
-  fun getSubscriptions(servletRequest: HttpServletRequest): ResponseEntity<List<SubscriptionDto>> {
+  fun getSubscriptions(): ResponseEntity<List<SubscriptionDto>> {
     val account = accountResolver.resolve()
     val subscriptions = account.subscriptions.map { it.toDto() }
     return ResponseEntity(subscriptions, HttpStatus.OK)

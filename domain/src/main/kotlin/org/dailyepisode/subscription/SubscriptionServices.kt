@@ -49,18 +49,17 @@ class SubscriptionLoadService(val subscriptionService: SubscriptionService) {
 
 class SubscriptionFetchService(val seriesService: SeriesService) {
 
-  fun fetch(remoteIds: List<Int>): PartialSubscriptionResult {
+  fun fetch(remoteIds: List<Int>): List<Subscription> {
     val notFound = mutableListOf<Int>()
     val remoteSubscriptions = mutableListOf<Subscription>()
     remoteIds.forEach {
       val seriesLookupInfo: SeriesLookupInfo? = seriesService.lookup(it)
-      if (seriesLookupInfo != null) {
-        remoteSubscriptions += seriesLookupInfo.toSubscription()
-      } else {
-        notFound += it
+      if (seriesLookupInfo == null) {
+        throw SubscriptionRemoteIdNullPointerException("Not found Id: $it")
       }
+      remoteSubscriptions += seriesLookupInfo.toSubscription()
     }
-    return notFound to remoteSubscriptions
+    return remoteSubscriptions
   }
 
   private fun SeriesLookupInfo.toSubscription(): Subscription =
