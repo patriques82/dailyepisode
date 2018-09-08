@@ -15,10 +15,12 @@ class SeriesController(private val seriesService: SeriesService) {
 
   @GetMapping("/search")
   fun search(@RequestParam("query") query: String?): ResponseEntity<SeriesSearchResultDto> {
-    val searchResult = query?.let {
-      val seriesResult = seriesService.search(SeriesSearchRequest(it))
+    val searchResult = if(query != null) {
+      val seriesResult = seriesService.search(SeriesSearchRequest(query))
       SeriesSearchResultDto(seriesResult.results.map { it.toDto() })
-    } ?: SeriesSearchResultDto(listOf())
+    } else {
+      SeriesSearchResultDto(listOf())
+    }
     return ResponseEntity(searchResult, HttpStatus.OK)
   }
 
