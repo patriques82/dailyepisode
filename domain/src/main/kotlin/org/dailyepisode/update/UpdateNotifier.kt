@@ -1,4 +1,4 @@
-package org.dailyepisode.notification
+package org.dailyepisode.update
 
 import org.dailyepisode.account.Account
 import org.dailyepisode.series.SeriesLookupResult

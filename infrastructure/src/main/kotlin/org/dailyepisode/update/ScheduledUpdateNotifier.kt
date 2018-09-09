@@ -1,4 +1,4 @@
-package org.dailyepisode.notification
+package org.dailyepisode.update
 
 import org.dailyepisode.account.AccountService
 import org.dailyepisode.series.SeriesService
@@ -10,12 +10,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Component
-class ScheduledAccountNotifier(private val accountService: AccountService,
-                               private val subscriptionService: SubscriptionService,
-                               private val seriesService: SeriesService,
-                               private val notificationSender: NotificationSender) {
+class ScheduledUpdateNotifier(private val accountService: AccountService,
+                              private val subscriptionService: SubscriptionService,
+                              private val seriesService: SeriesService,
+                              private val notificationSender: NotificationSender) {
 
-  private val logger = LoggerFactory.getLogger(ScheduledAccountNotifier::class.java)
+  private val logger = LoggerFactory.getLogger(ScheduledUpdateNotifier::class.java)
   private val dateFormat = SimpleDateFormat("EEEEE MMMMM yyyy HH:mm:ss")
 
   @Scheduled(fixedDelay = 3000)
