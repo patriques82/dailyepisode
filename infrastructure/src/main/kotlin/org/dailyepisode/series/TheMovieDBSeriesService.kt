@@ -6,7 +6,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 
-internal const val MAX_PAGES = 5
+internal const val MAX_SEARCH_PAGES = 5
+internal const val MAX_UPDATES_PAGES = 10
 
 @Service
 internal class TheMovieDBSeriesService(templateBuilder: RestTemplateBuilder,
@@ -28,7 +29,7 @@ internal class TheMovieDBSeriesService(templateBuilder: RestTemplateBuilder,
       page++
       val searchResult = fetchSearchResultForPage(query, page)
       searchInfos += searchResult.results
-    } while (page < searchResult.total_pages && page < MAX_PAGES)
+    } while (page < searchResult.total_pages && page < MAX_SEARCH_PAGES)
     return searchInfos
   }
 
@@ -43,40 +44,40 @@ internal class TheMovieDBSeriesService(templateBuilder: RestTemplateBuilder,
   private fun createImageUrl(poster_path: String?): String =
     "$imageBaseUrl/w$thumbnailSize$poster_path"
 
-  override fun lookup(remoteId: Int): SeriesLookupInfo? {
+  override fun lookup(remoteId: Int): SeriesLookupResult? {
     val resource = "/tv/$remoteId?api_key=$apiKey"
     val lookupResult = try {
       restTemplate.getForEntity(resource, TheMovieDBLookupResult::class.java).body!!
     } catch (ex: HttpClientErrorException) {
       null
     }
-    return lookupResult?.toSeriesLookupInfo()
+    return lookupResult?.toSeriesLookupResult()
   }
 
-  private fun TheMovieDBLookupResult.toSeriesLookupInfo() =
-    SeriesLookupInfo(
+  private fun TheMovieDBLookupResult.toSeriesLookupResult() =
+    SeriesLookupResult(
       id, name, overview, createImageUrl(poster_path), vote_count, vote_average, first_air_date,
       last_air_date, genres.map { it.name }, homepage, number_of_episodes, number_of_seasons)
 
-  override fun changesSinceYesterday(): SeriesChangedResult {
-    val changedSeriesIds = fetchChangeResultAllPages()
-    return SeriesChangedResult(changedSeriesIds)
+  override fun updatesSinceYesterday(): SeriesUpdateResult {
+    val updatedSeriesIds = fetchUpdatesAllPages()
+    return SeriesUpdateResult(updatedSeriesIds)
   }
 
-  private fun fetchChangeResultAllPages(): List<Int> {
+  private fun fetchUpdatesAllPages(): List<Int> {
     var page = 0
-    val changedSeriesIds = mutableListOf<Int>()
+    val updatedSeriesIds = mutableListOf<Int>()
     do {
       page++
-      val changeResult = fetchChangedResultForPage(page)
-      changedSeriesIds += changeResult.results.map { it.id }
-    } while (page < changeResult.total_pages && page < MAX_PAGES)
-    return changedSeriesIds
+      val updates = fetchUpdatesForPage(page)
+      updatedSeriesIds += updates.results.map { it.id }
+    } while (page < updates.total_pages && page < MAX_UPDATES_PAGES)
+    return updatedSeriesIds
   }
 
-  private fun fetchChangedResultForPage(page: Int): TheMovieDBChangesResult {
+  private fun fetchUpdatesForPage(page: Int): TheMovieDBUpdateResult {
     val resource = "/tv/changes?api_key=$apiKey&page=$page"
-    return restTemplate.getForEntity(resource, TheMovieDBChangesResult::class.java).body!!
+    return restTemplate.getForEntity(resource, TheMovieDBUpdateResult::class.java).body!!
   }
 }
 
@@ -116,7 +117,7 @@ internal data class TheMovieDBLookupResult(
 @JsonIgnoreProperties(ignoreUnknown = true)
 internal data class TheMovieDbGenre(val name: String)
 
-internal data class TheMovieDBChangesResult(
+internal data class TheMovieDBUpdateResult(
   val results: List<TheMovieDBChangedSeries>,
   val page: Int,
   val total_pages: Int,

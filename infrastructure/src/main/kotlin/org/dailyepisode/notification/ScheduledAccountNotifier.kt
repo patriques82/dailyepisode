@@ -1,7 +1,7 @@
 package org.dailyepisode.notification
 
 import org.dailyepisode.account.AccountService
-import org.dailyepisode.subscription.Subscription
+import org.dailyepisode.series.SeriesService
 import org.dailyepisode.subscription.SubscriptionService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
@@ -12,30 +12,21 @@ import java.util.*
 @Component
 class ScheduledAccountNotifier(private val accountService: AccountService,
                                private val subscriptionService: SubscriptionService,
-                               private val subscriptionEventNotifier: SubscriptionEventNotifier) {
+                               private val seriesService: SeriesService,
+                               private val notificationSender: NotificationSender) {
 
   private val logger = LoggerFactory.getLogger(ScheduledAccountNotifier::class.java)
-  private val dateFormat = SimpleDateFormat("EEEEE MMMMM yyyy HH:mm:ss", Locale("sv", "SE"))
+  private val dateFormat = SimpleDateFormat("EEEEE MMMMM yyyy HH:mm:ss")
 
   @Scheduled(fixedDelay = 3000)
-  fun notifyUsers() {
+  fun notifyAllUsers() {
     logger.info("Notification sending started: {}", dateFormat.format(Date()))
-    val subscriptions = subscriptionService.findAll()
-    val updates = subscriptions.map { fetchUpdates(it) }
+
+    val updateNotifier = UpdateNotifier(seriesService, subscriptionService, notificationSender)
     val accounts = accountService.findAll()
-//    accountService.findAll().forEach { subscriptionEventNotifier.notify(it) }
+    accounts.forEach { updateNotifier.notify(it) }
+
     logger.info("Notification sending ended: {}", dateFormat.format(Date()))
   }
 
-  private fun fetchUpdates(subscription: Subscription): SubscriptionUpdate {
-    return SubscriptionUpdate.Modified("test")
-  }
-
 }
-
-sealed class SubscriptionUpdate {
-  data class Modified(val test: String) : SubscriptionUpdate()
-  data class Unmodified(val t: Int) : SubscriptionUpdate()
-}
-
-

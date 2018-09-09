@@ -1,6 +1,6 @@
 package org.dailyepisode.controller.admin
 
-import org.dailyepisode.series.SeriesChangedResult
+import org.dailyepisode.series.SeriesUpdateResult
 import org.dailyepisode.series.SeriesService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController
 class AdminSeriesController(val seriesService: SeriesService) {
 
   @GetMapping("/changes")
-  fun changes(): ResponseEntity<SeriesChangedResult> {
-    val changes = seriesService.changesSinceYesterday()
+  fun changes(): ResponseEntity<SeriesUpdateResult> {
+    val changes = seriesService.updatesSinceYesterday()
     return ResponseEntity(changes, HttpStatus.OK)
   }
 

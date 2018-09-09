@@ -60,6 +60,8 @@ dependencies {
     compile "org.springframework:spring-jdbc"
     compile "com.fasterxml.jackson.core:jackson-databind"
 
+    compile "org.springframework.boot:spring-boot-starter-mail"
+
     compile "org.springframework.boot:spring-boot-starter-security"
 
     runtime "com.h2database:h2"

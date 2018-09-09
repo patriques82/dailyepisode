@@ -1,6 +1,6 @@
 package org.dailyepisode.controller.user
 
-import org.dailyepisode.dto.SeriesLookupInfoDto
+import org.dailyepisode.dto.SeriesLookupResultDto
 import org.dailyepisode.dto.SeriesSearchResultDto
 import org.dailyepisode.dto.toDto
 import org.dailyepisode.series.SeriesSearchRequest
@@ -25,7 +25,7 @@ class SeriesController(private val seriesService: SeriesService) {
   }
 
   @GetMapping("/{remoteId}")
-  fun lookup(@PathVariable remoteId: Int): ResponseEntity<SeriesLookupInfoDto> {
+  fun lookup(@PathVariable remoteId: Int): ResponseEntity<SeriesLookupResultDto> {
     val lookupResult = seriesService.lookup(remoteId)
     if (lookupResult == null) {
       return ResponseEntity(HttpStatus.NOT_FOUND)

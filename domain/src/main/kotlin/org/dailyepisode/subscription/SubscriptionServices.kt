@@ -1,6 +1,6 @@
 package org.dailyepisode.subscription
 
-import org.dailyepisode.series.SeriesLookupInfo
+import org.dailyepisode.series.SeriesLookupResult
 import org.dailyepisode.series.SeriesService
 
 interface SubscriptionService {
@@ -47,21 +47,22 @@ class SubscriptionLoadService(val subscriptionService: SubscriptionService) {
 
 }
 
+// TODO think of reuse in update notification
 class SubscriptionFetchService(val seriesService: SeriesService) {
 
   fun fetch(remoteIds: List<Int>): List<Subscription> {
     val remoteSubscriptions = mutableListOf<Subscription>()
     remoteIds.forEach {
-      val seriesLookupInfo: SeriesLookupInfo? = seriesService.lookup(it)
-      if (seriesLookupInfo == null) {
+      val seriesLookupResult: SeriesLookupResult? = seriesService.lookup(it)
+      if (seriesLookupResult == null) {
         throw SubscriptionRemoteIdNullPointerException("Not found Id: $it")
       }
-      remoteSubscriptions += seriesLookupInfo.toSubscription()
+      remoteSubscriptions += seriesLookupResult.toSubscription()
     }
     return remoteSubscriptions
   }
 
-  private fun SeriesLookupInfo.toSubscription(): Subscription =
+  private fun SeriesLookupResult.toSubscription(): Subscription =
     Subscription(null, remoteId, name, overview, imageUrl, voteCount, voteAverage,
       firstAirDate, lastAirDate, genres, homepage, numberOfEpisodes, numberOfSeasons)
 

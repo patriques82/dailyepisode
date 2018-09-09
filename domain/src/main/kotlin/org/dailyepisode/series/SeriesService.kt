@@ -2,8 +2,8 @@ package org.dailyepisode.series
 
 interface SeriesService {
   fun search(seriesSearchRequest: SeriesSearchRequest): SeriesSearchResult
-  fun lookup(remoteId: Int): SeriesLookupInfo?
-  fun changesSinceYesterday(): SeriesChangedResult
+  fun lookup(remoteId: Int): SeriesLookupResult?
+  fun updatesSinceYesterday(): SeriesUpdateResult
 }
 
 data class SeriesSearchRequest(val query: String)
@@ -19,7 +19,7 @@ data class SeriesSearchInfo(
   val voteAverage: Double
 )
 
-data class SeriesLookupInfo(
+data class SeriesLookupResult(
   val remoteId: Int,
   val name: String,
   val overview: String,
@@ -34,4 +34,4 @@ data class SeriesLookupInfo(
   val numberOfSeasons: Int
 )
 
-data class SeriesChangedResult(val changedSeriesRemoteIds: List<Int>)
+data class SeriesUpdateResult(val changedSeriesRemoteIds: List<Int>)
