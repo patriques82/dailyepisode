@@ -35,3 +35,21 @@ data class SeriesLookupResult(
 )
 
 data class SeriesUpdateResult(val changedSeriesRemoteIds: List<Int>)
+
+class SeriesLookupService(val seriesService: SeriesService) {
+
+  fun lookup(remoteIds: List<Int>): List<SeriesLookupResult> {
+    val lookups = mutableListOf<SeriesLookupResult>()
+    remoteIds.forEach {
+      val seriesLookupResult: SeriesLookupResult? = seriesService.lookup(it)
+      if (seriesLookupResult == null) {
+        throw RemoteIdNullPointerException("Not found Id: $it")
+      }
+      lookups += seriesLookupResult
+    }
+    return lookups
+  }
+
+}
+
+class RemoteIdNullPointerException(message: String) : RuntimeException(message)

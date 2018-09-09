@@ -4,6 +4,8 @@ import org.dailyepisode.account.AccountEntity
 import org.dailyepisode.account.AccountHasNoMatchingSubscriptionException
 import org.dailyepisode.account.AccountRepository
 import org.dailyepisode.account.NoAccountFoundException
+import org.dailyepisode.series.SeriesLookupResult
+import org.dailyepisode.series.SeriesLookupService
 import org.dailyepisode.series.SeriesService
 import org.springframework.stereotype.Service
 
@@ -24,9 +26,13 @@ internal class SubscriptionServiceImpl(private val subscriptionRepository: Subsc
 
   private fun getStoredAndCreatedSubscriptions(remoteIds: List<Int>): List<Subscription> {
     val (notStoredIds, storedSubscriptions) = SubscriptionLoadService(this).load(remoteIds)
-    val newSubscriptions = SubscriptionFetchService(seriesService).fetch(notStoredIds)
-    return storedSubscriptions + newSubscriptions
+    val seriesLookups = SeriesLookupService(seriesService).lookup(notStoredIds)
+    return storedSubscriptions + seriesLookups.map { it.toSubscription() }
   }
+
+  private fun SeriesLookupResult.toSubscription(): Subscription =
+    Subscription(null, remoteId, name, overview, imageUrl, voteCount, voteAverage,
+      firstAirDate, lastAirDate, genres, homepage, numberOfEpisodes, numberOfSeasons)
 
   private fun Subscription.toEntity(): SubscriptionEntity =
     SubscriptionEntity(id, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,

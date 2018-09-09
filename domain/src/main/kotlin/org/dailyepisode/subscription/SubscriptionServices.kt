@@ -46,26 +46,3 @@ class SubscriptionLoadService(val subscriptionService: SubscriptionService) {
   }
 
 }
-
-// TODO think of reuse in update notification
-class SubscriptionFetchService(val seriesService: SeriesService) {
-
-  fun fetch(remoteIds: List<Int>): List<Subscription> {
-    val remoteSubscriptions = mutableListOf<Subscription>()
-    remoteIds.forEach {
-      val seriesLookupResult: SeriesLookupResult? = seriesService.lookup(it)
-      if (seriesLookupResult == null) {
-        throw SubscriptionRemoteIdNullPointerException("Not found Id: $it")
-      }
-      remoteSubscriptions += seriesLookupResult.toSubscription()
-    }
-    return remoteSubscriptions
-  }
-
-  private fun SeriesLookupResult.toSubscription(): Subscription =
-    Subscription(null, remoteId, name, overview, imageUrl, voteCount, voteAverage,
-      firstAirDate, lastAirDate, genres, homepage, numberOfEpisodes, numberOfSeasons)
-
-}
-
-class SubscriptionRemoteIdNullPointerException(message: String) : RuntimeException(message)

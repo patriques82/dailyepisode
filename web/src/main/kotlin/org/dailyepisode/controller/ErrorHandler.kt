@@ -4,7 +4,7 @@ import org.dailyepisode.account.AccountHasNoMatchingSubscriptionException
 import org.dailyepisode.account.EmailAlreadyInUseException
 import org.dailyepisode.account.InvalidAccountException
 import org.dailyepisode.account.NoAccountFoundException
-import org.dailyepisode.subscription.SubscriptionRemoteIdNullPointerException
+import org.dailyepisode.series.RemoteIdNullPointerException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -34,7 +34,7 @@ class ErrorHandler {
   fun invalidAccount(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.BAD_REQUEST)
 
-  @ExceptionHandler(SubscriptionRemoteIdNullPointerException::class)
+  @ExceptionHandler(RemoteIdNullPointerException::class)
   fun subscriptionRemoteIdNullPointer(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.CONFLICT)
 

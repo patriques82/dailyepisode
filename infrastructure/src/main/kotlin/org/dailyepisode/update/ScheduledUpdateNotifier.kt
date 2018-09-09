@@ -1,7 +1,9 @@
 package org.dailyepisode.update
 
 import org.dailyepisode.account.AccountService
+import org.dailyepisode.series.SeriesLookupResult
 import org.dailyepisode.series.SeriesService
+import org.dailyepisode.subscription.Subscription
 import org.dailyepisode.subscription.SubscriptionService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
@@ -24,13 +26,20 @@ class ScheduledUpdateNotifier(private val accountService: AccountService,
 
     val subscriptions = subscriptionService.findAll()
     val updates = UpdateLookupService(seriesService, subscriptions).lookup()
-    val updateNotifier = UpdateNotificationService(notificationSender, updates)
+
+    val updateNotificationService = UpdateNotificationService(notificationSender, updates)
     val accounts = accountService.findAll()
-    accounts.forEach {
-      updateNotifier.notify(it)
-    }
+    accounts.forEach { updateNotificationService.notify(it) }
+
+    val updatePersistService = UpdatePersistService(updates)
+    subscriptions.forEach { updatePersistService.persist(it) }
 
     logger.info("Notification sending ended: {}", dateFormat.format(Date()))
   }
 
+}
+
+class UpdatePersistService(private val updates: List<SeriesLookupResult>) {
+  fun persist(subscription: Subscription) {
+  }
 }
