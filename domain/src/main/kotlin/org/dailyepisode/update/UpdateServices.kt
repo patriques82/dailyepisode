@@ -40,3 +40,9 @@ class UpdateLookupService(private val seriesService: SeriesService,
   }
 
 }
+
+class UpdatePersistService(private val updates: List<SeriesLookupResult>) {
+  fun persist(subscription: Subscription) {
+
+  }
+}

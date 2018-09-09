@@ -1,5 +1,6 @@
 package org.dailyepisode.update
 
+import org.dailyepisode.account.Account
 import org.dailyepisode.account.AccountService
 import org.dailyepisode.series.SeriesLookupResult
 import org.dailyepisode.series.SeriesService
@@ -21,25 +22,27 @@ class ScheduledUpdateNotifier(private val accountService: AccountService,
   private val dateFormat = SimpleDateFormat("EEEEE MMMMM yyyy HH:mm:ss")
 
   @Scheduled(fixedDelay = 3000)
-  fun notifyAllUsers() {
+  fun notifyAndPersistUpdates() {
     logger.info("Notification sending started: {}", dateFormat.format(Date()))
 
     val subscriptions = subscriptionService.findAll()
-    val updates = UpdateLookupService(seriesService, subscriptions).lookup()
-
-    val updateNotificationService = UpdateNotificationService(notificationSender, updates)
     val accounts = accountService.findAll()
-    accounts.forEach { updateNotificationService.notify(it) }
-
-    val updatePersistService = UpdatePersistService(updates)
-    subscriptions.forEach { updatePersistService.persist(it) }
+    val updateLookupService = UpdateLookupService(seriesService, subscriptions)
+    val updates = updateLookupService.lookup()
+    notifyUpdates(accounts, updates)
+    persistUpdates(subscriptions, updates)
 
     logger.info("Notification sending ended: {}", dateFormat.format(Date()))
   }
 
-}
-
-class UpdatePersistService(private val updates: List<SeriesLookupResult>) {
-  fun persist(subscription: Subscription) {
+  private fun notifyUpdates(accounts: List<Account>, updates: List<SeriesLookupResult>) {
+    val updateNotificationService = UpdateNotificationService(notificationSender, updates)
+    accounts.forEach { updateNotificationService.notify(it) }
   }
+
+  private fun persistUpdates(subscriptions: List<Subscription>, updates: List<SeriesLookupResult>) {
+    val updatePersistService = UpdatePersistService(updates)
+    subscriptions.forEach { updatePersistService.persist(it) }
+  }
+
 }
