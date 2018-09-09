@@ -22,9 +22,13 @@ class ScheduledUpdateNotifier(private val accountService: AccountService,
   fun notifyAllUsers() {
     logger.info("Notification sending started: {}", dateFormat.format(Date()))
 
-    val updateNotifier = UpdateNotifier(seriesService, subscriptionService, notificationSender)
+    val subscriptions = subscriptionService.findAll()
+    val updates = UpdateLookupService(seriesService, subscriptions).lookup()
+    val updateNotifier = UpdateNotificationService(notificationSender, updates)
     val accounts = accountService.findAll()
-    accounts.forEach { updateNotifier.notify(it) }
+    accounts.forEach {
+      updateNotifier.notify(it)
+    }
 
     logger.info("Notification sending ended: {}", dateFormat.format(Date()))
   }
