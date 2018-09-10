@@ -1,8 +1,7 @@
 package org.dailyepisode.controller.admin
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.dailyepisode.account.Account
-import org.dailyepisode.account.AccountService
+import org.dailyepisode.account.*
 import org.dailyepisode.dto.AccountRegistrationRequestDto
 import org.junit.Before
 import org.junit.Test
@@ -24,13 +23,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
+import java.util.*
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
 class AdminAccountControllerTest {
 
   @MockBean
-  lateinit var accountService: AccountService
+  lateinit var accountRepository: AccountRepository
   @Autowired
   lateinit var objectMapper: ObjectMapper
   @Autowired
@@ -43,10 +43,6 @@ class AdminAccountControllerTest {
       .webAppContextSetup(context)
       .apply<DefaultMockMvcBuilder>(springSecurity())
       .build()
-  }
-
-  @Test
-  fun `context loads`() {
   }
 
   @Test
@@ -70,21 +66,32 @@ class AdminAccountControllerTest {
 
   @Test
   @WithMockUser(roles = arrayOf("ADMIN"))
-  fun `register with body should return 201 Created`() {
-    val accountRegistrationRequestDto = AccountRegistrationRequestDto("user", "user@email.com", "password", 1)
+  fun `register with invalid account should return 400 Bad Request`() {
+    val accountRegistrationRequestDto = AccountRegistrationRequestDto("INVALID_USERNAME", "INVALID_EMAIL", "INVALID_PASSWORD", 1)
     mockMvc.perform(post("/admin/user")
       .with(csrf())
       .contentType(MediaType.APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(accountRegistrationRequestDto)))
-      .andExpect(status().isCreated)
+      .andExpect(status().isBadRequest)
+  }
+
+  @Test
+  @WithMockUser(roles = arrayOf("ADMIN"))
+  fun `register with valid account should return 201 Created`() {
+    val accountRegistrationRequestDto = AccountRegistrationRequestDto("user", "user@email.com", "P@ssw0rd", 1)
+    mockMvc.perform(post("/admin/user")
+      .with(csrf())
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(objectMapper.writeValueAsString(accountRegistrationRequestDto)))
+      .andExpect(status().isBadRequest)
   }
 
   @Test
   @WithMockUser(roles = arrayOf("ADMIN"))
   fun `find all accounts should return accounts and 200 Ok`() {
-    val homer = Account(1L, "Homer", "homer.simpson@yahoo.com", "password", 1, listOf("ADMIN", "USER"), emptyList())
-    val marge = Account(2L, "Marge", "marge.simpson@yahoo.com", "password", 2, listOf("USER"), emptyList())
-    given(accountService.findAll()).willReturn(listOf(homer, marge))
+    val homer = AccountEntity(1L, "Homer", "homer.simpson@yahoo.com", "password", 1, listOf(), emptyList())
+    val marge = AccountEntity(2L, "Marge", "marge.simpson@yahoo.com", "password", 2, listOf(), emptyList())
+    given(accountRepository.findAll()).willReturn(listOf(homer, marge))
 
     val expectedJson = """[
       {"id":1,"username":"Homer","email":"homer.simpson@yahoo.com","notificationIntervalInDays":1},
@@ -101,8 +108,8 @@ class AdminAccountControllerTest {
   @Test
   @WithMockUser(roles = arrayOf("ADMIN"))
   fun `find account with existing account id should return account and 200 Ok`() {
-    val homer = Account(1L, "Homer", "homer.simpson@yahoo.com", "password", 1, listOf("ADMIN", "USER"), emptyList())
-    given(accountService.findById(1L)).willReturn(homer)
+    val homer = AccountEntity(1L, "Homer", "homer.simpson@yahoo.com", "password", 1, listOf(), emptyList())
+    given(accountRepository.findById(1L)).willReturn(Optional.of(homer))
 
     val expectedJson = """
       {"id":1,"username":"Homer","email":"homer.simpson@yahoo.com","notificationIntervalInDays":1},
@@ -118,7 +125,7 @@ class AdminAccountControllerTest {
   @Test
   @WithMockUser(roles = arrayOf("ADMIN"))
   fun `find account with non-existing account id should return account and 200 Ok`() {
-    given(accountService.findById(1L)).willReturn(null)
+    given(accountRepository.findById(1L)).willReturn(Optional.empty())
 
     mockMvc.perform(get("/admin/user/1")
       .with(csrf())

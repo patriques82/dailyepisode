@@ -45,6 +45,27 @@ repositories {
     maven { setUrl("https://repo.spring.io/snapshot") }
 }
 
+sourceSets {
+    integrationTest {
+        kotlin.srcDir file("src/integrationTest/kotlin")
+        resources.srcDir file("src/integrationTest/resources")
+        compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+task integrationTest(type: Test) {
+    description = 'Runs the integration tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile "org.jetbrains.kotlin:kotlin-reflect"

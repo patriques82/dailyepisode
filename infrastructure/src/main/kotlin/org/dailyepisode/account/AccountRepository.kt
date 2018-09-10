@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository
 import javax.persistence.*
 
 @Repository
-internal interface AccountRepository: JpaRepository<AccountEntity, Long> {
+interface AccountRepository: JpaRepository<AccountEntity, Long> {
   fun findByEmail(email: String): AccountEntity?
   fun findByUsername(username: String): AccountEntity?
 }
