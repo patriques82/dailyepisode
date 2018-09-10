@@ -39,10 +39,6 @@ compileTestKotlin {
 
 bootJar.mainClassName = "org.dailyepisode.ApplicationKt"
 
-test {
-    useJUnitPlatform()
-}
-
 repositories {
     mavenCentral()
     maven { setUrl("https://repo.spring.io/milestone") }
@@ -54,14 +50,9 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect"
     compile project(':infrastructure')
     compile project(':domain')
-
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin"
     compile "org.springframework.security:spring-security-test"
 
-    testCompile("org.springframework.boot:spring-boot-starter-test") {
-        exclude module: 'junit'
-    }
-    testImplementation('org.junit.jupiter:junit-jupiter-api')
-    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
+    testCompile("org.springframework.boot:spring-boot-starter-test")
 }
