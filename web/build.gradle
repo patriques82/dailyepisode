@@ -2,10 +2,6 @@ buildscript {
     ext {
         kotlinVersion = properties["kotlin.version"]
         springBootVersion = properties["spring.boot.version"]
-        junitVersion = properties["junit.version"]
-        junitPlatformVersion = properties["junit.platform.version"]
-        spekVersion = properties["spek.version"]
-        mockkVersion = properties["mockk.version"]
     }
     repositories {
         mavenCentral()
@@ -44,9 +40,7 @@ compileTestKotlin {
 bootJar.mainClassName = "org.dailyepisode.ApplicationKt"
 
 test {
-    useJUnitPlatform {
-        includeEngines "spek"
-    }
+    useJUnitPlatform()
 }
 
 repositories {
@@ -63,13 +57,11 @@ dependencies {
 
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin"
+    compile "org.springframework.security:spring-security-test"
 
-    testCompile "org.springframework.boot:spring-boot-starter-test"
-
-    testImplementation "junit:junit:$junitVersion"
-    testImplementation "org.junit.platform:junit-platform-engine:$junitPlatformVersion"
-
-    testCompile "org.jetbrains.spek:spek-api:$spekVersion"
-    testRuntime "org.jetbrains.spek:spek-junit-platform-engine:$spekVersion"
-    testImplementation "io.mockk:mockk:$mockkVersion"
+    testCompile("org.springframework.boot:spring-boot-starter-test") {
+        exclude module: 'junit'
+    }
+    testImplementation('org.junit.jupiter:junit-jupiter-api')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
 }

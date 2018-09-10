@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
+
+// TODO remove me! (create sql file in integration test resource folder)
+
 @Component
 @Profile("dev")
 internal class DataInitializer(val passwordEncoder: PasswordEncoder,
