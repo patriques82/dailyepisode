@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository
 import javax.persistence.*
 
 @Repository
-internal interface SubscriptionRepository: JpaRepository<SubscriptionEntity, Long> {
+interface SubscriptionRepository: JpaRepository<SubscriptionEntity, Long> {
   fun findByRemoteId(remoteId: Int): SubscriptionEntity?
 }
 

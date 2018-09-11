@@ -23,7 +23,7 @@ class AdminAccountControllerTest: AbstractControllerIntegrationTest() {
 
   @Test
   @WithMockUser(roles = arrayOf("USER"))
-  fun `user role should not have access to admin controller`() {
+  fun `user role access should return 403 Forbidden`() {
     mockMvc.perform(get("/admin/user")
       .with(csrf())
       .contentType(MediaType.APPLICATION_JSON))
@@ -64,7 +64,7 @@ class AdminAccountControllerTest: AbstractControllerIntegrationTest() {
 
   @Test
   @WithMockUser(roles = arrayOf("ADMIN"))
-  fun `find all accounts should return accounts and 200 Ok`() {
+  fun `get all accounts should return accounts and 200 Ok`() {
     val homer = AccountEntity(1L, "Homer", "homer.simpson@yahoo.com", "password", 1, listOf(), emptyList())
     val marge = AccountEntity(2L, "Marge", "marge.simpson@yahoo.com", "password", 2, listOf(), emptyList())
     given(accountRepository.findAll()).willReturn(listOf(homer, marge))
@@ -83,7 +83,7 @@ class AdminAccountControllerTest: AbstractControllerIntegrationTest() {
 
   @Test
   @WithMockUser(roles = arrayOf("ADMIN"))
-  fun `find account with existing account id should return account and 200 Ok`() {
+  fun `get account with existing account id should return account and 200 Ok`() {
     val homer = AccountEntity(1L, "Homer", "homer.simpson@yahoo.com", "password", 1, listOf(), emptyList())
     given(accountRepository.findById(1L)).willReturn(Optional.of(homer))
 
@@ -100,7 +100,7 @@ class AdminAccountControllerTest: AbstractControllerIntegrationTest() {
 
   @Test
   @WithMockUser(roles = arrayOf("ADMIN"))
-  fun `find account with non-existing account id should return account and 200 Ok`() {
+  fun `get account with non-existing account id should return 204 No Content`() {
     given(accountRepository.findById(1L)).willReturn(Optional.empty())
 
     mockMvc.perform(get("/admin/user/1")

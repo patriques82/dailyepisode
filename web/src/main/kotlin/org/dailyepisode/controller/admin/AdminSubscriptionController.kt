@@ -27,7 +27,7 @@ class AdminSubscriptionController(private val subscriptionService: SubscriptionS
     return if (subscription != null) {
       ResponseEntity(subscription.toDto(), HttpStatus.OK)
     } else {
-      ResponseEntity(HttpStatus.NOT_FOUND)
+      ResponseEntity(HttpStatus.NO_CONTENT)
     }
   }
 

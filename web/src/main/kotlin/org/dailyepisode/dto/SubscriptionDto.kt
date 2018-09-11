@@ -25,10 +25,6 @@ data class SubscriptionDto(
   val numberOfSeasons: Int
 )
 
-fun SubscriptionDto.toSubscription(): Subscription =
-  Subscription(id, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
-    genres, homepage, numberOfEpisodes, numberOfSeasons)
-
 fun Subscription.toDto(): SubscriptionDto =
   SubscriptionDto(id, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
     genres, homepage, numberOfEpisodes, numberOfSeasons)

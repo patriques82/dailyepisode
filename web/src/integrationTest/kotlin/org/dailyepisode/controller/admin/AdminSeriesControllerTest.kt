@@ -20,7 +20,7 @@ class AdminSeriesControllerTest: AbstractControllerIntegrationTest() {
 
   @Test
   @WithMockUser(roles = arrayOf("USER"))
-  fun `user role should not have access to admin controller`() {
+  fun `user role access should return 403 Forbidden`() {
     mockMvc.perform(MockMvcRequestBuilders.get("/admin/series/changes")
       .with(csrf())
       .contentType(MediaType.APPLICATION_JSON))

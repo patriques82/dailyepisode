@@ -27,7 +27,7 @@ class AdminAccountController(private val accountService: AccountService) {
     AccountRegistrationRequest(username, email, password)
 
   @GetMapping
-  fun findAllAccounts(): ResponseEntity<List<AccountDto>> {
+  fun getAllAccounts(): ResponseEntity<List<AccountDto>> {
     val accounts = accountService.findAll().map { it.toDto()}
     return ResponseEntity(accounts, HttpStatus.OK)
   }
@@ -36,7 +36,7 @@ class AdminAccountController(private val accountService: AccountService) {
     AccountDto(id, username, email, notificationIntervalInDays)
 
   @GetMapping("/{accountId}")
-  fun findAccount(@PathVariable accountId: Long): ResponseEntity<AccountDto> {
+  fun getAccount(@PathVariable accountId: Long): ResponseEntity<AccountDto> {
     val account: Account? = accountService.findById(accountId)
     if (account == null) {
       return ResponseEntity(HttpStatus.NO_CONTENT)
