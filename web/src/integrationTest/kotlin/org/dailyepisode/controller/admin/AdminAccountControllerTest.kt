@@ -19,7 +19,7 @@ import java.util.*
 class AdminAccountControllerTest: AbstractControllerIntegrationTest() {
 
   @MockBean
-  lateinit var accountRepository: AccountRepository
+  private lateinit var accountRepository: AccountRepository
 
   @Test
   @WithMockUser(roles = arrayOf("USER"))

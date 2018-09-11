@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 class AccountController(private val accountService: AccountService,
                         private val accountResolver: AccountResolver) {
 
-  @GetMapping
+  @GetMapping("/me")
   fun getCurrentAccount(): ResponseEntity<AccountDto> {
     val account = accountResolver.resolve()
     return ResponseEntity(account.toDto(), HttpStatus.OK)

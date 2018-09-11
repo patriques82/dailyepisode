@@ -1,9 +1,6 @@
 package org.dailyepisode.controller
 
-import org.dailyepisode.account.AccountHasNoMatchingSubscriptionException
-import org.dailyepisode.account.EmailAlreadyInUseException
-import org.dailyepisode.account.InvalidAccountException
-import org.dailyepisode.account.NoAccountFoundException
+import org.dailyepisode.account.*
 import org.dailyepisode.series.RemoteIdNullPointerException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,6 +14,10 @@ class ErrorHandler {
   @ExceptionHandler(HttpMessageNotReadableException::class)
   fun jsonParseException(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto("json parse error"), HttpStatus.BAD_REQUEST)
+
+  @ExceptionHandler(ForbiddenAccessException::class)
+  fun forbiddenAccess(exception: Exception): ResponseEntity<ErrorDto> =
+    ResponseEntity(ErrorDto(exception.message!!), HttpStatus.FORBIDDEN)
 
   @ExceptionHandler(AccountHasNoMatchingSubscriptionException::class)
   fun accountHasNoMatchingSubscription(exception: Exception): ResponseEntity<ErrorDto> =
