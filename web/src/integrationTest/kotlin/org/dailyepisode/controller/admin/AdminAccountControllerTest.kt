@@ -1,20 +1,19 @@
 package org.dailyepisode.controller.admin
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.dailyepisode.account.*
+import org.dailyepisode.account.AccountEntity
+import org.dailyepisode.account.AccountRepository
+import org.dailyepisode.controller.AbstractControllerIntegratiionTest
 import org.dailyepisode.dto.AccountRegistrationRequestDto
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity
-import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -25,9 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import java.util.*
 
-@RunWith(SpringRunner::class)
-@SpringBootTest
-class AdminAccountControllerTest {
+class AdminAccountControllerTest: AbstractControllerIntegratiionTest() {
 
   @MockBean
   lateinit var accountRepository: AccountRepository
