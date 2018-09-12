@@ -2,4 +2,3 @@ allprojects {
     group = "org.dailyepisode"
     version = "1.0-SNAPSHOT"
 }
-

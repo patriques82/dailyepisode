@@ -1,4 +1,7 @@
 package org.dailyepisode.controller.user
 
-class SeriesControllerTest {
+import org.dailyepisode.controller.AbstractControllerIntegrationTest
+
+class SeriesControllerTest: AbstractControllerIntegrationTest() {
+
 }

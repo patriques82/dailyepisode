@@ -54,11 +54,6 @@ sourceSets {
     }
 }
 
-configurations {
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
-}
-
 task integrationTest(type: Test) {
     description = 'Runs the integration tests.'
     group = 'verification'
