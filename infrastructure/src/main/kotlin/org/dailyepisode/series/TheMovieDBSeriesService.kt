@@ -7,7 +7,8 @@ internal const val MAX_UPDATES_PAGES = 10
 
 @Service
 internal class TheMovieDBSeriesService(private val theMovieDBConnector: TheMovieDBConnector,
-                                       private val theMovieDBImageUrlExtendor: TheMovieDBImageUrlExtendor) : SeriesService {
+                                       private val theMovieDBImageUrlResolver: TheMovieDBImageUrlResolver)
+  : SeriesService {
 
   override fun search(seriesSearchRequest: SeriesSearchRequest): SeriesSearchResult {
     val searchResult = fetchSearchResultAllPages(seriesSearchRequest.query)
@@ -26,7 +27,7 @@ internal class TheMovieDBSeriesService(private val theMovieDBConnector: TheMovie
   }
 
   private fun TheMovieDBSeriesSearchInfo.toSeriesSearchInfo() =
-    SeriesSearchInfo(id, name, overview, theMovieDBImageUrlExtendor.extend(poster_path), vote_count, vote_average)
+    SeriesSearchInfo(id, name, overview, theMovieDBImageUrlResolver.resolveUrl(poster_path), vote_count, vote_average)
 
   override fun lookup(remoteId: Int): SeriesLookupResult? {
     val lookupResult = theMovieDBConnector.fetchLookupResult(remoteId)
@@ -35,7 +36,7 @@ internal class TheMovieDBSeriesService(private val theMovieDBConnector: TheMovie
 
   private fun TheMovieDBLookupResult.toSeriesLookupResult() =
     SeriesLookupResult(
-      id, name, overview, theMovieDBImageUrlExtendor.extend(poster_path), vote_count, vote_average, first_air_date,
+      id, name, overview, theMovieDBImageUrlResolver.resolveUrl(poster_path), vote_count, vote_average, first_air_date,
       last_air_date, genres.map { it.name }, homepage, number_of_episodes, number_of_seasons)
 
   override fun updatesSinceYesterday(): SeriesUpdateResult {

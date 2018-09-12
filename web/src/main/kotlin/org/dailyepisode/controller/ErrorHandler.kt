@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.client.HttpClientErrorException
 
 @ControllerAdvice
 class ErrorHandler {
@@ -14,6 +15,10 @@ class ErrorHandler {
   @ExceptionHandler(HttpMessageNotReadableException::class)
   fun jsonParseException(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto("json parse error"), HttpStatus.BAD_REQUEST)
+
+  @ExceptionHandler(HttpClientErrorException::class)
+  fun connectionException(exception: Exception): ResponseEntity<ErrorDto> =
+    ResponseEntity(ErrorDto("internal connection error"), HttpStatus.INTERNAL_SERVER_ERROR)
 
   @ExceptionHandler(ForbiddenAccessException::class)
   fun forbiddenAccess(exception: Exception): ResponseEntity<ErrorDto> =

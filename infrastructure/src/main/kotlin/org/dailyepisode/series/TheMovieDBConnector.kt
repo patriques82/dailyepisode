@@ -27,13 +27,16 @@ class TheMovieDBConnectorImpl(templateBuilder: RestTemplateBuilder,
 
   override fun fetchLookupResult(remoteId: Int): TheMovieDBLookupResult? {
     val resource = "/tv/$remoteId?api_key=$apiKey"
-    val lookupResult = try {
+    return try {
       restTemplate.getForEntity(resource, TheMovieDBLookupResult::class.java).body!!
-    } catch (ex: HttpClientErrorException) {
-      null
+    } catch(ex: HttpClientErrorException) {
+      if (isStatusCodeNotFound(ex)) null
+      else throw ex
     }
-    return lookupResult
   }
+
+  private fun isStatusCodeNotFound(ex: HttpClientErrorException)=
+    ex.statusCode.value() == 404
 
   override fun fetchUpdatesForPage(page: Int): TheMovieDBUpdateResult {
     val resource = "/tv/changes?api_key=$apiKey&page=$page"
@@ -41,16 +44,19 @@ class TheMovieDBConnectorImpl(templateBuilder: RestTemplateBuilder,
   }
 }
 
-interface TheMovieDBImageUrlExtendor {
-  fun extend(poster_path: String?): String?
+interface TheMovieDBImageUrlResolver {
+  fun resolveUrl(poster_path: String?): String?
 }
 
 @Component
-internal class TheMovieDBImageUrlExtendorImpl(private @Value("\${themoviedb.image_base_url}") val imageBaseUrl: String,
+internal class TheMovieDBImageUrlResolverImpl(private @Value("\${themoviedb.image_base_url}") val imageBaseUrl: String,
                                               private @Value("\${themoviedb.thumbnail_size}") val thumbnailSize: String)
-  : TheMovieDBImageUrlExtendor {
+  : TheMovieDBImageUrlResolver {
 
-  override fun extend(poster_path: String?): String? = "$imageBaseUrl/w$thumbnailSize$poster_path"
+  override fun resolveUrl(poster_path: String?): String? =
+    if (poster_path != null) {
+      "$imageBaseUrl/w$thumbnailSize$poster_path"
+    } else null
 }
 
 class TheMovieDBSeriesSearchResult(

@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component
 
 @Component
 internal class EmailNotificationSender(private val emailSender: JavaMailSender,
-                                       private @Value("\${notification.message.subject}") val messageSubject: String): NotificationSender {
+                                       private @Value("\${notification.message.subject}") val messageSubject: String)
+  : NotificationSender {
 
   private val logger = LoggerFactory.getLogger(EmailNotificationSender::class.java)
 
