@@ -32,11 +32,9 @@ internal class TheMovieDBSeriesService(private val theMovieDBConnector: TheMovie
     SeriesSearchInfo(id, name, overview, resolveImageUrl(poster_path), vote_count, vote_average)
 
   private fun resolveImageUrl(poster_path: String?): String? =
-    if (poster_path != null) {
-      "$imageBaseUrl/w$thumbnailSize/$poster_path"
-    } else null
+    if (poster_path != null) "$imageBaseUrl/w$thumbnailSize/$poster_path" else null
 
-  override fun lookup(remoteId: Int): SeriesLookupResult? {
+  override fun lookupByRemoteId(remoteId: Int): SeriesLookupResult? {
     val lookupResult = theMovieDBConnector.fetchLookupResult(remoteId)
     return lookupResult?.toSeriesLookupResult()
   }

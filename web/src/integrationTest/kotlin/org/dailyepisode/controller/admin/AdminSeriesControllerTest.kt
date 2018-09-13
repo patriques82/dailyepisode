@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class AdminSeriesControllerTest: AbstractControllerIntegrationTest() {
 
   @MockBean
-  private lateinit var seriesService: SeriesService
+  private lateinit var seriesService: SeriesService // TODO mock connector instead
 
   @Test
   @WithMockUser(roles = arrayOf("USER"))

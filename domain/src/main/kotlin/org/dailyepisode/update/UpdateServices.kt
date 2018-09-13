@@ -2,7 +2,7 @@ package org.dailyepisode.update
 
 import org.dailyepisode.account.Account
 import org.dailyepisode.series.SeriesLookupResult
-import org.dailyepisode.series.SeriesLookupService
+import org.dailyepisode.series.SeriesBatchService
 import org.dailyepisode.series.SeriesService
 import org.dailyepisode.subscription.Subscription
 
@@ -30,8 +30,8 @@ class UpdateLookupService(private val seriesService: SeriesService,
 
   fun lookup(): List<SeriesLookupResult> {
     val updatedSubscriptions = findAllUpdatedSubscriptions()
-    val seriesLookupService = SeriesLookupService(seriesService)
-    return seriesLookupService.lookup(updatedSubscriptions.map { it.remoteId })
+    val seriesLookupService = SeriesBatchService(seriesService)
+    return seriesLookupService.lookupByRemoteIds(updatedSubscriptions.map { it.remoteId })
   }
 
   private fun findAllUpdatedSubscriptions(): List<Subscription> {

@@ -27,7 +27,7 @@ class SeriesController(private val seriesService: SeriesService) {
 
   @GetMapping("/{remoteId}")
   fun lookup(@PathVariable remoteId: Int): ResponseEntity<SeriesLookupResultDto> {
-    val lookupResult = seriesService.lookup(remoteId)
+    val lookupResult = seriesService.lookupByRemoteId(remoteId)
     if (lookupResult == null) {
       return ResponseEntity(HttpStatus.NO_CONTENT)
     }

@@ -8,9 +8,8 @@ import org.mockito.BDDMockito.given
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.*
@@ -23,10 +22,10 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
   @Test
   @WithMockUser(roles = arrayOf("USER"))
   fun `user role access should return 403 Forbidden`() {
-    mockMvc.perform(MockMvcRequestBuilders.get("/admin/subscription")
-      .with(SecurityMockMvcRequestPostProcessors.csrf())
+    mockMvc.perform(get("/admin/subscription")
+      .with(csrf())
       .contentType(MediaType.APPLICATION_JSON))
-      .andExpect(MockMvcResultMatchers.status().isForbidden)
+      .andExpect(status().isForbidden)
   }
 
   @Test
@@ -69,8 +68,8 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
        "numberOfSeasons":6}
       ]""".trimIndent()
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/admin/subscription")
-      .with(SecurityMockMvcRequestPostProcessors.csrf())
+    mockMvc.perform(get("/admin/subscription")
+      .with(csrf())
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(expectedJson, true))
@@ -100,8 +99,8 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
        "numberOfSeasons":6}
       """.trimIndent()
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/admin/subscription/1")
-      .with(SecurityMockMvcRequestPostProcessors.csrf())
+    mockMvc.perform(get("/admin/subscription/1")
+      .with(csrf())
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(expectedJson, true))
@@ -112,8 +111,8 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
   fun `get subscription with non-existing id should return 204 No Content`() {
     given(subscriptionRepository.findById(1)).willReturn(Optional.empty())
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/admin/subscription/1")
-      .with(SecurityMockMvcRequestPostProcessors.csrf())
+    mockMvc.perform(get("/admin/subscription/1")
+      .with(csrf())
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isNoContent)
   }

@@ -7,6 +7,7 @@ import org.dailyepisode.dto.AccountRegistrationRequestDto
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Bean
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
@@ -20,6 +21,9 @@ class AdminAccountControllerTest: AbstractControllerIntegrationTest() {
 
   @MockBean
   private lateinit var accountRepository: AccountRepository
+
+  @Bean
+
 
   @Test
   @WithMockUser(roles = arrayOf("USER"))
@@ -60,6 +64,7 @@ class AdminAccountControllerTest: AbstractControllerIntegrationTest() {
       .contentType(MediaType.APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(accountRegistrationRequestDto)))
       .andExpect(status().isCreated)
+
   }
 
   @Test

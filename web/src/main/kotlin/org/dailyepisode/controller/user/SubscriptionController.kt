@@ -22,7 +22,7 @@ class SubscriptionController(private val subscriptionService: SubscriptionServic
       subscriptionService.createSubscription(subscriptionRequestDto.remoteIds, account.id)
       ResponseEntity(HttpStatus.CREATED)
     } else {
-      ResponseEntity(HttpStatus.NO_CONTENT)
+      ResponseEntity(HttpStatus.BAD_REQUEST)
     }
   }
 

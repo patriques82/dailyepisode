@@ -5,7 +5,7 @@ import org.dailyepisode.account.AccountHasNoMatchingSubscriptionException
 import org.dailyepisode.account.AccountRepository
 import org.dailyepisode.account.NoAccountFoundException
 import org.dailyepisode.series.SeriesLookupResult
-import org.dailyepisode.series.SeriesLookupService
+import org.dailyepisode.series.SeriesBatchService
 import org.dailyepisode.series.SeriesService
 import org.springframework.stereotype.Service
 
@@ -19,20 +19,16 @@ internal class SubscriptionServiceImpl(private val subscriptionRepository: Subsc
     if (accountEntity == null) {
       throw NoAccountFoundException("No account found for id")
     }
-    val subscriptions = getStoredAndCreatedSubscriptions(remoteIds)
-    accountEntity.subscriptions += subscriptions.map { it.toEntity() }
+    val (notStoredIds, storedSubscriptions) = SubscriptionBatchService(this).findByRemoteIds(remoteIds)
+    accountEntity.subscriptions += storedSubscriptions.map { it.toEntity() }
+    val seriesLookups= SeriesBatchService(seriesService).lookupByRemoteIds(notStoredIds)
+    accountEntity.subscriptions += seriesLookups.map { it.toSubscriptionEntity() }
     accountRepository.save(accountEntity)
   }
 
-  private fun getStoredAndCreatedSubscriptions(remoteIds: List<Int>): List<Subscription> {
-    val (notStoredIds, storedSubscriptions) = SubscriptionLoadService(this).load(remoteIds)
-    val seriesLookups = SeriesLookupService(seriesService).lookup(notStoredIds)
-    return storedSubscriptions + seriesLookups.map { it.toSubscription() }
-  }
-
-  private fun SeriesLookupResult.toSubscription(): Subscription =
-    Subscription(null, remoteId, name, overview, imageUrl, voteCount, voteAverage,
-      firstAirDate, lastAirDate, genres, homepage, numberOfEpisodes, numberOfSeasons)
+  private fun SeriesLookupResult.toSubscriptionEntity(): SubscriptionEntity =
+    SubscriptionEntity(null, remoteId, name, overview, imageUrl, voteCount, voteAverage,
+      firstAirDate, lastAirDate, genres, homepage, numberOfEpisodes, numberOfSeasons, emptyList())
 
   private fun Subscription.toEntity(): SubscriptionEntity =
     SubscriptionEntity(id, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
@@ -53,9 +49,10 @@ internal class SubscriptionServiceImpl(private val subscriptionRepository: Subsc
       ?.toSubscription()
 
   override fun deleteSubscription(subscriptionId: Long, accountId: Long) {
-    val accountEntity: AccountEntity =
-      accountRepository.findById(accountId).orElse(null)
-        ?: throw NoAccountFoundException("No account found for id")
+    val accountEntity: AccountEntity? = accountRepository.findById(accountId).orElse(null)
+    if (accountEntity == null) {
+      throw NoAccountFoundException("No account found for id")
+    }
     if (!accountEntity.subscribesTo(subscriptionId)) {
       throw AccountHasNoMatchingSubscriptionException("Account has no matching subscription with id")
     }

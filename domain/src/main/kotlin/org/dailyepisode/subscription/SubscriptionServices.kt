@@ -29,9 +29,9 @@ data class Subscription(
 
 typealias PartialSubscriptionResult = Pair<List<Int>, List<Subscription>>
 
-class SubscriptionLoadService(val subscriptionService: SubscriptionService) {
+class SubscriptionBatchService(val subscriptionService: SubscriptionService) {
 
-  fun load(remoteIds: List<Int>): PartialSubscriptionResult {
+  fun findByRemoteIds(remoteIds: List<Int>): PartialSubscriptionResult {
     val notFound = mutableListOf<Int>()
     val storedSubscriptions = mutableListOf<Subscription>()
     remoteIds.forEach {
