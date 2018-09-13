@@ -40,7 +40,7 @@ class AdminSeriesControllerTest: AbstractControllerIntegrationTest() {
       .with(csrf())
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
-      .andExpect(content().json(expectedJson))
+      .andExpect(content().json(expectedJson, true))
   }
 }
 

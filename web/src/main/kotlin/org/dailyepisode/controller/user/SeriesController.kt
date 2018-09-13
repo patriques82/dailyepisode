@@ -15,12 +15,13 @@ class SeriesController(private val seriesService: SeriesService) {
 
   @GetMapping("/search")
   fun search(@RequestParam("query") query: String?): ResponseEntity<SeriesSearchResultDto> {
-    val searchResult = if(query != null) {
-      val seriesResult = seriesService.search(SeriesSearchRequest(query))
-      SeriesSearchResultDto(seriesResult.results.map { it.toDto() })
-    } else {
-      SeriesSearchResultDto(listOf())
-    }
+    val searchResult =
+      if (query != null) {
+        val seriesResult = seriesService.search(SeriesSearchRequest(query))
+        SeriesSearchResultDto(seriesResult.results.map { it.toDto() })
+      } else {
+        SeriesSearchResultDto(listOf())
+      }
     return ResponseEntity(searchResult, HttpStatus.OK)
   }
 
@@ -28,7 +29,7 @@ class SeriesController(private val seriesService: SeriesService) {
   fun lookup(@PathVariable remoteId: Int): ResponseEntity<SeriesLookupResultDto> {
     val lookupResult = seriesService.lookup(remoteId)
     if (lookupResult == null) {
-      return ResponseEntity(HttpStatus.NOT_FOUND)
+      return ResponseEntity(HttpStatus.NO_CONTENT)
     }
     return ResponseEntity(lookupResult.toDto(), HttpStatus.OK)
   }

@@ -59,7 +59,7 @@ class AdminAccountControllerTest: AbstractControllerIntegrationTest() {
       .with(csrf())
       .contentType(MediaType.APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(accountRegistrationRequestDto)))
-      .andExpect(status().isBadRequest)
+      .andExpect(status().isCreated)
   }
 
   @Test
@@ -78,7 +78,7 @@ class AdminAccountControllerTest: AbstractControllerIntegrationTest() {
       .with(csrf())
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
-      .andExpect(content().json(expectedJson))
+      .andExpect(content().json(expectedJson, true))
   }
 
   @Test
@@ -95,7 +95,7 @@ class AdminAccountControllerTest: AbstractControllerIntegrationTest() {
       .with(csrf())
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
-      .andExpect(content().json(expectedJson))
+      .andExpect(content().json(expectedJson, true))
   }
 
   @Test

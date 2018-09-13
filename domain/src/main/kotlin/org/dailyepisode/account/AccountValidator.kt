@@ -52,7 +52,7 @@ object AccountValidator {
     if (username == null) {
       throw InvalidAccountException("No user name received")
     } else {
-      if (username.matches(VALID_USERNAME_PATTERN)) {
+      if (!username.matches(VALID_USERNAME_PATTERN)) {
         throw InvalidAccountException("""Invalid username
         - Between 3 to 15 characters
         - Contains any lower case character, digit or special symbol “_-” only

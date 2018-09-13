@@ -44,7 +44,7 @@ class WebSecurityConfigurationImpl(private val userDetailsService: UserDetailsSe
         .headers().frameOptions().sameOrigin() // to enable h2-console
         .and()
       .authorizeRequests()
-        .antMatchers("/api/search").permitAll()
+        .antMatchers("/api/series/**").permitAll()
         .antMatchers("/api/**").hasAnyRole("USER", "ADMIN")
         .antMatchers("/admin/**").hasRole("ADMIN")
         .antMatchers("/resources/**").permitAll()

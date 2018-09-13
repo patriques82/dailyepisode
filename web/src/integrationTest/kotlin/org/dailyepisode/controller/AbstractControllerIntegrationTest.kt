@@ -23,6 +23,8 @@ abstract class AbstractControllerIntegrationTest {
 
   protected lateinit var mockMvc: MockMvc
 
+  protected val isStrict = true
+
   @Before
   fun setUp() {
     mockMvc = MockMvcBuilders

@@ -41,7 +41,8 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
     given(subscriptionRepository.findAll()).willReturn(listOf(gameOfThrones, breakingBad))
 
     val expectedJson = """[
-      {"remoteId":1,
+      {"id": 1,
+       "remoteId":1,
        "name":"game of thrones",
        "overview":"Winter is coming...",
        "imageUrl":"image",
@@ -53,7 +54,8 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
        "homepage":"www.got.com",
        "numberOfEpisodes":72,
        "numberOfSeasons":8},
-      {"remoteId":2,
+      {"id": 2,
+       "remoteId":2,
        "name":"breaking bad",
        "overview":"Meth dealing tutorial",
        "imageUrl":"image",
@@ -71,7 +73,7 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
       .with(SecurityMockMvcRequestPostProcessors.csrf())
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
-      .andExpect(content().json(expectedJson))
+      .andExpect(content().json(expectedJson, true))
   }
 
   @Test
@@ -83,7 +85,8 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
     given(subscriptionRepository.findById(1)).willReturn(Optional.of(breakingBad))
 
     val expectedJson = """
-      {"remoteId":2,
+      {"id": 1,
+       "remoteId":2,
        "name":"breaking bad",
        "overview":"Meth dealing tutorial",
        "imageUrl":"image",
@@ -101,7 +104,7 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
       .with(SecurityMockMvcRequestPostProcessors.csrf())
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
-      .andExpect(content().json(expectedJson))
+      .andExpect(content().json(expectedJson, true))
   }
 
   @Test

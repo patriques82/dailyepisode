@@ -44,21 +44,6 @@ class TheMovieDBConnectorImpl(templateBuilder: RestTemplateBuilder,
   }
 }
 
-interface TheMovieDBImageUrlResolver {
-  fun resolveUrl(poster_path: String?): String?
-}
-
-@Component
-internal class TheMovieDBImageUrlResolverImpl(private @Value("\${themoviedb.image_base_url}") val imageBaseUrl: String,
-                                              private @Value("\${themoviedb.thumbnail_size}") val thumbnailSize: String)
-  : TheMovieDBImageUrlResolver {
-
-  override fun resolveUrl(poster_path: String?): String? =
-    if (poster_path != null) {
-      "$imageBaseUrl/w$thumbnailSize$poster_path"
-    } else null
-}
-
 class TheMovieDBSeriesSearchResult(
   val results: List<TheMovieDBSeriesSearchInfo>,
   val page: Int,
