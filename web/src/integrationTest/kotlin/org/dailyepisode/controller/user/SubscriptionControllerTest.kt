@@ -44,12 +44,13 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
 
   @Test
   fun `create subscription with valid subscription data should return 201 Created`() {
+    val genres = listOf(TheMovieDbGenre("Comedy"), TheMovieDbGenre("Sci-fi"))
     val rickAndMorty = TheMovieDBLookupResult(4, "rick and morty", "space explorers", "image",
-      6, 7.5, "2009-05-18", "2017-02-29", listOf(TheMovieDbGenre("Comedy"), TheMovieDbGenre("Sci-fi")),
+      6, 7.5, "2009-05-18", "2017-02-29", genres,
       "www.rickandmorty.com", 60, 5)
     given(theMovieDBConnector.fetchLookupResult(4)).willReturn(rickAndMorty)
-
     val subscriptionRequestDto = SubscriptionRequestDto(listOf(1, 2, 4)) // game of thrones, breaking bad, rick and morty
+
     mockMvc.perform(post("/api/subscription")
       .with(csrf())
       .with(httpBasic("alexia", "aixela"))
@@ -57,8 +58,8 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
       .content(objectMapper.writeValueAsString(subscriptionRequestDto)))
       .andExpect(status().isCreated)
 
-    val alexia = accountService.findByUserName("alexia")
-    val subscriptions = alexia!!.subscriptions
+    val alexia = accountService.findByUserName("alexia")!!
+    val subscriptions = alexia.subscriptions
     assertThat(subscriptions.size).isEqualTo(3)
     assertThat(subscriptions[0].name).isEqualTo("game of thrones")
     assertThat(subscriptions[1].name).isEqualTo("breaking bad")
@@ -115,15 +116,17 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
 
   @Test
   fun `remove subscription with existing account subscription id should return 200 Ok`() {
-    val lineOfDuty = subscriptionService.findByRemoteId(3)
+    val lineOfDuty = subscriptionService.findByRemoteId(3)!!
     val kristofferBefore = accountService.findByUserName("kristoffer")!!
 
     assertThat(kristofferBefore.subscriptions.size).isEqualTo(2)
-    mockMvc.perform(delete("/api/subscription/${lineOfDuty?.id}")
+
+    mockMvc.perform(delete("/api/subscription/${lineOfDuty.id}")
       .with(csrf())
       .with(httpBasic("kristoffer", "reffotsirk"))
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
+
     val kristofferAfter = accountService.findByUserName("kristoffer")!!
     assertThat(kristofferAfter.subscriptions.size).isEqualTo(1)
   }

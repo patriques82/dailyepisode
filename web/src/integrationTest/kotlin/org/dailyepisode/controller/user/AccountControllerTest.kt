@@ -60,12 +60,14 @@ class AccountControllerTest: AbstractControllerIntegrationTest() {
 
     val kristofferBefore= accountService.findByUserName("kristoffer")!!
     assertThat(kristofferBefore.notificationIntervalInDays).isEqualTo(30)
+
     mockMvc.perform(put("/api/user/preferences")
       .with(csrf())
       .with(httpBasic("kristoffer", "reffotsirk"))
       .contentType(MediaType.APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(preferencesRequestDto)))
       .andExpect(status().isCreated)
+
     val kristofferAfter = accountService.findByUserName("kristoffer")!!
     assertThat(kristofferAfter.notificationIntervalInDays).isEqualTo(3)
   }

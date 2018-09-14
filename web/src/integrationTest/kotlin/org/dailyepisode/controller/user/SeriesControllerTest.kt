@@ -33,9 +33,23 @@ class SeriesControllerTest: AbstractControllerIntegrationTest() {
 
     val expectedJson = """
       {"results": [
-        {"remoteId":1,"name":"game of thrones","overview":"Seven noble families fight","imageUrl":"http://image.tmdb.org/t/p/w92/thrones","voteCount":10,"voteAverage":9.2},
-        {"remoteId":1,"name":"game shakers","overview":"12-year-old girls are incredible","imageUrl":"http://image.tmdb.org/t/p/w92/shakers","voteCount":22,"voteAverage":9.3},
-        {"remoteId":1,"name":"joker game","overview":"mysterious spy training organization","imageUrl":"http://image.tmdb.org/t/p/w92/joker","voteCount":5,"voteAverage":8.5}
+        {"remoteId":1,
+         "name":"game of thrones",
+         "overview":"Seven noble families fight",
+         "imageUrl":"http://image.tmdb.org/t/p/w92/thrones",
+         "voteCount":10,"voteAverage":9.2},
+        {"remoteId":1,
+         "name":"game shakers",
+         "overview":"12-year-old girls are incredible",
+         "imageUrl":"http://image.tmdb.org/t/p/w92/shakers",
+         "voteCount":22,
+         "voteAverage":9.3},
+        {"remoteId":1,
+         "name":"joker game",
+         "overview":"mysterious spy training organization",
+         "imageUrl":"http://image.tmdb.org/t/p/w92/joker",
+         "voteCount":5,
+         "voteAverage":8.5}
       ]}
     """.trimIndent()
 

@@ -49,6 +49,7 @@ class AdminAccountControllerTest : AbstractControllerIntegrationTest() {
   @Test
   fun `register with invalid account should return 400 Bad Request`() {
     val accountRegistrationRequestDto = AccountRegistrationRequestDto("INVALID_USERNAME", "INVALID_EMAIL", "INVALID_PASSWORD", 1)
+
     mockMvc.perform(post("/admin/user")
       .with(csrf())
       .with(httpBasic("patrik", "kirtap"))
@@ -63,6 +64,7 @@ class AdminAccountControllerTest : AbstractControllerIntegrationTest() {
   @Test
   fun `register with valid account should return 201 Created`() {
     val accountRegistrationRequestDto = AccountRegistrationRequestDto("user", "user@email.com", "P@ssw0rd", 1)
+
     mockMvc.perform(post("/admin/user")
       .with(csrf())
       .with(httpBasic("patrik", "kirtap"))
@@ -92,15 +94,13 @@ class AdminAccountControllerTest : AbstractControllerIntegrationTest() {
 
   @Test
   fun `get account with existing account id should return account and 200 Ok`() {
-    val kristoffer = accountService.findByUserName("kristoffer")
-
-    assertThat(kristoffer).isNotNull()
+    val kristoffer = accountService.findByUserName("kristoffer")!!
 
     val expectedJson = """
       {"username":"kristoffer","email":"kristoffer@gmail.com","notificationIntervalInDays":30},
     """.trimIndent()
 
-    mockMvc.perform(get("/admin/user/${kristoffer!!.id}")
+    mockMvc.perform(get("/admin/user/${kristoffer.id}")
       .with(csrf())
       .with(httpBasic("patrik", "kirtap"))
       .contentType(MediaType.APPLICATION_JSON))
