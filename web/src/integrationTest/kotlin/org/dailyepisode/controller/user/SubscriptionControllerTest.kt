@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -31,17 +33,16 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
   private lateinit var subscriptionService: SubscriptionService
 
   @Test
-  @WithMockUser(username = "alexia")
   fun `create subscription with invalid subscription data should return 400 Bad Request`() {
     mockMvc.perform(post("/api/subscription")
       .with(csrf())
+      .with(httpBasic("alexia", "aixela"))
       .contentType(MediaType.APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(null)))
       .andExpect(status().isBadRequest)
   }
 
   @Test
-  @WithMockUser(username = "alexia")
   fun `create subscription with valid subscription data should return 201 Created`() {
     val rickAndMorty = TheMovieDBLookupResult(4, "rick and morty", "space explorers", "image",
       6, 7.5, "2009-05-18", "2017-02-29", listOf(TheMovieDbGenre("Comedy"), TheMovieDbGenre("Sci-fi")),
@@ -51,12 +52,12 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
     val subscriptionRequestDto = SubscriptionRequestDto(listOf(1, 2, 4)) // game of thrones, breaking bad, rick and morty
     mockMvc.perform(post("/api/subscription")
       .with(csrf())
+      .with(httpBasic("alexia", "aixela"))
       .contentType(MediaType.APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(subscriptionRequestDto)))
       .andExpect(status().isCreated)
 
     val alexia = accountService.findByUserName("alexia")
-    assertThat(alexia).isNotNull
     val subscriptions = alexia!!.subscriptions
     assertThat(subscriptions.size).isEqualTo(3)
     assertThat(subscriptions[0].name).isEqualTo("game of thrones")
@@ -65,7 +66,6 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
   }
 
   @Test
-  @WithMockUser(username = "kristoffer")
   fun `get subscriptions should return account subscriptions and 200 Ok`() {
     val expectedJson = """
       [{"id":5,
@@ -98,29 +98,33 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
 
     mockMvc.perform(get("/api/subscription")
       .with(csrf())
+      .with(httpBasic("kristoffer", "reffotsirk"))
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(expectedJson, true))
-      .andReturn()
   }
 
   @Test
-  @WithMockUser(username = "alexia")
   fun `remove subscription with non-existing account subscription id should return 409 Conflict`() {
     mockMvc.perform(delete("/api/subscription/1")
       .with(csrf())
+      .with(httpBasic("alexia", "aixela"))
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isConflict)
   }
 
   @Test
-  @WithMockUser(username = "kristoffer")
   fun `remove subscription with existing account subscription id should return 200 Ok`() {
     val lineOfDuty = subscriptionService.findByRemoteId(3)
+    val kristofferBefore = accountService.findByUserName("kristoffer")!!
 
+    assertThat(kristofferBefore.subscriptions.size).isEqualTo(2)
     mockMvc.perform(delete("/api/subscription/${lineOfDuty?.id}")
       .with(csrf())
+      .with(httpBasic("kristoffer", "reffotsirk"))
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
+    val kristofferAfter = accountService.findByUserName("kristoffer")!!
+    assertThat(kristofferAfter.subscriptions.size).isEqualTo(1)
   }
 }

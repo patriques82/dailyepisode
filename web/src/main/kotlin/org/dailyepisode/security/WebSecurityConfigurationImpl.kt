@@ -93,7 +93,7 @@ internal class AuthenticationEntryPointImpl: AuthenticationEntryPoint {
   override fun commence(request: HttpServletRequest?,
                         response: HttpServletResponse?,
                         authException: AuthenticationException?) {
-    response?.status = HttpServletResponse.SC_UNAUTHORIZED
+    response?.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
   }
 
 }

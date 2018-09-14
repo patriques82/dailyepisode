@@ -1,15 +1,14 @@
 package org.dailyepisode.controller.user
 
-import org.dailyepisode.account.AccountEntity
-import org.dailyepisode.account.AccountRepository
+import org.assertj.core.api.Assertions.assertThat
+import org.dailyepisode.account.AccountService
 import org.dailyepisode.controller.AbstractControllerIntegrationTest
 import org.dailyepisode.dto.SubscriptionPreferencesRequestDto
 import org.junit.Test
-import org.mockito.BDDMockito.given
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
@@ -17,62 +16,58 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class AccountControllerTest: AbstractControllerIntegrationTest() {
 
-  @MockBean
-  private lateinit var accountRepository: AccountRepository
-
-  private val account = AccountEntity(1, "tester", "email", "pass", 1)
+  @Autowired
+  private lateinit var accountService: AccountService
 
   @Test
-  @WithMockUser
-  fun `unknown user access should return 403 Forbidden`() {
+  fun `no user authentication access should return 401 Unauthorized`() {
     mockMvc.perform(get("/api/user/me")
       .with(csrf())
+      .with(httpBasic("unknown", "unknown"))
       .contentType(MediaType.APPLICATION_JSON))
-      .andExpect(status().isForbidden)
+      .andExpect(status().isUnauthorized)
   }
 
   @Test
-  @WithMockUser(username = "tester", roles = arrayOf("USER"))
   fun `get current account with valid user account should return user details and 200 Ok`() {
-    given(accountRepository.findByUsername("tester")).willReturn(account)
-
     val expectedJson = """
-      {"id":1,"username":"tester","email":"email","notificationIntervalInDays":1}
+      {"username":"alexia","email":"alexia@gmail.com","notificationIntervalInDays":10}
     """.trimIndent()
 
     mockMvc.perform(get("/api/user/me")
       .with(csrf())
+      .with(httpBasic("alexia", "aixela"))
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
-      .andExpect(content().json(expectedJson, true))
+      .andExpect(content().json(expectedJson))
   }
 
   @Test
-  @WithMockUser(username = "tester", roles = arrayOf("USER"))
   fun `update preferences with invalid data should return 400 Bad Request`() {
-    given(accountRepository.findByUsername("tester")).willReturn(account)
-
     val invalidPreferencesRequestDto = SubscriptionPreferencesRequestDto(notificationIntervalInDays = -1)
 
     mockMvc.perform(put("/api/user/preferences")
       .with(csrf())
+      .with(httpBasic("alexia", "aixela"))
       .contentType(MediaType.APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(invalidPreferencesRequestDto)))
       .andExpect(status().isBadRequest)
   }
 
   @Test
-  @WithMockUser(username = "tester", roles = arrayOf("USER"))
   fun `update preferences with valid data should return 201 Created`() {
-    given(accountRepository.findByUsername("tester")).willReturn(account)
-
     val preferencesRequestDto = SubscriptionPreferencesRequestDto(notificationIntervalInDays = 3)
 
+    val kristofferBefore= accountService.findByUserName("kristoffer")!!
+    assertThat(kristofferBefore.notificationIntervalInDays).isEqualTo(30)
     mockMvc.perform(put("/api/user/preferences")
       .with(csrf())
+      .with(httpBasic("kristoffer", "reffotsirk"))
       .contentType(MediaType.APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(preferencesRequestDto)))
       .andExpect(status().isCreated)
+    val kristofferAfter = accountService.findByUserName("kristoffer")!!
+    assertThat(kristofferAfter.notificationIntervalInDays).isEqualTo(3)
   }
 
 }

@@ -21,7 +21,6 @@ class SeriesControllerTest: AbstractControllerIntegrationTest() {
   private lateinit var theMovieDBConnector: TheMovieDBConnector
 
   @Test
-  @WithMockUser
   fun `search should return series search result and 200 Ok`() {
     val gameOfThrones = TheMovieDBSeriesSearchInfo(1, "game of thrones", "Seven noble families fight", "thrones", 10, 9.2)
     val gameShakers = TheMovieDBSeriesSearchInfo(1, "game shakers", "12-year-old girls are incredible", "shakers", 22, 9.3)
@@ -48,7 +47,6 @@ class SeriesControllerTest: AbstractControllerIntegrationTest() {
   }
 
   @Test
-  @WithMockUser
   fun `lookup with existing remote id should return series and 200 Ok`() {
     val lookupResult = TheMovieDBLookupResult(1, "game of thrones", "Seven noble families fight", "thrones", 10, 9.2,
       "2011-01-01", "2018-03-03", listOf(TheMovieDbGenre("drama"), TheMovieDbGenre("fantasy")), "www.got.com", 77, 8)
@@ -77,7 +75,6 @@ class SeriesControllerTest: AbstractControllerIntegrationTest() {
   }
 
   @Test
-  @WithMockUser
   fun `lookup with non-existing remote id should return 204 No Content`() {
     given(theMovieDBConnector.fetchLookupResult(1)).willReturn(null)
 

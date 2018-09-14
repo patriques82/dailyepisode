@@ -1,47 +1,35 @@
 package org.dailyepisode.controller.admin
 
 import org.dailyepisode.controller.AbstractControllerIntegrationTest
-import org.dailyepisode.subscription.SubscriptionEntity
-import org.dailyepisode.subscription.SubscriptionRepository
+import org.dailyepisode.subscription.SubscriptionService
 import org.junit.Test
-import org.mockito.BDDMockito.given
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.util.*
 
 class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
 
-  @MockBean
-  private lateinit var subscriptionRepository: SubscriptionRepository
+  @Autowired
+  private lateinit var subscriptionService: SubscriptionService
 
   @Test
-  @WithMockUser(roles = arrayOf("USER"))
-  fun `user role access should return 403 Forbidden`() {
+  fun `user role access for user without admin privileges should return 403 Forbidden`() {
     mockMvc.perform(get("/admin/subscription")
       .with(csrf())
+      .with(httpBasic("kristoffer","reffotsirk"))
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isForbidden)
   }
 
   @Test
-  @WithMockUser(roles = arrayOf("ADMIN"))
   fun `get all subscriptions should return all subscriptions and 200 Ok`() {
-    val gameOfThrones = SubscriptionEntity(1, 1, "game of thrones", "Winter is coming...", "image",
-      10, 8.6, "2013-05-15", "2018-05-16", listOf("Fantasy", "Drama"),
-      "www.got.com", 72, 8, emptyList())
-    val breakingBad = SubscriptionEntity(2, 2, "breaking bad", "Meth dealing tutorial", "image", 29,
-      9.1, "2010-01-01", "2014-06-01", listOf("Thriller", "Crime", "Drama"),
-      "www.breakingbad.com", 55, 6, emptyList())
-    given(subscriptionRepository.findAll()).willReturn(listOf(gameOfThrones, breakingBad))
-
     val expectedJson = """[
-      {"id": 1,
-       "remoteId":1,
+      {"remoteId":1,
        "name":"game of thrones",
        "overview":"Winter is coming...",
        "imageUrl":"image",
@@ -53,8 +41,7 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
        "homepage":"www.got.com",
        "numberOfEpisodes":72,
        "numberOfSeasons":8},
-      {"id": 2,
-       "remoteId":2,
+      {"remoteId":2,
        "name":"breaking bad",
        "overview":"Meth dealing tutorial",
        "imageUrl":"image",
@@ -65,54 +52,61 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
        "genres":["Thriller","Crime","Drama"],
        "homepage":"www.breakingbad.com",
        "numberOfEpisodes":55,
-       "numberOfSeasons":6}
+       "numberOfSeasons":6},
+      {"remoteId":3,
+       "name":"line of duty",
+       "overview":"Corrupt police investigations",
+       "imageUrl":"image",
+       "voteCount":6,
+       "voteAverage":7.5,
+       "firstAirDate":"2009-05-18",
+       "lastAirDate":"2017-02-29",
+       "genres":["Thriller","Crime","Drama"],
+       "homepage":"www.lineofduty.com",
+       "numberOfEpisodes":48,
+       "numberOfSeasons":5}
       ]""".trimIndent()
 
     mockMvc.perform(get("/admin/subscription")
       .with(csrf())
+      .with(httpBasic("patrik","kirtap"))
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
-      .andExpect(content().json(expectedJson, true))
+      .andExpect(content().json(expectedJson))
   }
 
   @Test
-  @WithMockUser(roles = arrayOf("ADMIN"))
   fun `get subscription with existing id should return subscription and 200 Ok`() {
-    val breakingBad = SubscriptionEntity(1, 2, "breaking bad", "Meth dealing tutorial", "image", 29,
-      9.1, "2010-01-01", "2014-06-01", listOf("Thriller", "Crime", "Drama"),
-      "www.breakingbad.com", 55, 6, emptyList())
-    given(subscriptionRepository.findById(1)).willReturn(Optional.of(breakingBad))
+    val gameOfThrones = subscriptionService.findByRemoteId(1)!!
 
     val expectedJson = """
-      {"id": 1,
-       "remoteId":2,
-       "name":"breaking bad",
-       "overview":"Meth dealing tutorial",
+      {"remoteId":1,
+       "name":"game of thrones",
+       "overview":"Winter is coming...",
        "imageUrl":"image",
-       "voteCount":29,
-       "voteAverage":9.1,
-       "firstAirDate":"2010-01-01",
-       "lastAirDate":"2014-06-01",
-       "genres":["Thriller","Crime","Drama"],
-       "homepage":"www.breakingbad.com",
-       "numberOfEpisodes":55,
-       "numberOfSeasons":6}
+       "voteCount":10,
+       "voteAverage":8.6,
+       "firstAirDate":"2013-05-15",
+       "lastAirDate":"2018-05-16",
+       "genres":["Fantasy","Drama"],
+       "homepage":"www.got.com",
+       "numberOfEpisodes":72,
+       "numberOfSeasons":8}
       """.trimIndent()
 
-    mockMvc.perform(get("/admin/subscription/1")
+    mockMvc.perform(get("/admin/subscription/${gameOfThrones.id}")
       .with(csrf())
+      .with(httpBasic("patrik","kirtap"))
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
-      .andExpect(content().json(expectedJson, true))
+      .andExpect(content().json(expectedJson))
   }
 
   @Test
-  @WithMockUser(roles = arrayOf("ADMIN"))
   fun `get subscription with non-existing id should return 204 No Content`() {
-    given(subscriptionRepository.findById(1)).willReturn(Optional.empty())
-
-    mockMvc.perform(get("/admin/subscription/1")
+    mockMvc.perform(get("/admin/subscription/666")
       .with(csrf())
+      .with(httpBasic("patrik","kirtap"))
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isNoContent)
   }
