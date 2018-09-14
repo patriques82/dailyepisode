@@ -68,11 +68,10 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
 
   @Test
   fun `get subscriptions should return account subscriptions and 200 Ok`() {
-    val expectedJson = """
-      [{"id":5,
-        "remoteId":3,
+    val expectedJson = """[
+      {"remoteId":3,
         "name":"line of duty",
-        "overview":"corrupt police",
+        "overview":"Corrupt police investigations",
         "imageUrl":"image",
         "voteCount":6,
         "voteAverage":7.5,
@@ -82,10 +81,9 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
         "homepage":"www.lineofduty.com",
         "numberOfEpisodes":48,
         "numberOfSeasons":5},
-       {"id":8,
-        "remoteId":1,
+       {"remoteId":1,
         "name":"game of thrones",
-        "overview":"winter is coming",
+        "overview":"Winter is coming...",
         "imageUrl":"image",
         "voteCount":10,
         "voteAverage":8.6,
@@ -94,7 +92,8 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
         "genres":["Fantasy","Drama"],
         "homepage":"www.got.com",
         "numberOfEpisodes":72,
-        "numberOfSeasons":8}]
+        "numberOfSeasons":8}
+      ]
     """.trimIndent()
 
     mockMvc.perform(get("/api/subscription")
@@ -102,7 +101,7 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
       .with(httpBasic("kristoffer", "reffotsirk"))
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
-      .andExpect(content().json(expectedJson, true))
+      .andExpect(content().json(expectedJson))
   }
 
   @Test

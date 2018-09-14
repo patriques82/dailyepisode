@@ -1,8 +1,5 @@
 package org.dailyepisode.subscription
 
-import org.dailyepisode.series.SeriesLookupResult
-import org.dailyepisode.series.SeriesService
-
 interface SubscriptionService {
   fun createSubscription(remoteIds: List<Int>, accountId: Long)
   fun findAll(): List<Subscription>

@@ -4,20 +4,20 @@ import org.dailyepisode.dto.SeriesLookupResultDto
 import org.dailyepisode.dto.SeriesSearchResultDto
 import org.dailyepisode.dto.toDto
 import org.dailyepisode.series.SeriesSearchRequest
-import org.dailyepisode.series.SeriesService
+import org.dailyepisode.series.RemoteSeriesServiceFacade
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/series")
-class SeriesController(private val seriesService: SeriesService) {
+class SeriesController(private val remoteSeriesServiceFacade: RemoteSeriesServiceFacade) {
 
   @GetMapping("/search")
   fun search(@RequestParam("query") query: String?): ResponseEntity<SeriesSearchResultDto> {
     val searchResult =
       if (query != null) {
-        val seriesResult = seriesService.search(SeriesSearchRequest(query))
+        val seriesResult = remoteSeriesServiceFacade.search(SeriesSearchRequest(query))
         SeriesSearchResultDto(seriesResult.results.map { it.toDto() })
       } else {
         SeriesSearchResultDto(listOf())
@@ -27,7 +27,7 @@ class SeriesController(private val seriesService: SeriesService) {
 
   @GetMapping("/{remoteId}")
   fun lookup(@PathVariable remoteId: Int): ResponseEntity<SeriesLookupResultDto> {
-    val lookupResult = seriesService.lookupByRemoteId(remoteId)
+    val lookupResult = remoteSeriesServiceFacade.lookupByRemoteId(remoteId)
     if (lookupResult == null) {
       return ResponseEntity(HttpStatus.NO_CONTENT)
     }

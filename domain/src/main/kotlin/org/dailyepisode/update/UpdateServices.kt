@@ -3,7 +3,7 @@ package org.dailyepisode.update
 import org.dailyepisode.account.Account
 import org.dailyepisode.series.SeriesLookupResult
 import org.dailyepisode.series.SeriesBatchService
-import org.dailyepisode.series.SeriesService
+import org.dailyepisode.series.RemoteSeriesServiceFacade
 import org.dailyepisode.subscription.Subscription
 
 interface NotificationSender {
@@ -25,18 +25,17 @@ class UpdateNotificationService(private val notificationSender: NotificationSend
 
 }
 
-class UpdateLookupService(private val seriesService: SeriesService,
-                          private val subscriptions: List<Subscription>) {
+class UpdateFilteringService(private val remoteSeriesServiceFacade: RemoteSeriesServiceFacade) {
 
-  fun lookup(): List<SeriesLookupResult> {
-    val updatedSubscriptions = findAllUpdatedSubscriptions()
-    val seriesLookupService = SeriesBatchService(seriesService)
-    return seriesLookupService.lookupByRemoteIds(updatedSubscriptions.map { it.remoteId })
+  fun filter(subscriptions: List<Subscription>): List<SeriesLookupResult> {
+    val changedIds = remoteSeriesServiceFacade.updatesSinceYesterday().changedSeriesRemoteIds
+    val updatedSubscriptions = subscriptions.filter { changedIds.contains(it.remoteId) }
+    return lookupUpdates(updatedSubscriptions.map { it.remoteId })
   }
 
-  private fun findAllUpdatedSubscriptions(): List<Subscription> {
-    val changedIds = seriesService.updatesSinceYesterday().changedSeriesRemoteIds
-    return subscriptions.filter { changedIds.contains(it.remoteId) }
+  private fun lookupUpdates(remoteIds: List<Int>): List<SeriesLookupResult> {
+    val seriesLookupService = SeriesBatchService(remoteSeriesServiceFacade)
+    return seriesLookupService.lookupByRemoteIds(remoteIds)
   }
 
 }

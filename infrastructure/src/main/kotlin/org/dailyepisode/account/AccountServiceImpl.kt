@@ -11,7 +11,7 @@ internal class AccountServiceImpl(private val accountRepository: AccountReposito
     AccountValidator.validate(accountRegistrationRequest)
     val storedAccount = accountRepository.findByEmail(accountRegistrationRequest.email!!)
     if (storedAccount != null) {
-      throw EmailAlreadyInUseException("Account with email: ${accountRegistrationRequest.email} is already in use")
+      throw EmailAlreadyInUseException("Email address is already in use")
     }
     accountRepository.save(accountRegistrationRequest.toEntity())
   }

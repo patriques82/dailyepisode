@@ -6,13 +6,13 @@ import org.dailyepisode.account.AccountRepository
 import org.dailyepisode.account.NoAccountFoundException
 import org.dailyepisode.series.SeriesLookupResult
 import org.dailyepisode.series.SeriesBatchService
-import org.dailyepisode.series.SeriesService
+import org.dailyepisode.series.RemoteSeriesServiceFacade
 import org.springframework.stereotype.Service
 
 @Service
 internal class SubscriptionServiceImpl(private val subscriptionRepository: SubscriptionRepository,
                                        private val accountRepository: AccountRepository,
-                                       private val seriesService: SeriesService) : SubscriptionService {
+                                       private val remoteSeriesServiceFacade: RemoteSeriesServiceFacade) : SubscriptionService {
 
   override fun createSubscription(remoteIds: List<Int>, accountId: Long) {
     val accountEntity: AccountEntity? = accountRepository.findById(accountId).orElse(null)
@@ -21,7 +21,7 @@ internal class SubscriptionServiceImpl(private val subscriptionRepository: Subsc
     }
     val (notStoredIds, storedSubscriptions) = SubscriptionBatchService(this).findByRemoteIds(remoteIds)
     accountEntity.subscriptions += storedSubscriptions.map { it.toEntity() }
-    val seriesLookups= SeriesBatchService(seriesService).lookupByRemoteIds(notStoredIds)
+    val seriesLookups= SeriesBatchService(remoteSeriesServiceFacade).lookupByRemoteIds(notStoredIds)
     accountEntity.subscriptions += seriesLookups.map { it.toSubscriptionEntity() }
     accountRepository.save(accountEntity)
   }

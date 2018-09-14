@@ -3,7 +3,7 @@ package org.dailyepisode.update
 import org.dailyepisode.account.Account
 import org.dailyepisode.account.AccountService
 import org.dailyepisode.series.SeriesLookupResult
-import org.dailyepisode.series.SeriesService
+import org.dailyepisode.series.RemoteSeriesServiceFacade
 import org.dailyepisode.subscription.Subscription
 import org.dailyepisode.subscription.SubscriptionService
 import org.slf4j.LoggerFactory
@@ -15,7 +15,7 @@ import java.util.*
 @Component
 class ScheduledUpdateNotifier(private val accountService: AccountService,
                               private val subscriptionService: SubscriptionService,
-                              private val seriesService: SeriesService,
+                              private val remoteSeriesServiceFacade: RemoteSeriesServiceFacade,
                               private val notificationSender: NotificationSender) {
 
   private val logger = LoggerFactory.getLogger(ScheduledUpdateNotifier::class.java)
@@ -27,8 +27,8 @@ class ScheduledUpdateNotifier(private val accountService: AccountService,
 
     val subscriptions = subscriptionService.findAll()
     val accounts = accountService.findAll()
-    val updateLookupService = UpdateLookupService(seriesService, subscriptions)
-    val updates = updateLookupService.lookup()
+    val updateLookupService = UpdateFilteringService(remoteSeriesServiceFacade)
+    val updates = updateLookupService.filter(subscriptions)
     notifyUpdates(accounts, updates)
     persistUpdates(subscriptions, updates)
 

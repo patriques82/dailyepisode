@@ -7,10 +7,10 @@ internal const val MAX_SEARCH_PAGES = 5
 internal const val MAX_UPDATES_PAGES = 10
 
 @Service
-internal class TheMovieDBSeriesService(private val theMovieDBConnector: TheMovieDBConnector,
-                                       private @Value("\${themoviedb.image_base_url}") val imageBaseUrl: String,
-                                       private @Value("\${themoviedb.thumbnail_size}") val thumbnailSize: String)
-  : SeriesService {
+internal class TheMovieDBRemoteSeriesServiceFacade(private val theMovieDBConnector: TheMovieDBConnector,
+                                                   private @Value("\${themoviedb.image_base_url}") val imageBaseUrl: String,
+                                                   private @Value("\${themoviedb.thumbnail_size}") val thumbnailSize: String)
+  : RemoteSeriesServiceFacade {
 
   override fun search(seriesSearchRequest: SeriesSearchRequest): SeriesSearchResult {
     val searchResult = fetchSearchResultAllPages(seriesSearchRequest.query)
