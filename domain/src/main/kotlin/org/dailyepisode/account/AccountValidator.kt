@@ -28,10 +28,10 @@ object AccountValidator {
 
   private fun validatePassword(password: String?) {
     if (password == null) {
-        throw InvalidAccountException("No password received")
+        throw InvalidPasswordException("No password received")
     } else {
       if (!password.matches(VALID_PASSWORD_PATTERN)) {
-        throw InvalidAccountException("""Invalid password
+        throw InvalidPasswordException("""Invalid password
         - At least 8 chars
         - Contains at least one digit
         - Contains at least one lower alpha char and one upper alpha char
@@ -44,16 +44,16 @@ object AccountValidator {
 
   private fun validateEmail(email: String?) {
     if (!EMAIL_VALIDATOR.isValid(email)) {
-      throw InvalidAccountException("Invalid email address")
+      throw InvalidEmailException("Invalid email address")
     }
   }
 
   private fun validateUsername(username: String?) {
     if (username == null) {
-      throw InvalidAccountException("No user name received")
+      throw InvalidUserNameException("No user name received")
     } else {
       if (!username.matches(VALID_USERNAME_PATTERN)) {
-        throw InvalidAccountException("""Invalid username
+        throw InvalidUserNameException("""Invalid username
         - Between 3 to 15 characters
         - Contains any lower case character, digit or special symbol “_-” only
       """.trimIndent())

@@ -36,8 +36,16 @@ class ErrorHandler {
   fun emailAlreadyInUse(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.CONFLICT)
 
-  @ExceptionHandler(InvalidAccountException::class)
-  fun invalidAccount(exception: Exception): ResponseEntity<ErrorDto> =
+  @ExceptionHandler(InvalidUserNameException::class)
+  fun invalidUserName(exception: Exception): ResponseEntity<ErrorDto> =
+    ResponseEntity(ErrorDto(exception.message!!), HttpStatus.BAD_REQUEST)
+
+  @ExceptionHandler(InvalidEmailException::class)
+  fun invalidEmail(exception: Exception): ResponseEntity<ErrorDto> =
+    ResponseEntity(ErrorDto(exception.message!!), HttpStatus.BAD_REQUEST)
+
+  @ExceptionHandler(InvalidPasswordException::class)
+  fun invalidPassword(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.BAD_REQUEST)
 
   @ExceptionHandler(RemoteIdNullPointerException::class)

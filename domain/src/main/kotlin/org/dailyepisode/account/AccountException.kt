@@ -4,8 +4,12 @@ class AccountHasNoMatchingSubscriptionException(message: String): RuntimeExcepti
 
 class EmailAlreadyInUseException(message: String) : RuntimeException(message)
 
-class InvalidAccountException(message: String) : RuntimeException(message)
-
 class NoAccountFoundException(message: String): RuntimeException(message)
 
 class ForbiddenAccessException(message: String): RuntimeException(message)
+
+class InvalidUserNameException(message: String) : RuntimeException(message)
+
+class InvalidPasswordException(message: String) : RuntimeException(message)
+
+class InvalidEmailException(message: String) : RuntimeException(message)
