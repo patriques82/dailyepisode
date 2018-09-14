@@ -1,8 +1,7 @@
 package org.dailyepisode.controller.admin
 
 import org.dailyepisode.controller.AbstractControllerIntegrationTest
-import org.dailyepisode.series.SeriesService
-import org.dailyepisode.series.SeriesUpdateResult
+import org.dailyepisode.series.*
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -16,7 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class AdminSeriesControllerTest: AbstractControllerIntegrationTest() {
 
   @MockBean
-  private lateinit var seriesService: SeriesService // TODO mock connector instead
+  private lateinit var theMovieDBConnector: TheMovieDBConnector
 
   @Test
   fun `user role access should return 403 Forbidden`() {
@@ -29,7 +28,11 @@ class AdminSeriesControllerTest: AbstractControllerIntegrationTest() {
 
   @Test
   fun `changes should return latest changes and 200 Ok`() {
-    given(seriesService.updatesSinceYesterday()).willReturn(SeriesUpdateResult(listOf(1,2,3)))
+    val changedSeries = listOf(TheMovieDBChangedSeries(1), TheMovieDBChangedSeries(2))
+    val page1 = TheMovieDBUpdateResult(changedSeries, 1, 2, 3)
+    given(theMovieDBConnector.fetchUpdatesForPage(1)).willReturn(page1)
+    val page2 = TheMovieDBUpdateResult(listOf(TheMovieDBChangedSeries(3)), 2, 2, 3)
+    given(theMovieDBConnector.fetchUpdatesForPage(2)).willReturn(page2)
 
     val expectedJson = """
       {"changedSeriesRemoteIds": [1,2,3]}
