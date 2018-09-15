@@ -1,7 +1,7 @@
 package org.dailyepisode.update
 
 import org.dailyepisode.account.Account
-import org.dailyepisode.series.SeriesLookupResult
+import org.dailyepisode.series.SeriesUpdatedLookupResult
 import org.dailyepisode.subscription.Subscription
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -16,7 +16,7 @@ internal class EmailNotificationSender(private val emailSender: JavaMailSender,
 
   private val logger = LoggerFactory.getLogger(EmailNotificationSender::class.java)
 
-  override fun send(account: Account, accountUpdates: List<SeriesLookupResult>) {
+  override fun send(account: Account, accountUpdates: List<SeriesUpdatedLookupResult>) {
     if (accountUpdates.isNotEmpty()) {
 
       logger.info("Sending notification email to: {}", account.email)
@@ -29,7 +29,7 @@ internal class EmailNotificationSender(private val emailSender: JavaMailSender,
     }
   }
 
-  private fun createMessage(subscriptions: List<Subscription>, updates: List<SeriesLookupResult>): String {
+  private fun createMessage(subscriptions: List<Subscription>, updates: List<SeriesUpdatedLookupResult>): String {
     return ""
   }
 

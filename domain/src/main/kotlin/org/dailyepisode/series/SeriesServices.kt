@@ -3,7 +3,7 @@ package org.dailyepisode.series
 interface RemoteSeriesServiceFacade {
   fun search(seriesSearchRequest: SeriesSearchRequest): SeriesSearchResult
   fun lookup(remoteId: Int): SeriesLookupResult?
-  fun updatesSinceYesterday(): SeriesUpdateResult
+  fun updatesSinceYesterday(): UpdatedSeriesResult
 }
 
 data class SeriesSearchRequest(val query: String)
@@ -34,9 +34,17 @@ data class SeriesLookupResult(
   val numberOfSeasons: Int
 )
 
-data class SeriesUpdateResult(val changedSeriesRemoteIds: List<Int>)
+data class SeriesUpdatedLookupResult(
+  val remoteId: Int,
+  val imageUrl: String?,
+  val lastAirDate: String,
+  val numberOfEpisodes: Int,
+  val numberOfSeasons: Int
+)
 
-class RemoteSeriesLookupBatchService(val remoteSeriesServiceFacade: RemoteSeriesServiceFacade) {
+data class UpdatedSeriesResult(val changedSeriesRemoteIds: List<Int>)
+
+class SeriesLookupBatchService(val remoteSeriesServiceFacade: RemoteSeriesServiceFacade) {
 
   fun lookup(remoteIds: List<Int>): List<SeriesLookupResult> {
     val lookups = mutableListOf<SeriesLookupResult>()

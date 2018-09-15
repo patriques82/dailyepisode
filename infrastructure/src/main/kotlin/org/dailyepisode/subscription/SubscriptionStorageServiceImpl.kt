@@ -5,7 +5,7 @@ import org.dailyepisode.account.AccountHasNoMatchingSubscriptionException
 import org.dailyepisode.account.AccountRepository
 import org.dailyepisode.account.NoAccountFoundException
 import org.dailyepisode.series.SeriesLookupResult
-import org.dailyepisode.series.RemoteSeriesLookupBatchService
+import org.dailyepisode.series.SeriesLookupBatchService
 import org.dailyepisode.series.RemoteSeriesServiceFacade
 import org.springframework.stereotype.Service
 
@@ -21,7 +21,7 @@ internal class SubscriptionStorageServiceImpl(private val subscriptionRepository
     }
     val (notStoredIds, storedSubscriptions) = SubscriptionBatchService(this).findByRemoteIds(subscriptionCreateRequest.remoteIds)
     accountEntity.subscriptions += storedSubscriptions.map { it.toEntity() }
-    val seriesLookups = RemoteSeriesLookupBatchService(remoteSeriesServiceFacade).lookup(notStoredIds)
+    val seriesLookups = SeriesLookupBatchService(remoteSeriesServiceFacade).lookup(notStoredIds)
     accountEntity.subscriptions += seriesLookups.map { it.toSubscriptionEntity() }
     accountRepository.save(accountEntity)
   }

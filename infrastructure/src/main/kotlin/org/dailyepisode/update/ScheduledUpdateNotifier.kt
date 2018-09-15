@@ -19,6 +19,7 @@ class ScheduledUpdateNotifier(private val accountStorageService: AccountStorageS
   private val dateFormat = SimpleDateFormat("EEEEE MMMMM yyyy HH:mm:ss")
   private val updateSearchService = UpdateSearchService(remoteSeriesServiceFacade)
   private val updateNotificationSendService = UpdateNotificationService(notificationSender)
+  private val updatePersistService = UpdatePersistService(subscriptionStorageService)
 
   @Scheduled(fixedDelay = 3000)
   fun notifyAndPersistUpdates() {
@@ -27,10 +28,9 @@ class ScheduledUpdateNotifier(private val accountStorageService: AccountStorageS
     val accounts = accountStorageService.findAll()
     val subscriptions = subscriptionStorageService.findAll()
     val updates = updateSearchService.searchForUpdates(subscriptions)
-    val updatePersistService = UpdatePersistService(subscriptionStorageService, updates)
 
     accounts.forEach { updateNotificationSendService.sendTo(it, updates) }
-    subscriptions.forEach { updatePersistService.persist(it) }
+    updates.forEach { updatePersistService.persist(it) }
 
     logger.info("Notification sending ended: {}", dateFormat.format(Date()))
   }

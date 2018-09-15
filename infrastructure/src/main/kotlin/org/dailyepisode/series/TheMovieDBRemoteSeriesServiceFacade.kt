@@ -44,9 +44,9 @@ internal class TheMovieDBRemoteSeriesServiceFacade(private val theMovieDBConnect
       id, name, overview, resolveImageUrl(poster_path), vote_count, vote_average, first_air_date,
       last_air_date, genres.map { it.name }, homepage, number_of_episodes, number_of_seasons)
 
-  override fun updatesSinceYesterday(): SeriesUpdateResult {
+  override fun updatesSinceYesterday(): UpdatedSeriesResult {
     val updatedSeriesIds = fetchUpdatesAllPages()
-    return SeriesUpdateResult(updatedSeriesIds)
+    return UpdatedSeriesResult(updatedSeriesIds)
   }
 
   private fun fetchUpdatesAllPages(): List<Int> {

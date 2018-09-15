@@ -4,6 +4,7 @@ import io.mockk.spyk
 import io.mockk.verify
 import org.dailyepisode.account.Account
 import org.dailyepisode.series.SeriesLookupResult
+import org.dailyepisode.series.SeriesUpdatedLookupResult
 import org.dailyepisode.subscription.Subscription
 import org.junit.Test
 
@@ -18,7 +19,7 @@ class UpdateNotificationServiceTest {
     val homeland = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23", "2017-08-12", listOf(), "www.homeland.com", 6, 68)
     val account = Account(1, "dummy", "dummy", "dummy", 0, emptyList(), listOf(friends, homeland))
 
-    val seriesLookupResult = SeriesLookupResult(3, "the big bang theory", "nerds being funny", "image", 30, 6.9, "2010-05-04", "2017-05-05", listOf("Comedy"), null, 89, 8)
+    val seriesLookupResult = SeriesUpdatedLookupResult(3, "newimage", "2017-05-31", 90, 8)
 
     updateNotificationService.sendTo(account, listOf(seriesLookupResult))
 
@@ -35,7 +36,7 @@ class UpdateNotificationServiceTest {
     val theBigBangTheory = Subscription(3, 3, "the big bang theory", "nerds being funny", "image", 30, 6.9, "2010-05-04", "2017-05-05", listOf("Comedy"), null, 89, 8)
     val account = Account(1, "dummy", "dummy", "dummy", 0, emptyList(), listOf(friends, homeland, theBigBangTheory))
 
-    val seriesLookupResult = SeriesLookupResult(3, "the big bang theory", "nerds being funny", "image", 30, 6.9, "2010-05-04", "2017-05-05", listOf("Comedy"), null, 89, 8)
+    val seriesLookupResult = SeriesUpdatedLookupResult(3, "newimage", "2017-05-31", 90, 8)
 
     updateNotificationService.sendTo(account, listOf(seriesLookupResult))
 
