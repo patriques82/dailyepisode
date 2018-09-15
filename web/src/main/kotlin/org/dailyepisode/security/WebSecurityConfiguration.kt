@@ -55,7 +55,7 @@ class WebSecurityConfiguration(private val userDetailsService: UserDetailsServic
 
 }
 
-@Service
+@Component
 internal class UserDetailsServiceImpl(private val accountStorageService: AccountStorageService) : UserDetailsService {
 
   override fun loadUserByUsername(username: String?): UserDetails {

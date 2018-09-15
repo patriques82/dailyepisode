@@ -1,7 +1,7 @@
 package org.dailyepisode.controller
 
 import org.dailyepisode.account.*
-import org.dailyepisode.series.RemoteIdNullPointerException
+import org.dailyepisode.series.SeriesNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -48,8 +48,8 @@ class ErrorHandler {
   fun invalidPassword(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.BAD_REQUEST)
 
-  @ExceptionHandler(RemoteIdNullPointerException::class)
-  fun subscriptionRemoteIdNullPointer(exception: Exception): ResponseEntity<ErrorDto> =
+  @ExceptionHandler(SeriesNotFoundException::class)
+  fun seriesNotFound(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.CONFLICT)
 
 }

@@ -34,7 +34,7 @@ internal class TheMovieDBRemoteSeriesServiceFacade(private val theMovieDBConnect
   private fun resolveImageUrl(poster_path: String?): String? =
     if (poster_path != null) "$imageBaseUrl/w$thumbnailSize/$poster_path" else null
 
-  override fun lookupByRemoteId(remoteId: Int): SeriesLookupResult? {
+  override fun lookup(remoteId: Int): SeriesLookupResult? {
     val lookupResult = theMovieDBConnector.fetchLookupResult(remoteId)
     return lookupResult?.toSeriesLookupResult()
   }

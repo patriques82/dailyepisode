@@ -2,7 +2,7 @@ package org.dailyepisode.series
 
 interface RemoteSeriesServiceFacade {
   fun search(seriesSearchRequest: SeriesSearchRequest): SeriesSearchResult
-  fun lookupByRemoteId(remoteId: Int): SeriesLookupResult?
+  fun lookup(remoteId: Int): SeriesLookupResult?
   fun updatesSinceYesterday(): SeriesUpdateResult
 }
 
@@ -36,14 +36,14 @@ data class SeriesLookupResult(
 
 data class SeriesUpdateResult(val changedSeriesRemoteIds: List<Int>)
 
-class SeriesBatchService(val remoteSeriesServiceFacade: RemoteSeriesServiceFacade) {
+class RemoteSeriesLookupBatchService(val remoteSeriesServiceFacade: RemoteSeriesServiceFacade) {
 
-  fun lookupByRemoteIds(remoteIds: List<Int>): List<SeriesLookupResult> {
+  fun lookup(remoteIds: List<Int>): List<SeriesLookupResult> {
     val lookups = mutableListOf<SeriesLookupResult>()
     remoteIds.forEach {
-      val seriesLookupResult: SeriesLookupResult? = remoteSeriesServiceFacade.lookupByRemoteId(it)
+      val seriesLookupResult: SeriesLookupResult? = remoteSeriesServiceFacade.lookup(it)
       if (seriesLookupResult == null) {
-        throw RemoteIdNullPointerException("Not found Id: $it")
+        throw SeriesNotFoundException("ID '$it' not found")
       }
       lookups += seriesLookupResult
     }
@@ -52,4 +52,4 @@ class SeriesBatchService(val remoteSeriesServiceFacade: RemoteSeriesServiceFacad
 
 }
 
-class RemoteIdNullPointerException(message: String) : RuntimeException(message)
+class SeriesNotFoundException(message: String) : RuntimeException(message)
