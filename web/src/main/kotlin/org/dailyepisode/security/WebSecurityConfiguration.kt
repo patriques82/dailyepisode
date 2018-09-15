@@ -23,9 +23,9 @@ import javax.servlet.http.HttpServletResponse
 
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
-class WebSecurityConfigurationImpl(private val userDetailsService: UserDetailsService,
-                                   private val authEntryPoint: AuthenticationEntryPoint,
-                                   private val passwordEncoder: PasswordEncoder
+class WebSecurityConfiguration(private val userDetailsService: UserDetailsService,
+                               private val authEntryPoint: AuthenticationEntryPoint,
+                               private val passwordEncoder: PasswordEncoder
 ): WebSecurityConfigurerAdapter() {
 
   // Authentication
