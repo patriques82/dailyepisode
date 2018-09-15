@@ -1,7 +1,7 @@
 package org.dailyepisode.controller.user
 
 import org.dailyepisode.account.Account
-import org.dailyepisode.account.AccountResolver
+import org.dailyepisode.account.AccountResolverService
 import org.dailyepisode.account.AccountStorageService
 import org.dailyepisode.account.AccountUpdateRequest
 import org.dailyepisode.dto.AccountDto
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/user")
 class AccountController(private val accountStorageService: AccountStorageService,
-                        private val accountResolver: AccountResolver) {
+                        private val accountResolverService: AccountResolverService) {
 
   @GetMapping("/me")
   fun getCurrentAccount(): ResponseEntity<AccountDto> {
-    val account = accountResolver.resolve()
+    val account = accountResolverService.resolve()
     return ResponseEntity(account.toDto(), HttpStatus.OK)
   }
 
@@ -26,7 +26,7 @@ class AccountController(private val accountStorageService: AccountStorageService
 
   @PutMapping("/update")
   fun updatePreferences(@RequestBody accountUpdateRequestDto: AccountUpdateRequestDto?): ResponseEntity<Unit> {
-    val account = accountResolver.resolve()
+    val account = accountResolverService.resolve()
     return if (isValidUpdateRequest(account, accountUpdateRequestDto)) {
       accountStorageService.updateAccount(accountUpdateRequestDto!!.toUpdateAccountRequest())
       ResponseEntity(HttpStatus.CREATED)

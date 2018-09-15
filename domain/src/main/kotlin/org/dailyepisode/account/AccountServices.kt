@@ -30,3 +30,7 @@ data class AccountUpdateRequest(
   val id: Long,
   val notificationIntervalInDays: Int
 )
+
+interface AccountResolverService {
+  fun resolve(): Account
+}
