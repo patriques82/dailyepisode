@@ -8,14 +8,14 @@ import org.dailyepisode.subscription.Subscription
 import org.dailyepisode.subscription.SubscriptionStorageService
 
 interface NotificationSender {
-  fun send(account: Account, updates: List<SeriesLookupResult>)
+  fun send(account: Account, accountUpdates: List<SeriesLookupResult>)
 }
 
 class UpdateNotificationService(private val notificationSender: NotificationSender) {
 
-  fun send(account: Account, seriesUpdates: List<SeriesLookupResult>) {
-    val updates = resolveAccountSubscriptionUpdates(account.subscriptions, seriesUpdates)
-    notificationSender.send(account, updates)
+  fun sendTo(account: Account, seriesUpdates: List<SeriesLookupResult>) {
+    val accountUpdates = resolveAccountSubscriptionUpdates(account.subscriptions, seriesUpdates)
+    notificationSender.send(account, accountUpdates)
   }
 
   private fun resolveAccountSubscriptionUpdates(subscriptions: List<Subscription>,
@@ -31,8 +31,7 @@ class UpdateSearchService(private val remoteSeriesServiceFacade: RemoteSeriesSer
   fun searchForUpdates(subscriptions: List<Subscription>): List<SeriesLookupResult> {
     val changedRemoteIds = remoteSeriesServiceFacade.updatesSinceYesterday().changedSeriesRemoteIds
     val updatedSubscriptions = subscriptions.filter { changedRemoteIds.contains(it.remoteId) }
-    val updates = lookupUpdates(updatedSubscriptions.map { it.remoteId })
-    return updates
+    return lookupUpdates(updatedSubscriptions.map { it.remoteId })
   }
 
   private fun lookupUpdates(remoteIds: List<Int>): List<SeriesLookupResult> {
