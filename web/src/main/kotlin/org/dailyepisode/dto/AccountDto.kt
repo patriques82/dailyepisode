@@ -17,3 +17,8 @@ data class AccountRegistrationRequestDto(
   val password: String?,
   val notificationIntervalInDays: Int?
 )
+
+data class AccountUpdateRequestDto(
+  val accountId: Long,
+  val notificationIntervalInDays: Int
+)

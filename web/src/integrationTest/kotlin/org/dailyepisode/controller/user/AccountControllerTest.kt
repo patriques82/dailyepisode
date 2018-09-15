@@ -3,7 +3,7 @@ package org.dailyepisode.controller.user
 import org.assertj.core.api.Assertions.assertThat
 import org.dailyepisode.account.AccountStorageService
 import org.dailyepisode.controller.AbstractControllerIntegrationTest
-import org.dailyepisode.dto.SubscriptionPreferencesRequestDto
+import org.dailyepisode.dto.AccountUpdateRequestDto
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -43,10 +43,24 @@ class AccountControllerTest: AbstractControllerIntegrationTest() {
   }
 
   @Test
-  fun `update preferences with invalid data should return 400 Bad Request`() {
-    val invalidPreferencesRequestDto = SubscriptionPreferencesRequestDto(notificationIntervalInDays = -1)
+  fun `update preferences with invalid notificationIntervalInDays should return 400 Bad Request`() {
+    val alexia = accountStorageService.findByUserName("alexia")!!
+    val invalidPreferencesRequestDto = AccountUpdateRequestDto(alexia.id, notificationIntervalInDays = -1)
 
-    mockMvc.perform(put("/api/user/preferences")
+    mockMvc.perform(put("/api/user/update")
+      .with(csrf())
+      .with(httpBasic("alexia", "aixela"))
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(objectMapper.writeValueAsString(invalidPreferencesRequestDto)))
+      .andExpect(status().isBadRequest)
+  }
+
+  @Test
+  fun `update preferences with invalid account id should return 400 Bad Request`() {
+    val alexia = accountStorageService.findByUserName("alexia")!!
+    val invalidPreferencesRequestDto = AccountUpdateRequestDto(alexia.id + 1, notificationIntervalInDays = 1)
+
+    mockMvc.perform(put("/api/user/update")
       .with(csrf())
       .with(httpBasic("alexia", "aixela"))
       .contentType(MediaType.APPLICATION_JSON)
@@ -56,12 +70,13 @@ class AccountControllerTest: AbstractControllerIntegrationTest() {
 
   @Test
   fun `update preferences with valid data should return 201 Created`() {
-    val preferencesRequestDto = SubscriptionPreferencesRequestDto(notificationIntervalInDays = 3)
+    val kristoffer = accountStorageService.findByUserName("kristoffer")!!
+    val preferencesRequestDto = AccountUpdateRequestDto(kristoffer.id, notificationIntervalInDays = 3)
 
     val kristofferBefore= accountStorageService.findByUserName("kristoffer")!!
     assertThat(kristofferBefore.notificationIntervalInDays).isEqualTo(30)
 
-    mockMvc.perform(put("/api/user/preferences")
+    mockMvc.perform(put("/api/user/update")
       .with(csrf())
       .with(httpBasic("kristoffer", "reffotsirk"))
       .contentType(MediaType.APPLICATION_JSON)

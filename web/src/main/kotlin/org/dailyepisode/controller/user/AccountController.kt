@@ -3,8 +3,9 @@ package org.dailyepisode.controller.user
 import org.dailyepisode.account.Account
 import org.dailyepisode.account.AccountResolver
 import org.dailyepisode.account.AccountStorageService
+import org.dailyepisode.account.AccountUpdateRequest
 import org.dailyepisode.dto.AccountDto
-import org.dailyepisode.dto.SubscriptionPreferencesRequestDto
+import org.dailyepisode.dto.AccountUpdateRequestDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -23,19 +24,25 @@ class AccountController(private val accountStorageService: AccountStorageService
   private fun Account.toDto(): AccountDto =
     AccountDto(id, username, email, notificationIntervalInDays)
 
-  @PutMapping("/preferences")
-  fun updatePreferences(@RequestBody preferencesRequestDto: SubscriptionPreferencesRequestDto): ResponseEntity<Unit> {
+  @PutMapping("/update")
+  fun updatePreferences(@RequestBody accountUpdateRequestDto: AccountUpdateRequestDto?): ResponseEntity<Unit> {
     val account = accountResolver.resolve()
-    return if (isValidSubscriptionPreferences(preferencesRequestDto)) {
-      accountStorageService.updateNotificationIntervaInlDays(account.id, preferencesRequestDto.notificationIntervalInDays)
+    return if (isValidUpdateRequest(account, accountUpdateRequestDto)) {
+      accountStorageService.updateAccount(accountUpdateRequestDto!!.toUpdateAccountRequest())
       ResponseEntity(HttpStatus.CREATED)
     } else {
       ResponseEntity(HttpStatus.BAD_REQUEST)
     }
   }
 
-  private fun isValidSubscriptionPreferences(preferencesRequestDto: SubscriptionPreferencesRequestDto) =
-    preferencesRequestDto.notificationIntervalInDays > 0
+  private fun isValidUpdateRequest(account: Account, accountUpdateRequestDto: AccountUpdateRequestDto?): Boolean =
+    if (accountUpdateRequestDto != null) {
+      account.id == accountUpdateRequestDto.accountId && accountUpdateRequestDto.notificationIntervalInDays > 0
+    } else {
+      false
+    }
 
+  private fun AccountUpdateRequestDto.toUpdateAccountRequest() =
+    AccountUpdateRequest(accountId, notificationIntervalInDays)
 }
 

@@ -1,15 +1,25 @@
 package org.dailyepisode.subscription
 
 interface SubscriptionStorageService {
-  fun createSubscription(remoteIds: List<Int>, accountId: Long)
+  fun createSubscriptions(createSubscriptionsRequest: CreateSubscriptionsRequest)
   fun findAll(): List<Subscription>
   fun findById(subscriptionId: Long): Subscription?
   fun findByRemoteId(remoteId: Int): Subscription?
-  fun deleteSubscription(subscriptionId: Long, accountId: Long)
+  fun deleteSubscription(subscriptionId: DeleteSubscriptionRequest)
 }
 
+data class CreateSubscriptionsRequest(
+  val accountId: Long,
+  val remoteIds: List<Int>
+)
+
+data class DeleteSubscriptionRequest(
+  val accountId: Long,
+  val subscriptionId: Long
+)
+
 data class Subscription(
-  val id: Long?,
+  val id: Long,
   val remoteId: Int,
   val name: String,
   val overview: String?,

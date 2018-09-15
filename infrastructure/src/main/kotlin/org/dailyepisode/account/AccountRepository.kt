@@ -37,8 +37,12 @@ class AccountEntity(
   var subscriptions: List<SubscriptionEntity> = emptyList()
 ) {
 
-  fun toAccount(): Account =
-    Account(id!!, username, email, password, notificationIntervalInDays, roles.map { it.roleName }, subscriptions.map { it.toSubscription() })
+  fun toAccount(): Account {
+    if (id == null) {
+      throw IllegalStateException("Only non transient account entities can be transformed to account")
+    }
+    return Account(id!!, username, email, password, notificationIntervalInDays, roles.map { it.roleName }, subscriptions.map { it.toSubscription() })
+  }
 
   fun subscribesTo(subscriptionId: Long): Boolean =
     subscriptions.any { it.id == subscriptionId }

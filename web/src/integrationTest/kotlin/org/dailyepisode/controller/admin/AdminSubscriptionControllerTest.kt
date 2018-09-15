@@ -48,7 +48,7 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
        "voteAverage":9.1,
        "firstAirDate":"2010-01-01",
        "lastAirDate":"2014-06-01",
-       "genres":["Thriller","Crime","Drama"],
+       "genres":["Thriller","Drama"],
        "homepage":"www.breakingbad.com",
        "numberOfEpisodes":55,
        "numberOfSeasons":6},
@@ -60,7 +60,7 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
        "voteAverage":7.5,
        "firstAirDate":"2009-05-18",
        "lastAirDate":"2017-02-29",
-       "genres":["Thriller","Crime","Drama"],
+       "genres":["Crime","Drama"],
        "homepage":"www.lineofduty.com",
        "numberOfEpisodes":48,
        "numberOfSeasons":5}

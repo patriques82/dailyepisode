@@ -22,7 +22,7 @@ internal class DataInitializer(val passwordEncoder: PasswordEncoder,
       10, 8.6, "2013-05-15", "2018-05-16", listOf("Fantasy", "Drama"),
       "www.got.com", 72, 8, emptyList())
     val breakingBad = SubscriptionEntity(null, 2, "breaking bad", "Meth dealing tutorial", "image", 29,
-      9.1, "2010-01-01", "2014-06-01", listOf("Thriller", "Crime", "Drama"),
+      9.1, "2010-01-01", "2014-06-01", listOf("Thriller", "Drama"),
       "www.breakingbad.com", 55, 6, emptyList())
     val lineOfDuty = SubscriptionEntity(null, 3, "line of duty", "Corrupt police investigations", "image",
       6, 7.5, "2009-05-18", "2017-02-29", listOf("Crime", "Drama"),

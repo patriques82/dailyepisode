@@ -2,15 +2,20 @@ package org.dailyepisode.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import org.dailyepisode.subscription.Subscription
+import org.dailyepisode.subscription.CreateSubscriptionsRequest
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SubscriptionRequestDto(
+  val accountId: Long,
   val remoteIds: List<Int>
 )
 
+fun SubscriptionRequestDto.toSubscriptionRequest(): CreateSubscriptionsRequest =
+  CreateSubscriptionsRequest(accountId, remoteIds)
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SubscriptionDto(
-  val id: Long?,
+  val id: Long,
   val remoteId: Int,
   val name: String,
   val overview: String?,
@@ -28,5 +33,3 @@ data class SubscriptionDto(
 fun Subscription.toDto(): SubscriptionDto =
   SubscriptionDto(id, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
     genres, homepage, numberOfEpisodes, numberOfSeasons)
-
-data class SubscriptionPreferencesRequestDto(val notificationIntervalInDays: Int)

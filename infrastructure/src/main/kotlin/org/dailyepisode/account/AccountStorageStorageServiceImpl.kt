@@ -32,11 +32,13 @@ internal class AccountStorageStorageServiceImpl(private val accountRepository: A
     return accountRepository.findAll().map { it.toAccount() }
   }
 
-  override fun updateNotificationIntervaInlDays(accountId: Long, notificationIntervalInlDays: Int) {
-    val storedAccount = accountRepository.findById(accountId).orElse(null)
-    if (storedAccount != null) {
-      storedAccount.notificationIntervalInDays = notificationIntervalInlDays
-      accountRepository.save(storedAccount)
+  override fun updateAccount(accountUpdateRequest: AccountUpdateRequest) {
+    with(accountUpdateRequest) {
+      val storedAccount = accountRepository.findById(id).orElse(null)
+      if (storedAccount != null) {
+        storedAccount.notificationIntervalInDays = notificationIntervalInDays
+        accountRepository.save(storedAccount)
+      }
     }
   }
 }

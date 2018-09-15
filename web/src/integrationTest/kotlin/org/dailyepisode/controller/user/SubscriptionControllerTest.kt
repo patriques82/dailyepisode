@@ -31,12 +31,24 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
   private lateinit var subscriptionStorageService: SubscriptionStorageService
 
   @Test
-  fun `create subscription with invalid subscription data should return 400 Bad Request`() {
+  fun `create subscription with no subscription data should return 400 Bad Request`() {
     mockMvc.perform(post("/api/subscription")
       .with(csrf())
       .with(httpBasic("alexia", "aixela"))
       .contentType(MediaType.APPLICATION_JSON)
       .content(objectMapper.writeValueAsString(null)))
+      .andExpect(status().isBadRequest)
+  }
+
+  @Test
+  fun `create subscription with subscription request with invalid account id should return 400 Bad Request`() {
+    val invalidSubscriptionRequestDto = SubscriptionRequestDto(666, listOf(1, 2, 4)) // game of thrones, breaking bad, rick and morty
+
+    mockMvc.perform(post("/api/subscription")
+      .with(csrf())
+      .with(httpBasic("alexia", "aixela"))
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(objectMapper.writeValueAsString(invalidSubscriptionRequestDto)))
       .andExpect(status().isBadRequest)
   }
 
@@ -47,7 +59,11 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
       6, 7.5, "2009-05-18", "2017-02-29", genres,
       "www.rickandmorty.com", 60, 5)
     given(theMovieDBConnector.fetchLookupResult(4)).willReturn(rickAndMorty)
-    val subscriptionRequestDto = SubscriptionRequestDto(listOf(1, 2, 4)) // game of thrones, breaking bad, rick and morty
+
+    val alexiaBefore = accountStorageService.findByUserName("alexia")!!
+    assertThat(alexiaBefore.subscriptions).isEmpty()
+
+    val subscriptionRequestDto = SubscriptionRequestDto(alexiaBefore.id, listOf(1, 2, 4)) // game of thrones, breaking bad, rick and morty
 
     mockMvc.perform(post("/api/subscription")
       .with(csrf())
@@ -56,12 +72,12 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
       .content(objectMapper.writeValueAsString(subscriptionRequestDto)))
       .andExpect(status().isCreated)
 
-    val alexia = accountStorageService.findByUserName("alexia")!!
-    val subscriptions = alexia.subscriptions
-    assertThat(subscriptions.size).isEqualTo(3)
-    assertThat(subscriptions[0].name).isEqualTo("game of thrones")
-    assertThat(subscriptions[1].name).isEqualTo("breaking bad")
-    assertThat(subscriptions[2].name).isEqualTo("rick and morty")
+    val alexiaAfter = accountStorageService.findByUserName("alexia")!!
+    val subscriptionsAfter = alexiaAfter.subscriptions
+    assertThat(subscriptionsAfter.size).isEqualTo(3)
+    assertThat(subscriptionsAfter[0].name).isEqualTo("game of thrones")
+    assertThat(subscriptionsAfter[1].name).isEqualTo("breaking bad")
+    assertThat(subscriptionsAfter[2].name).isEqualTo("rick and morty")
   }
 
   @Test

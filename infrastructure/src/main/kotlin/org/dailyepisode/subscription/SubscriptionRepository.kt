@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository
 import javax.persistence.*
 
 @Repository
-interface SubscriptionRepository: JpaRepository<SubscriptionEntity, Long> {
+interface SubscriptionRepository : JpaRepository<SubscriptionEntity, Long> {
   fun findByRemoteId(remoteId: Int): SubscriptionEntity?
 }
 
@@ -39,7 +39,11 @@ data class SubscriptionEntity(
   @ManyToMany(mappedBy = "subscriptions")
   var accounts: List<AccountEntity>
 ) {
-  fun toSubscription(): Subscription =
-    Subscription(id, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
-      genres, homepage, numberOfEpisodes, numberOfSeasons)
+  fun toSubscription(): Subscription {
+    if (id == null) {
+      throw IllegalStateException("Only non transient subscription entities can be transformed to subscriptions")
+    }
+    return Subscription(id!!, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
+                        genres, homepage, numberOfEpisodes, numberOfSeasons)
+  }
 }
