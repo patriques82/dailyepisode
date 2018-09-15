@@ -1,7 +1,7 @@
 package org.dailyepisode.controller.user
 
 import org.assertj.core.api.Assertions.assertThat
-import org.dailyepisode.account.AccountService
+import org.dailyepisode.account.AccountStorageService
 import org.dailyepisode.controller.AbstractControllerIntegrationTest
 import org.dailyepisode.dto.SubscriptionPreferencesRequestDto
 import org.junit.Test
@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class AccountControllerTest: AbstractControllerIntegrationTest() {
 
   @Autowired
-  private lateinit var accountService: AccountService
+  private lateinit var accountStorageService: AccountStorageService
 
   @Test
   fun `no user authentication access should return 401 Unauthorized`() {
@@ -58,7 +58,7 @@ class AccountControllerTest: AbstractControllerIntegrationTest() {
   fun `update preferences with valid data should return 201 Created`() {
     val preferencesRequestDto = SubscriptionPreferencesRequestDto(notificationIntervalInDays = 3)
 
-    val kristofferBefore= accountService.findByUserName("kristoffer")!!
+    val kristofferBefore= accountStorageService.findByUserName("kristoffer")!!
     assertThat(kristofferBefore.notificationIntervalInDays).isEqualTo(30)
 
     mockMvc.perform(put("/api/user/preferences")
@@ -68,7 +68,7 @@ class AccountControllerTest: AbstractControllerIntegrationTest() {
       .content(objectMapper.writeValueAsString(preferencesRequestDto)))
       .andExpect(status().isCreated)
 
-    val kristofferAfter = accountService.findByUserName("kristoffer")!!
+    val kristofferAfter = accountStorageService.findByUserName("kristoffer")!!
     assertThat(kristofferAfter.notificationIntervalInDays).isEqualTo(3)
   }
 

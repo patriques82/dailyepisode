@@ -4,8 +4,8 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-internal class AccountServiceImpl(private val accountRepository: AccountRepository,
-                                  private val passwordEncoder: PasswordEncoder): AccountService {
+internal class AccountStorageStorageServiceImpl(private val accountRepository: AccountRepository,
+                                                private val passwordEncoder: PasswordEncoder): AccountStorageService {
 
   override fun createAccount(accountRegistrationRequest: AccountRegistrationRequest) {
     AccountValidator.validate(accountRegistrationRequest)

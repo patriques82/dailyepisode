@@ -1,7 +1,7 @@
 package org.dailyepisode.controller.admin
 
 import org.dailyepisode.controller.AbstractControllerIntegrationTest
-import org.dailyepisode.subscription.SubscriptionService
+import org.dailyepisode.subscription.SubscriptionStorageService
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
 
   @Autowired
-  private lateinit var subscriptionService: SubscriptionService
+  private lateinit var subscriptionStorageService: SubscriptionStorageService
 
   @Test
   fun `user role access for user without admin privileges should return 403 Forbidden`() {
@@ -76,7 +76,7 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
 
   @Test
   fun `get subscription with existing id should return subscription and 200 Ok`() {
-    val gameOfThrones = subscriptionService.findByRemoteId(1)!!
+    val gameOfThrones = subscriptionStorageService.findByRemoteId(1)!!
 
     val expectedJson = """
       {"remoteId":1,

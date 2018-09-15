@@ -4,22 +4,21 @@ import org.dailyepisode.account.AccountResolver
 import org.dailyepisode.dto.SubscriptionDto
 import org.dailyepisode.dto.SubscriptionRequestDto
 import org.dailyepisode.dto.toDto
-import org.dailyepisode.subscription.SubscriptionService
+import org.dailyepisode.subscription.SubscriptionStorageService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/api/subscription")
-class SubscriptionController(private val subscriptionService: SubscriptionService,
+class SubscriptionController(private val subscriptionStorageService: SubscriptionStorageService,
                              private val accountResolver: AccountResolver) {
 
   @PostMapping
   fun createSubscription(@RequestBody subscriptionRequestDto: SubscriptionRequestDto?): ResponseEntity<Unit> {
     return if (subscriptionRequestDto != null) {
       val account = accountResolver.resolve()
-      subscriptionService.createSubscription(subscriptionRequestDto.remoteIds, account.id)
+      subscriptionStorageService.createSubscription(subscriptionRequestDto.remoteIds, account.id)
       ResponseEntity(HttpStatus.CREATED)
     } else {
       ResponseEntity(HttpStatus.BAD_REQUEST)
@@ -36,7 +35,7 @@ class SubscriptionController(private val subscriptionService: SubscriptionServic
   @DeleteMapping("/{subscriptionId}")
   fun removeSubscription(@PathVariable subscriptionId: Long): ResponseEntity<Unit> {
     val account = accountResolver.resolve()
-    subscriptionService.deleteSubscription(subscriptionId, account.id)
+    subscriptionStorageService.deleteSubscription(subscriptionId, account.id)
     return ResponseEntity(HttpStatus.OK)
   }
 

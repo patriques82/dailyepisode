@@ -1,20 +1,18 @@
 package org.dailyepisode.controller.user
 
 import org.assertj.core.api.Assertions.assertThat
-import org.dailyepisode.account.AccountService
+import org.dailyepisode.account.AccountStorageService
 import org.dailyepisode.controller.AbstractControllerIntegrationTest
 import org.dailyepisode.dto.SubscriptionRequestDto
 import org.dailyepisode.series.TheMovieDBConnector
 import org.dailyepisode.series.TheMovieDBLookupResult
 import org.dailyepisode.series.TheMovieDbGenre
-import org.dailyepisode.subscription.SubscriptionService
+import org.dailyepisode.subscription.SubscriptionStorageService
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
-import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
@@ -27,10 +25,10 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
   private lateinit var theMovieDBConnector: TheMovieDBConnector
 
   @Autowired
-  private lateinit var accountService: AccountService
+  private lateinit var accountStorageService: AccountStorageService
 
   @Autowired
-  private lateinit var subscriptionService: SubscriptionService
+  private lateinit var subscriptionStorageService: SubscriptionStorageService
 
   @Test
   fun `create subscription with invalid subscription data should return 400 Bad Request`() {
@@ -58,7 +56,7 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
       .content(objectMapper.writeValueAsString(subscriptionRequestDto)))
       .andExpect(status().isCreated)
 
-    val alexia = accountService.findByUserName("alexia")!!
+    val alexia = accountStorageService.findByUserName("alexia")!!
     val subscriptions = alexia.subscriptions
     assertThat(subscriptions.size).isEqualTo(3)
     assertThat(subscriptions[0].name).isEqualTo("game of thrones")
@@ -115,8 +113,8 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
 
   @Test
   fun `remove subscription with existing account subscription id should return 200 Ok`() {
-    val lineOfDuty = subscriptionService.findByRemoteId(3)!!
-    val kristofferBefore = accountService.findByUserName("kristoffer")!!
+    val lineOfDuty = subscriptionStorageService.findByRemoteId(3)!!
+    val kristofferBefore = accountStorageService.findByUserName("kristoffer")!!
 
     assertThat(kristofferBefore.subscriptions.size).isEqualTo(2)
 
@@ -126,7 +124,7 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
 
-    val kristofferAfter = accountService.findByUserName("kristoffer")!!
+    val kristofferAfter = accountStorageService.findByUserName("kristoffer")!!
     assertThat(kristofferAfter.subscriptions.size).isEqualTo(1)
   }
 }

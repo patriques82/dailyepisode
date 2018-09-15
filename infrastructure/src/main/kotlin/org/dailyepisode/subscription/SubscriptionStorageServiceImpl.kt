@@ -10,9 +10,9 @@ import org.dailyepisode.series.RemoteSeriesServiceFacade
 import org.springframework.stereotype.Service
 
 @Service
-internal class SubscriptionServiceImpl(private val subscriptionRepository: SubscriptionRepository,
-                                       private val accountRepository: AccountRepository,
-                                       private val remoteSeriesServiceFacade: RemoteSeriesServiceFacade) : SubscriptionService {
+internal class SubscriptionStorageServiceImpl(private val subscriptionRepository: SubscriptionRepository,
+                                              private val accountRepository: AccountRepository,
+                                              private val remoteSeriesServiceFacade: RemoteSeriesServiceFacade) : SubscriptionStorageService {
 
   override fun createSubscription(remoteIds: List<Int>, accountId: Long) {
     val accountEntity: AccountEntity? = accountRepository.findById(accountId).orElse(null)

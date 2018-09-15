@@ -2,7 +2,7 @@ package org.dailyepisode.account
 
 import org.dailyepisode.subscription.Subscription
 
-interface AccountService {
+interface AccountStorageService {
   fun createAccount(accountRegistrationRequest: AccountRegistrationRequest)
   fun updateNotificationIntervaInlDays(accountId: Long, notificationIntervalInlDays: Int)
   fun findAll(): List<Account>

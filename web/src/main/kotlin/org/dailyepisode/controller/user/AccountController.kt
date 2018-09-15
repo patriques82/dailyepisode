@@ -2,7 +2,7 @@ package org.dailyepisode.controller.user
 
 import org.dailyepisode.account.Account
 import org.dailyepisode.account.AccountResolver
-import org.dailyepisode.account.AccountService
+import org.dailyepisode.account.AccountStorageService
 import org.dailyepisode.dto.AccountDto
 import org.dailyepisode.dto.SubscriptionPreferencesRequestDto
 import org.springframework.http.HttpStatus
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/user")
-class AccountController(private val accountService: AccountService,
+class AccountController(private val accountStorageService: AccountStorageService,
                         private val accountResolver: AccountResolver) {
 
   @GetMapping("/me")
@@ -27,7 +27,7 @@ class AccountController(private val accountService: AccountService,
   fun updatePreferences(@RequestBody preferencesRequestDto: SubscriptionPreferencesRequestDto): ResponseEntity<Unit> {
     val account = accountResolver.resolve()
     return if (isValidSubscriptionPreferences(preferencesRequestDto)) {
-      accountService.updateNotificationIntervaInlDays(account.id, preferencesRequestDto.notificationIntervalInDays)
+      accountStorageService.updateNotificationIntervaInlDays(account.id, preferencesRequestDto.notificationIntervalInDays)
       ResponseEntity(HttpStatus.CREATED)
     } else {
       ResponseEntity(HttpStatus.BAD_REQUEST)

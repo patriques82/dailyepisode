@@ -1,11 +1,11 @@
 package org.dailyepisode.update
 
 import org.dailyepisode.account.Account
-import org.dailyepisode.account.AccountService
+import org.dailyepisode.account.AccountStorageService
 import org.dailyepisode.series.SeriesLookupResult
 import org.dailyepisode.series.RemoteSeriesServiceFacade
 import org.dailyepisode.subscription.Subscription
-import org.dailyepisode.subscription.SubscriptionService
+import org.dailyepisode.subscription.SubscriptionStorageService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -13,8 +13,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Component
-class ScheduledUpdateNotifier(private val accountService: AccountService,
-                              private val subscriptionService: SubscriptionService,
+class ScheduledUpdateNotifier(private val accountStorageService: AccountStorageService,
+                              private val subscriptionStorageService: SubscriptionStorageService,
                               private val remoteSeriesServiceFacade: RemoteSeriesServiceFacade,
                               private val notificationSender: NotificationSender) {
 
@@ -25,8 +25,8 @@ class ScheduledUpdateNotifier(private val accountService: AccountService,
   fun notifyAndPersistUpdates() {
     logger.info("Notification sending started: {}", dateFormat.format(Date()))
 
-    val subscriptions = subscriptionService.findAll()
-    val accounts = accountService.findAll()
+    val subscriptions = subscriptionStorageService.findAll()
+    val accounts = accountStorageService.findAll()
     val updateLookupService = UpdateFilteringService(remoteSeriesServiceFacade)
     val updates = updateLookupService.filter(subscriptions)
     notifyUpdates(accounts, updates)

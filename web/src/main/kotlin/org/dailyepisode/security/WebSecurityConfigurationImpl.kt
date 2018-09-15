@@ -1,8 +1,7 @@
 package org.dailyepisode.security
 
 import org.dailyepisode.account.Account
-import org.dailyepisode.account.AccountService
-import org.springframework.context.annotation.Profile
+import org.dailyepisode.account.AccountStorageService
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -57,10 +56,10 @@ class WebSecurityConfigurationImpl(private val userDetailsService: UserDetailsSe
 }
 
 @Service
-internal class UserDetailsServiceImpl(private val accountService: AccountService) : UserDetailsService {
+internal class UserDetailsServiceImpl(private val accountStorageService: AccountStorageService) : UserDetailsService {
 
   override fun loadUserByUsername(username: String?): UserDetails {
-    val account = username?.let { accountService.findByUserName(it) }
+    val account = username?.let { accountStorageService.findByUserName(it) }
     if (account == null) {
       throw UsernameNotFoundException("Username: '$username' does not exists")
     }

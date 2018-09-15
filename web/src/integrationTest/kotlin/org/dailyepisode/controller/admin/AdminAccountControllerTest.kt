@@ -1,31 +1,23 @@
 package org.dailyepisode.controller.admin
 
 import org.assertj.core.api.Assertions.assertThat
-import org.dailyepisode.account.AccountEntity
-import org.dailyepisode.account.AccountRepository
-import org.dailyepisode.account.AccountService
+import org.dailyepisode.account.AccountStorageService
 import org.dailyepisode.controller.AbstractControllerIntegrationTest
 import org.dailyepisode.dto.AccountRegistrationRequestDto
 import org.junit.Test
-import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.Bean
 import org.springframework.http.MediaType
-import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.util.*
 
 class AdminAccountControllerTest : AbstractControllerIntegrationTest() {
 
   @Autowired
-  private lateinit var accountService: AccountService
+  private lateinit var accountStorageService: AccountStorageService
 
   @Test
   fun `user role access should return 403 Forbidden`() {
@@ -57,7 +49,7 @@ class AdminAccountControllerTest : AbstractControllerIntegrationTest() {
       .content(objectMapper.writeValueAsString(accountRegistrationRequestDto)))
       .andExpect(status().isBadRequest)
 
-    val account = accountService.findByUserName("INVALID_USERNAME")
+    val account = accountStorageService.findByUserName("INVALID_USERNAME")
     assertThat(account).isNull()
   }
 
@@ -72,7 +64,7 @@ class AdminAccountControllerTest : AbstractControllerIntegrationTest() {
       .content(objectMapper.writeValueAsString(accountRegistrationRequestDto)))
       .andExpect(status().isCreated)
 
-    val account = accountService.findByUserName("user")
+    val account = accountStorageService.findByUserName("user")
     assertThat(account).isNotNull()
   }
 
@@ -94,7 +86,7 @@ class AdminAccountControllerTest : AbstractControllerIntegrationTest() {
 
   @Test
   fun `get account with existing account id should return account and 200 Ok`() {
-    val kristoffer = accountService.findByUserName("kristoffer")!!
+    val kristoffer = accountStorageService.findByUserName("kristoffer")!!
 
     val expectedJson = """
       {"username":"kristoffer","email":"kristoffer@gmail.com","notificationIntervalInDays":30},
