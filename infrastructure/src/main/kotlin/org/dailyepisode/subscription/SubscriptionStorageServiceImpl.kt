@@ -14,12 +14,12 @@ internal class SubscriptionStorageServiceImpl(private val subscriptionRepository
                                               private val accountRepository: AccountRepository,
                                               private val remoteSeriesServiceFacade: RemoteSeriesServiceFacade) : SubscriptionStorageService {
 
-  override fun createSubscriptions(createSubscriptionsRequest: CreateSubscriptionsRequest) {
-    val accountEntity: AccountEntity? = accountRepository.findById(createSubscriptionsRequest.accountId).orElse(null)
+  override fun createSubscriptions(subscriptionCreateRequest: SubscriptionCreateRequest) {
+    val accountEntity: AccountEntity? = accountRepository.findById(subscriptionCreateRequest.accountId).orElse(null)
     if (accountEntity == null) {
       throw NoAccountFoundException("No account found for id")
     }
-    val (notStoredIds, storedSubscriptions) = SubscriptionBatchService(this).findByRemoteIds(createSubscriptionsRequest.remoteIds)
+    val (notStoredIds, storedSubscriptions) = SubscriptionBatchService(this).findByRemoteIds(subscriptionCreateRequest.remoteIds)
     accountEntity.subscriptions += storedSubscriptions.map { it.toEntity() }
     val seriesLookups = SeriesBatchService(remoteSeriesServiceFacade).lookupByRemoteIds(notStoredIds)
     accountEntity.subscriptions += seriesLookups.map { it.toSubscriptionEntity() }
@@ -48,15 +48,15 @@ internal class SubscriptionStorageServiceImpl(private val subscriptionRepository
     subscriptionRepository.findByRemoteId(remoteId)
       ?.toSubscription()
 
-  override fun deleteSubscription(deleteSubscriptionRequest: DeleteSubscriptionRequest) {
-    val accountEntity: AccountEntity? = accountRepository.findById(deleteSubscriptionRequest.accountId).orElse(null)
+  override fun deleteSubscription(subscriptionDeleteRequest: SubscriptionDeleteRequest) {
+    val accountEntity: AccountEntity? = accountRepository.findById(subscriptionDeleteRequest.accountId).orElse(null)
     if (accountEntity == null) {
       throw NoAccountFoundException("No account found for id")
     }
-    if (!accountEntity.subscribesTo(deleteSubscriptionRequest.subscriptionId)) {
+    if (!accountEntity.subscribesTo(subscriptionDeleteRequest.subscriptionId)) {
       throw AccountHasNoMatchingSubscriptionException("Account has no matching subscription with id")
     }
-    accountEntity.subscriptions = accountEntity.subscriptions.filter { it.id != deleteSubscriptionRequest.subscriptionId }
+    accountEntity.subscriptions = accountEntity.subscriptions.filter { it.id != subscriptionDeleteRequest.subscriptionId }
     accountRepository.save(accountEntity)
   }
 

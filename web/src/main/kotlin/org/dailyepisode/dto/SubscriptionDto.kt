@@ -2,7 +2,7 @@ package org.dailyepisode.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import org.dailyepisode.subscription.Subscription
-import org.dailyepisode.subscription.CreateSubscriptionsRequest
+import org.dailyepisode.subscription.SubscriptionCreateRequest
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SubscriptionRequestDto(
@@ -10,8 +10,8 @@ data class SubscriptionRequestDto(
   val remoteIds: List<Int>
 )
 
-fun SubscriptionRequestDto.toSubscriptionRequest(): CreateSubscriptionsRequest =
-  CreateSubscriptionsRequest(accountId, remoteIds)
+fun SubscriptionRequestDto.toSubscriptionRequest(): SubscriptionCreateRequest =
+  SubscriptionCreateRequest(accountId, remoteIds)
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SubscriptionDto(

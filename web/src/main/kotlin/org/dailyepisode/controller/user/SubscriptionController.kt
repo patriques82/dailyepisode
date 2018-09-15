@@ -3,7 +3,7 @@ package org.dailyepisode.controller.user
 import org.dailyepisode.account.Account
 import org.dailyepisode.account.AccountResolver
 import org.dailyepisode.dto.*
-import org.dailyepisode.subscription.DeleteSubscriptionRequest
+import org.dailyepisode.subscription.SubscriptionDeleteRequest
 import org.dailyepisode.subscription.SubscriptionStorageService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -42,7 +42,7 @@ class SubscriptionController(private val subscriptionStorageService: Subscriptio
   @DeleteMapping("/{subscriptionId}")
   fun removeSubscription(@PathVariable subscriptionId: Long): ResponseEntity<Unit> {
     val account = accountResolver.resolve()
-    subscriptionStorageService.deleteSubscription(DeleteSubscriptionRequest(account.id, subscriptionId))
+    subscriptionStorageService.deleteSubscription(SubscriptionDeleteRequest(account.id, subscriptionId))
     return ResponseEntity(HttpStatus.OK)
   }
 
