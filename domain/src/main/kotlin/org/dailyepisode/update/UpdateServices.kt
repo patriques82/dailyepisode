@@ -45,6 +45,8 @@ class UpdateSearchService(private val remoteSeriesServiceFacade: RemoteSeriesSer
 class UpdatePersistService(private val subscriptionStorageService: SubscriptionStorageService) {
 
   fun persist(updatedSeriesLookupResult: SeriesUpdatedLookupResult) {
+    val subscription = subscriptionStorageService.findByRemoteId(updatedSeriesLookupResult.remoteId)
 
   }
+
 }

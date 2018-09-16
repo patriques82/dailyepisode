@@ -11,9 +11,8 @@ internal class CorsConfiguration(@Value("\${cors.allowed.origin}") private val a
 
   override fun addCorsMappings(registry: CorsRegistry) {
     registry
-      .addMapping("/api/*")
+      .addMapping("/**")
       .allowedMethods("GET", "POST", "PUT", "DELETE")
-      .allowedHeaders("*")
       .allowedOrigins(allowedOrigin)
   }
 

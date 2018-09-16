@@ -17,13 +17,14 @@ class ScheduledUpdateNotifier(private val accountStorageService: AccountStorageS
 
   private val logger = LoggerFactory.getLogger(ScheduledUpdateNotifier::class.java)
   private val dateFormat = SimpleDateFormat("EEEEE MMMMM yyyy HH:mm:ss")
+
   private val updateSearchService = UpdateSearchService(remoteSeriesServiceFacade)
   private val updateNotificationSendService = UpdateNotificationService(notificationSender)
   private val updatePersistService = UpdatePersistService(subscriptionStorageService)
 
   @Scheduled(fixedDelay = 3000)
   fun notifyAndPersistUpdates() {
-    logger.info("Notification sending started: {}", dateFormat.format(Date()))
+    logger.info("Notification sending and persisting started: {}", dateFormat.format(Date()))
 
     val accounts = accountStorageService.findAll()
     val subscriptions = subscriptionStorageService.findAll()
@@ -32,7 +33,7 @@ class ScheduledUpdateNotifier(private val accountStorageService: AccountStorageS
     accounts.forEach { updateNotificationSendService.sendTo(it, updates) }
     updates.forEach { updatePersistService.persist(it) }
 
-    logger.info("Notification sending ended: {}", dateFormat.format(Date()))
+    logger.info("Notification sending and persisting ended: {}", dateFormat.format(Date()))
   }
 
 }

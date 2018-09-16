@@ -38,6 +38,8 @@ class WebSecurityConfiguration(private val userDetailsService: UserDetailsServic
   // Authorization
   override fun configure(http: HttpSecurity) {
     http
+      .cors()
+        .and()
       .csrf()
         .disable()
         .headers().frameOptions().sameOrigin() // to enable h2-console
@@ -92,7 +94,7 @@ internal class AuthenticationEntryPointImpl: AuthenticationEntryPoint {
   override fun commence(request: HttpServletRequest?,
                         response: HttpServletResponse?,
                         authException: AuthenticationException?) {
-    response?.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
+    response?.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized succer")
   }
 
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/admin/user")
+@CrossOrigin(origins = arrayOf("http://localhost:3000"))
 class AdminAccountController(private val accountStorageService: AccountStorageService) {
 
   @PostMapping
