@@ -37,6 +37,7 @@ internal class AccountStorageStorageServiceImpl(private val accountRepository: A
       val storedAccount = accountRepository.findById(id).orElse(null)
       if (storedAccount != null) {
         storedAccount.notificationIntervalInDays = notificationIntervalInDays
+        storedAccount.username = username
         accountRepository.save(storedAccount)
       }
     }

@@ -45,7 +45,7 @@ class AccountControllerTest: AbstractControllerIntegrationTest() {
   @Test
   fun `update preferences with invalid notificationIntervalInDays should return 400 Bad Request`() {
     val alexia = accountStorageService.findByUserName("alexia")!!
-    val invalidPreferencesRequestDto = AccountUpdateRequestDto(alexia.id, notificationIntervalInDays = -1)
+    val invalidPreferencesRequestDto = AccountUpdateRequestDto(alexia.id, "alexia", -1)
 
     mockMvc.perform(put("/api/user/update")
       .with(csrf())
@@ -58,7 +58,7 @@ class AccountControllerTest: AbstractControllerIntegrationTest() {
   @Test
   fun `update preferences with invalid account id should return 400 Bad Request`() {
     val alexia = accountStorageService.findByUserName("alexia")!!
-    val invalidPreferencesRequestDto = AccountUpdateRequestDto(alexia.id + 1, notificationIntervalInDays = 1)
+    val invalidPreferencesRequestDto = AccountUpdateRequestDto(alexia.id + 1,"alle", 1)
 
     mockMvc.perform(put("/api/user/update")
       .with(csrf())
@@ -70,10 +70,9 @@ class AccountControllerTest: AbstractControllerIntegrationTest() {
 
   @Test
   fun `update preferences with valid data should return 201 Created`() {
-    val kristoffer = accountStorageService.findByUserName("kristoffer")!!
-    val preferencesRequestDto = AccountUpdateRequestDto(kristoffer.id, notificationIntervalInDays = 3)
+    val kristofferBefore = accountStorageService.findByUserName("kristoffer")!!
+    val preferencesRequestDto = AccountUpdateRequestDto(kristofferBefore.id, "krille", 3)
 
-    val kristofferBefore= accountStorageService.findByUserName("kristoffer")!!
     assertThat(kristofferBefore.notificationIntervalInDays).isEqualTo(30)
 
     mockMvc.perform(put("/api/user/update")
@@ -83,8 +82,21 @@ class AccountControllerTest: AbstractControllerIntegrationTest() {
       .content(objectMapper.writeValueAsString(preferencesRequestDto)))
       .andExpect(status().isCreated)
 
-    val kristofferAfter = accountStorageService.findByUserName("kristoffer")!!
+    val kristofferAfter = accountStorageService.findByUserName("krille")!!
     assertThat(kristofferAfter.notificationIntervalInDays).isEqualTo(3)
+  }
+
+  @Test
+  fun `update preferences with not unique username should return 400 Bad Request`() {
+    val kristofferBefore = accountStorageService.findByUserName("kristoffer")!!
+    val preferencesRequestDto = AccountUpdateRequestDto(kristofferBefore.id, "alexia", 30)
+
+    mockMvc.perform(put("/api/user/update")
+      .with(csrf())
+      .with(httpBasic("kristoffer", "reffotsirk"))
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(objectMapper.writeValueAsString(preferencesRequestDto)))
+      .andExpect(status().isBadRequest)
   }
 
 }

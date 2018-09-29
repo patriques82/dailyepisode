@@ -37,12 +37,27 @@ class AccountController(private val accountStorageService: AccountStorageService
 
   private fun isValidUpdateRequest(account: Account, accountUpdateRequestDto: AccountUpdateRequestDto?): Boolean =
     if (accountUpdateRequestDto != null) {
-      account.id == accountUpdateRequestDto.accountId && accountUpdateRequestDto.notificationIntervalInDays > 0
+      isSameAccount(account.id, accountUpdateRequestDto.accountId) &&
+        validNotificationInterval(accountUpdateRequestDto.notificationIntervalInDays) &&
+          validUsername(account.username, accountUpdateRequestDto.username)
     } else {
       false
     }
 
+  private fun validUsername(username: String, accountUpdateRequestUsername: String): Boolean =
+    if (username != accountUpdateRequestUsername) {
+      accountStorageService.findByUserName(accountUpdateRequestUsername) == null
+    } else {
+      true
+    }
+
+  private fun validNotificationInterval(notificationIntervalInDays: Int) =
+    notificationIntervalInDays > 0
+
+  private fun isSameAccount(accountId: Long, accountUpdateRequestId: Long) =
+    accountId == accountUpdateRequestId
+
   private fun AccountUpdateRequestDto.toUpdateAccountRequest() =
-    AccountUpdateRequest(accountId, notificationIntervalInDays)
+    AccountUpdateRequest(accountId, username, notificationIntervalInDays)
 }
 

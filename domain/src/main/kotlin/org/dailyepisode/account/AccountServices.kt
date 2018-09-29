@@ -28,6 +28,7 @@ data class Account(
 
 data class AccountUpdateRequest(
   val id: Long,
+  val username: String,
   val notificationIntervalInDays: Int
 )
 

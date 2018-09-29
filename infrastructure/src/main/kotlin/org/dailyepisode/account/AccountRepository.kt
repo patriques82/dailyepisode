@@ -17,6 +17,7 @@ class AccountEntity(
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   var id: Long? = null,
+  @Column(unique=true)
   var username: String,
   var email: String,
   var password: String,

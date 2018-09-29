@@ -20,5 +20,6 @@ data class AccountRegistrationRequestDto(
 
 data class AccountUpdateRequestDto(
   val accountId: Long,
+  val username: String,
   val notificationIntervalInDays: Int
 )
