@@ -5,7 +5,7 @@ import org.dailyepisode.subscription.Subscription
 interface AccountStorageService {
   fun createAccount(accountRegistrationRequest: AccountRegistrationRequest)
   fun updateAccount(accountId: Long, accountUpdateRequest: AccountUpdateRequest)
-  fun updatePassword(passwordUpdateRequest: PasswordUpdateRequest)
+  fun updatePassword(accountId: Long, passwordUpdateRequest: PasswordUpdateRequest)
   fun findAll(): List<Account>
   fun findById(accountId: Long): Account?
   fun findByUserName(userName: String): Account?

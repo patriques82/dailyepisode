@@ -1,9 +1,6 @@
 package org.dailyepisode.controller.user
 
-import org.dailyepisode.account.Account
-import org.dailyepisode.account.AccountResolverService
-import org.dailyepisode.account.AccountStorageService
-import org.dailyepisode.account.AccountUpdateRequest
+import org.dailyepisode.account.*
 import org.dailyepisode.dto.AccountDto
 import org.dailyepisode.dto.AccountUpdateRequestDto
 import org.dailyepisode.dto.PasswordChangeRequestDto
@@ -28,8 +25,12 @@ class AccountController(private val accountStorageService: AccountStorageService
   @PutMapping("/update")
   fun updatePreferences(@RequestBody accountUpdateRequestDto: AccountUpdateRequestDto?): ResponseEntity<Unit> {
     val account = accountResolverService.resolve()
-    accountStorageService.updateAccount(account.id, accountUpdateRequestDto!!.toUpdateAccountRequest())
-    return ResponseEntity(HttpStatus.CREATED)
+    if (accountUpdateRequestDto != null) {
+      accountStorageService.updateAccount(account.id, accountUpdateRequestDto.toUpdateAccountRequest())
+      return ResponseEntity(HttpStatus.CREATED)
+    } else {
+      return ResponseEntity(HttpStatus.BAD_REQUEST)
+    }
   }
 
   private fun AccountUpdateRequestDto.toUpdateAccountRequest() =
@@ -37,11 +38,17 @@ class AccountController(private val accountStorageService: AccountStorageService
 
   @PutMapping("/change-password")
   fun changePassword(@RequestBody changePasswordChangeRequestDto: PasswordChangeRequestDto?): ResponseEntity<Unit> {
-    //val account = accountResolverService.resolve()
-
-    return ResponseEntity(HttpStatus.NO_CONTENT)
+    val account = accountResolverService.resolve()
+    if (changePasswordChangeRequestDto != null) {
+      accountStorageService.updatePassword(account.id, changePasswordChangeRequestDto.toPasswordChangeRequest())
+      return ResponseEntity(HttpStatus.CREATED)
+    } else {
+      return ResponseEntity(HttpStatus.BAD_REQUEST)
+    }
   }
 
+  private fun PasswordChangeRequestDto.toPasswordChangeRequest(): PasswordUpdateRequest =
+    PasswordUpdateRequest(accountId, newPassword)
 
 }
 

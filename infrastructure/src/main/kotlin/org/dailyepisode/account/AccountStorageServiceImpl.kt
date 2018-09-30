@@ -54,7 +54,18 @@ internal class AccountStorageServiceImpl(private val accountRepository: AccountR
   private fun userNameAlreadyExist(accountUpdateRequestUsername: String): Boolean =
     accountRepository.findByUsername(accountUpdateRequestUsername) != null
 
-  override fun updatePassword(passwordUpdateRequest: PasswordUpdateRequest) {
-    TODO("not implemented")
+  override fun updatePassword(accountId: Long, passwordUpdateRequest: PasswordUpdateRequest) {
+    AccountValidator.validatePassword(passwordUpdateRequest.newPassword)
+    val account = accountRepository.findById(accountId).orElse(null)
+    if (account == null) {
+      throw NoAccountFoundException("No account found for id")
+    }
+    if (account.id != passwordUpdateRequest.id) {
+      throw NonMatchingAccoundId("Request account id does not match user account id")
+    }
+    with(passwordUpdateRequest) {
+      account.password = passwordEncoder.encode(newPassword)
+      accountRepository.save(account)
+    }
   }
 }

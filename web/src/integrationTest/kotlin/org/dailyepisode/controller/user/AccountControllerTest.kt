@@ -2,11 +2,14 @@ package org.dailyepisode.controller.user
 
 import org.assertj.core.api.Assertions.assertThat
 import org.dailyepisode.account.AccountStorageService
+import org.dailyepisode.account.PasswordUpdateRequest
 import org.dailyepisode.controller.AbstractControllerIntegrationTest
 import org.dailyepisode.dto.AccountUpdateRequestDto
+import org.dailyepisode.dto.PasswordChangeRequestDto
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -18,6 +21,8 @@ class AccountControllerTest: AbstractControllerIntegrationTest() {
 
   @Autowired
   private lateinit var accountStorageService: AccountStorageService
+  @Autowired
+  private lateinit var passwordEncoder: PasswordEncoder
 
   @Test
   fun `no user authentication access should return 401 Unauthorized`() {
@@ -100,16 +105,35 @@ class AccountControllerTest: AbstractControllerIntegrationTest() {
   }
 
   @Test
-  fun `update preferences with not unique username should return 400 Bad Request`() {
+  fun `update password with invalid password should return 400 Bad Request`() {
     val kristofferBefore = accountStorageService.findByUserName("kristoffer")!!
-    val preferencesRequestDto = AccountUpdateRequestDto(kristofferBefore.id, "alexia", 30)
+    assertThat(passwordEncoder.matches("reffotsirk", kristofferBefore.password)).isEqualTo(true)
+    val passwordUpdateRequestDto = PasswordUpdateRequest(kristofferBefore.id, "Invalid_password")
 
-    mockMvc.perform(put("/api/user/update")
+    mockMvc.perform(put("/api/user/change-password")
       .with(csrf())
       .with(httpBasic("kristoffer", "reffotsirk"))
       .contentType(MediaType.APPLICATION_JSON)
-      .content(objectMapper.writeValueAsString(preferencesRequestDto)))
+      .content(objectMapper.writeValueAsString(passwordUpdateRequestDto)))
       .andExpect(status().isBadRequest)
+  }
+
+  @Test
+  fun `update password with valid password should return 201 Created`() {
+    val kristofferBefore = accountStorageService.findByUserName("kristoffer")!!
+    assertThat(passwordEncoder.matches("reffotsirk", kristofferBefore.password)).isEqualTo(true)
+
+    val passwordUpdateRequestDto = PasswordChangeRequestDto(kristofferBefore.id, "newpassword")
+
+    mockMvc.perform(put("/api/user/change-password")
+      .with(csrf())
+      .with(httpBasic("kristoffer", "reffotsirk"))
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(objectMapper.writeValueAsString(passwordUpdateRequestDto)))
+      .andExpect(status().isCreated)
+
+    val kristofferAfter = accountStorageService.findByUserName("kristoffer")!!
+    assertThat(passwordEncoder.matches("newpassword", kristofferAfter.password)).isEqualTo(true)
   }
 
 }
