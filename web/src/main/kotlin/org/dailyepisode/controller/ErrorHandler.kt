@@ -36,6 +36,14 @@ class ErrorHandler {
   fun emailAlreadyInUse(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.CONFLICT)
 
+  @ExceptionHandler(IllegalNotificationInterval::class)
+  fun illegalNotificationInterval(exception: Exception): ResponseEntity<ErrorDto> =
+    ResponseEntity(ErrorDto(exception.message!!), HttpStatus.BAD_REQUEST)
+
+  @ExceptionHandler(NonMatchingAccoundId::class)
+  fun nonMatchingAccountId(exception: Exception): ResponseEntity<ErrorDto> =
+    ResponseEntity(ErrorDto(exception.message!!), HttpStatus.BAD_REQUEST)
+
   @ExceptionHandler(InvalidUserNameException::class)
   fun invalidUserName(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.BAD_REQUEST)

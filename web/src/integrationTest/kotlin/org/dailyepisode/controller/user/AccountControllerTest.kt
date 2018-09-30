@@ -69,6 +69,19 @@ class AccountControllerTest: AbstractControllerIntegrationTest() {
   }
 
   @Test
+  fun `update preferences with existing username should return 400 Bad Request`() {
+    val alexia = accountStorageService.findByUserName("alexia")!!
+    val invalidPreferencesRequestDto = AccountUpdateRequestDto(alexia.id,"kristoffer", 1)
+
+    mockMvc.perform(put("/api/user/update")
+      .with(csrf())
+      .with(httpBasic("alexia", "aixela"))
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(objectMapper.writeValueAsString(invalidPreferencesRequestDto)))
+      .andExpect(status().isBadRequest)
+  }
+
+  @Test
   fun `update preferences with valid data should return 201 Created`() {
     val kristofferBefore = accountStorageService.findByUserName("kristoffer")!!
     val preferencesRequestDto = AccountUpdateRequestDto(kristofferBefore.id, "krille", 3)

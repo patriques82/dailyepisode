@@ -55,7 +55,7 @@ class AdminAccountControllerTest : AbstractControllerIntegrationTest() {
 
   @Test
   fun `register with valid account should return 201 Created`() {
-    val accountRegistrationRequestDto = AccountRegistrationRequestDto("user", "user@email.com", "P@ssw0rd", 1)
+    val accountRegistrationRequestDto = AccountRegistrationRequestDto("user", "user@email.com", "Passw0rd", 1)
 
     mockMvc.perform(post("/admin/user")
       .with(csrf())

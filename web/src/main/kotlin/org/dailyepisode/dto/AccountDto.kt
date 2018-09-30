@@ -23,3 +23,8 @@ data class AccountUpdateRequestDto(
   val username: String,
   val notificationIntervalInDays: Int
 )
+
+data class PasswordChangeRequestDto(
+  val accountId: Long,
+  val newPassword: String
+)
