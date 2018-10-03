@@ -3,7 +3,6 @@ package org.dailyepisode.series
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
-internal const val MAX_SEARCH_PAGES = 5
 internal const val MAX_UPDATES_PAGES = 10
 
 @Service
@@ -13,20 +12,14 @@ internal class TheMovieDBRemoteSeriesServiceFacade(private val theMovieDBConnect
   : RemoteSeriesServiceFacade {
 
   override fun search(seriesSearchRequest: SeriesSearchRequest): SeriesSearchResult {
-    val searchResult = fetchSearchResultAllPages(seriesSearchRequest.query)
-    return SeriesSearchResult(searchResult.map { it.toSeriesSearchInfo() })
+    val searchResult = fetchSearchResult(seriesSearchRequest.query, seriesSearchRequest.page)
+    return with(searchResult) {
+      SeriesSearchResult(results.map { it.toSeriesSearchInfo() }, page, total_pages, total_result)
+    }
   }
 
-  private fun fetchSearchResultAllPages(query: String): List<TheMovieDBSeriesSearchInfo> {
-    var page = 0
-    val searchInfos = mutableListOf<TheMovieDBSeriesSearchInfo>()
-    do {
-      page++
-      val searchResult = theMovieDBConnector.fetchSearchResultForPage(query, page)
-      searchInfos += searchResult.results
-    } while (page < searchResult.total_pages && page < MAX_SEARCH_PAGES)
-    return searchInfos
-  }
+  private fun fetchSearchResult(query: String, page: Int): TheMovieDBSeriesSearchResult =
+    theMovieDBConnector.fetchSearchResultForPage(query, page)
 
   private fun TheMovieDBSeriesSearchInfo.toSeriesSearchInfo() =
     SeriesSearchInfo(id, name, overview, resolveImageUrl(poster_path), vote_count, vote_average)

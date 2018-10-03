@@ -6,9 +6,17 @@ interface RemoteSeriesServiceFacade {
   fun updatesSinceYesterday(): UpdatedSeriesResult
 }
 
-data class SeriesSearchRequest(val query: String)
+data class SeriesSearchRequest(
+  val query: String,
+  val page: Int
+)
 
-data class SeriesSearchResult(val results: List<SeriesSearchInfo>)
+data class SeriesSearchResult(
+  val results: List<SeriesSearchInfo>,
+  val page: Int,
+  val totalPages: Int,
+  val totalResults: Int
+)
 
 data class SeriesSearchInfo(
   val remoteId: Int,

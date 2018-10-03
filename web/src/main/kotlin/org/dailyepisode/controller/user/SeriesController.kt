@@ -13,16 +13,14 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/series")
 class SeriesController(private val remoteSeriesServiceFacade: RemoteSeriesServiceFacade) {
 
-  @GetMapping("/search")
-  fun search(@RequestParam("query") query: String?): ResponseEntity<SeriesSearchResultDto> {
-    val searchResult =
-      if (query != null) {
-        val seriesResult = remoteSeriesServiceFacade.search(SeriesSearchRequest(query))
-        SeriesSearchResultDto(seriesResult.results.map { it.toDto() })
-      } else {
-        SeriesSearchResultDto(listOf())
-      }
-    return ResponseEntity(searchResult, HttpStatus.OK)
+  @GetMapping("/search/{page}")
+  fun search(@PathVariable page: Int, @RequestParam("query") query: String?): ResponseEntity<SeriesSearchResultDto> {
+    if (query != null && page > 0) {
+      val seriesResult = remoteSeriesServiceFacade.search(SeriesSearchRequest(query, page))
+      return ResponseEntity(seriesResult.toDto(), HttpStatus.OK)
+    } else {
+      return ResponseEntity(HttpStatus.BAD_REQUEST)
+    }
   }
 
   @GetMapping("/{remoteId}")

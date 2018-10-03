@@ -72,7 +72,7 @@ class AdminAccountControllerTest : AbstractControllerIntegrationTest() {
   fun `get all accounts should return accounts and 200 Ok`() {
     val expectedJson = """[
       {"username":"patrik","email":"patrik@gmail.com","notificationIntervalInDays":1},
-      {"username":"alexia","email":"alexia@gmail.com","notificationIntervalInDays":10},
+      {"username":"alexia","email":"alexia@gmail.com","notificationIntervalInDays":9},
       {"username":"kristoffer","email":"kristoffer@gmail.com","notificationIntervalInDays":30}
       ]""".trimIndent()
 

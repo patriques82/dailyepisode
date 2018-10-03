@@ -36,7 +36,7 @@ class AccountControllerTest: AbstractControllerIntegrationTest() {
   @Test
   fun `get current account with valid user account should return user details and 200 Ok`() {
     val expectedJson = """
-      {"username":"alexia","email":"alexia@gmail.com","notificationIntervalInDays":10}
+      {"username":"alexia","email":"alexia@gmail.com","notificationIntervalInDays":9}
     """.trimIndent()
 
     mockMvc.perform(get("/api/user/me")

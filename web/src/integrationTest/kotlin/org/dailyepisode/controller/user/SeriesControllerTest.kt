@@ -43,21 +43,19 @@ class SeriesControllerTest: AbstractControllerIntegrationTest() {
          "overview":"12-year-old girls are incredible",
          "imageUrl":"http://image.tmdb.org/t/p/w92/shakers",
          "voteCount":22,
-         "voteAverage":9.3},
-        {"remoteId":1,
-         "name":"joker game",
-         "overview":"mysterious spy training organization",
-         "imageUrl":"http://image.tmdb.org/t/p/w92/joker",
-         "voteCount":5,
-         "voteAverage":8.5}
-      ]}
+         "voteAverage":9.3}
+      ],
+      "page": 1,
+      "totalPages": 2,
+      "totalResult": 3}
     """.trimIndent()
 
-    mockMvc.perform(get("/api/series/search?query=game")
+    mockMvc.perform(get("/api/series/search/1?query=game")
       .with(csrf())
       .contentType(MediaType.APPLICATION_JSON))
       .andExpect(status().isOk)
       .andExpect(content().json(expectedJson, true))
+
   }
 
   @Test

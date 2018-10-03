@@ -33,7 +33,7 @@ internal class DataInitializer(val passwordEncoder: PasswordEncoder,
 
     val accounts = mutableListOf<AccountEntity>()
     accounts.add(AccountEntity(null,  "patrik", "patrik@gmail.com", passwordEncoder.encode("kirtap"), 1, listOf(user, admin), listOf(breakingBad, lineOfDuty)))
-    accounts.add(AccountEntity(null, "alexia", "alexia@gmail.com", passwordEncoder.encode("aixela"), 10, listOf(user), listOf()))
+    accounts.add(AccountEntity(null, "alexia", "alexia@gmail.com", passwordEncoder.encode("aixela"), 9, listOf(user), listOf()))
     accounts.add(AccountEntity(null, "kristoffer", "kristoffer@gmail.com", passwordEncoder.encode("reffotsirk"), 30, listOf(user), listOf(lineOfDuty, gameOfThrones)))
 
     accountRepository.saveAll(accounts)
