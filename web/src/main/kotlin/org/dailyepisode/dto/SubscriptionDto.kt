@@ -7,11 +7,11 @@ import org.dailyepisode.subscription.SubscriptionCreateRequest
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SubscriptionRequestDto(
   val accountId: Long,
-  val remoteIds: List<Int>
+  val remoteId: Int
 )
 
 fun SubscriptionRequestDto.toSubscriptionRequest(): SubscriptionCreateRequest =
-  SubscriptionCreateRequest(accountId, remoteIds)
+  SubscriptionCreateRequest(accountId, remoteId)
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SubscriptionDto(

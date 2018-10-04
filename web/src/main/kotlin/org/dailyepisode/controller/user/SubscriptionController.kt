@@ -15,19 +15,23 @@ class SubscriptionController(private val subscriptionStorageService: Subscriptio
                              private val accountResolverService: AccountResolverService) {
 
   @PostMapping
-  fun createSubscription(@RequestBody subscriptionRequestDto: SubscriptionRequestDto?): ResponseEntity<Unit> {
+  fun createSubscription(@RequestBody subscriptionRequestDto: SubscriptionRequestDto?): ResponseEntity<SubscriptionDto> {
     val account = accountResolverService.resolve()
-    return if (isValidSubscriptionRequest(account, subscriptionRequestDto)) {
-      subscriptionStorageService.createSubscriptions(subscriptionRequestDto!!.toSubscriptionRequest())
-      ResponseEntity(HttpStatus.CREATED)
+    if (isValidSubscriptionRequest(account, subscriptionRequestDto)) {
+      val subscription = subscriptionStorageService.createSubscriptions(subscriptionRequestDto!!.toSubscriptionRequest())
+      if (subscription != null) {
+        return ResponseEntity(subscription.toDto(), HttpStatus.CREATED)
+      } else {
+        return ResponseEntity(HttpStatus.BAD_REQUEST)
+      }
     } else {
-      ResponseEntity(HttpStatus.BAD_REQUEST)
+      return ResponseEntity(HttpStatus.BAD_REQUEST)
     }
   }
 
   private fun isValidSubscriptionRequest(account: Account, subscriptionRequestDto: SubscriptionRequestDto?): Boolean =
     if (subscriptionRequestDto != null) {
-      account.id == subscriptionRequestDto.accountId && subscriptionRequestDto.remoteIds.isNotEmpty()
+      account.id == subscriptionRequestDto.accountId && subscriptionRequestDto.remoteId > 0
     } else {
       false
     }

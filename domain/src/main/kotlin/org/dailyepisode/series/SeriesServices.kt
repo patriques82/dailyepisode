@@ -21,7 +21,7 @@ data class SeriesSearchResult(
 data class SeriesSearchInfo(
   val remoteId: Int,
   val name: String,
-  val overview: String,
+  val overview: String?,
   val imageUrl: String?,
   val voteCount: Int,
   val voteAverage: Double
@@ -30,7 +30,7 @@ data class SeriesSearchInfo(
 data class SeriesLookupResult(
   val remoteId: Int,
   val name: String,
-  val overview: String,
+  val overview: String?,
   val imageUrl: String?,
   val voteCount: Int,
   val voteAverage: Double,

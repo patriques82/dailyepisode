@@ -9,7 +9,7 @@ import org.dailyepisode.series.SeriesSearchResult
 data class SeriesSearchInfoDto(
   val remoteId: Int,
   val name: String,
-  val overview: String,
+  val overview: String?,
   val imageUrl: String?,
   val voteCount: Int,
   val voteAverage: Double
@@ -32,7 +32,7 @@ fun SeriesSearchResult.toDto(): SeriesSearchResultDto =
 data class SeriesLookupResultDto(
   val remoteId: Int,
   val name: String,
-  val overview: String,
+  val overview: String?,
   val imageUrl: String?,
   val voteCount: Int,
   val voteAverage: Double,

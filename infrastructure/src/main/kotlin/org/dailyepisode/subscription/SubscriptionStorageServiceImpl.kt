@@ -5,7 +5,6 @@ import org.dailyepisode.account.AccountHasNoMatchingSubscriptionException
 import org.dailyepisode.account.AccountRepository
 import org.dailyepisode.account.NoAccountFoundException
 import org.dailyepisode.series.SeriesLookupResult
-import org.dailyepisode.series.SeriesLookupBatchService
 import org.dailyepisode.series.RemoteSeriesServiceFacade
 import org.springframework.stereotype.Service
 
@@ -14,16 +13,25 @@ internal class SubscriptionStorageServiceImpl(private val subscriptionRepository
                                               private val accountRepository: AccountRepository,
                                               private val remoteSeriesServiceFacade: RemoteSeriesServiceFacade) : SubscriptionStorageService {
 
-  override fun createSubscriptions(subscriptionCreateRequest: SubscriptionCreateRequest) {
+  override fun createSubscriptions(subscriptionCreateRequest: SubscriptionCreateRequest): Subscription? {
     val accountEntity: AccountEntity? = accountRepository.findById(subscriptionCreateRequest.accountId).orElse(null)
     if (accountEntity == null) {
       throw NoAccountFoundException("No account found for id")
     }
-    val (notStoredIds, storedSubscriptions) = SubscriptionBatchService(this).findByRemoteIds(subscriptionCreateRequest.remoteIds)
-    accountEntity.subscriptions += storedSubscriptions.map { it.toEntity() }
-    val seriesLookups = SeriesLookupBatchService(remoteSeriesServiceFacade).lookup(notStoredIds)
-    accountEntity.subscriptions += seriesLookups.map { it.toSubscriptionEntity() }
-    accountRepository.save(accountEntity)
+    var subscriptionEntity = subscriptionRepository.findByRemoteId(subscriptionCreateRequest.remoteId)
+    if (subscriptionEntity == null) {
+      val seriesLookupResult = remoteSeriesServiceFacade.lookup(subscriptionCreateRequest.remoteId)
+      if (seriesLookupResult == null) {
+        return null
+      }
+      subscriptionEntity = seriesLookupResult.toSubscriptionEntity()
+    }
+    accountEntity.subscriptions += subscriptionEntity
+    val updatedAccount = accountRepository.save(accountEntity)
+    val storedSubscription = updatedAccount.subscriptions.find {
+      it.remoteId == subscriptionCreateRequest.remoteId
+    }
+    return storedSubscription?.toSubscription()
   }
 
   private fun SeriesLookupResult.toSubscriptionEntity(): SubscriptionEntity =

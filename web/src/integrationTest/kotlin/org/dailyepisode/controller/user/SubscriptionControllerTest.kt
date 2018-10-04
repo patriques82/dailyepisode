@@ -42,7 +42,7 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
 
   @Test
   fun `create subscription with subscription request with invalid account id should return 400 Bad Request`() {
-    val invalidSubscriptionRequestDto = SubscriptionRequestDto(666, listOf(1, 2, 4)) // game of thrones, breaking bad, rick and morty
+    val invalidSubscriptionRequestDto = SubscriptionRequestDto(666, 1) // game of thrones
 
     mockMvc.perform(post("/api/subscription")
       .with(csrf())
@@ -63,7 +63,7 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
     val alexiaBefore = accountStorageService.findByUserName("alexia")!!
     assertThat(alexiaBefore.subscriptions).isEmpty()
 
-    val subscriptionRequestDto = SubscriptionRequestDto(alexiaBefore.id, listOf(1, 2, 4)) // game of thrones, breaking bad, rick and morty
+    val subscriptionRequestDto = SubscriptionRequestDto(alexiaBefore.id, 4) //rick and morty
 
     mockMvc.perform(post("/api/subscription")
       .with(csrf())
@@ -74,10 +74,8 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
 
     val alexiaAfter = accountStorageService.findByUserName("alexia")!!
     val subscriptionsAfter = alexiaAfter.subscriptions
-    assertThat(subscriptionsAfter.size).isEqualTo(3)
-    assertThat(subscriptionsAfter[0].name).isEqualTo("game of thrones")
-    assertThat(subscriptionsAfter[1].name).isEqualTo("breaking bad")
-    assertThat(subscriptionsAfter[2].name).isEqualTo("rick and morty")
+    assertThat(subscriptionsAfter.size).isEqualTo(1)
+    assertThat(subscriptionsAfter[0].name).isEqualTo("rick and morty")
   }
 
   @Test

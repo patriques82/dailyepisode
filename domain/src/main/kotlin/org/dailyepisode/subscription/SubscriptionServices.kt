@@ -1,7 +1,7 @@
 package org.dailyepisode.subscription
 
 interface SubscriptionStorageService {
-  fun createSubscriptions(subscriptionCreateRequest: SubscriptionCreateRequest)
+  fun createSubscriptions(subscriptionCreateRequest: SubscriptionCreateRequest): Subscription?
   fun findAll(): List<Subscription>
   fun findById(subscriptionId: Long): Subscription?
   fun findByRemoteId(remoteId: Int): Subscription?
@@ -10,7 +10,7 @@ interface SubscriptionStorageService {
 
 data class SubscriptionCreateRequest(
   val accountId: Long,
-  val remoteIds: List<Int>
+  val remoteId: Int
 )
 
 data class SubscriptionDeleteRequest(
@@ -33,23 +33,3 @@ data class Subscription(
   val numberOfEpisodes: Int,
   val numberOfSeasons: Int
 )
-
-typealias PartialSubscriptionResult = Pair<List<Int>, List<Subscription>>
-
-class SubscriptionBatchService(val subscriptionStorageService: SubscriptionStorageService) {
-
-  fun findByRemoteIds(remoteIds: List<Int>): PartialSubscriptionResult {
-    val notFound = mutableListOf<Int>()
-    val storedSubscriptions = mutableListOf<Subscription>()
-    remoteIds.forEach {
-      val subscription: Subscription? = subscriptionStorageService.findByRemoteId(it)
-      if (subscription != null) {
-        storedSubscriptions += subscription
-      } else {
-        notFound += it
-      }
-    }
-    return notFound to storedSubscriptions
-  }
-
-}
