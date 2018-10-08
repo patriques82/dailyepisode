@@ -22,13 +22,7 @@ class AccountEntity(
   var email: String,
   var password: String,
   var notificationIntervalInDays: Int = 0,
-
-  @ManyToMany(cascade = arrayOf(CascadeType.ALL))
-  @JoinTable(
-    name = "account_role",
-    joinColumns = arrayOf(JoinColumn(name = "account_id", referencedColumnName = "id")),
-    inverseJoinColumns = arrayOf(JoinColumn(name = "role_id", referencedColumnName = "id")))
-  var roles: List<RoleEntity> = emptyList(),
+  var isAdmin: Boolean = false,
 
   @ManyToMany(cascade = arrayOf(CascadeType.ALL))
   @JoinTable(
@@ -42,22 +36,10 @@ class AccountEntity(
     if (id == null) {
       throw IllegalStateException("Only non transient account entities can be transformed to account")
     }
-    return Account(id!!, username, email, password, notificationIntervalInDays, roles.map { it.roleName }, subscriptions.map { it.toSubscription() })
+    return Account(id!!, username, email, password, notificationIntervalInDays, isAdmin, subscriptions.map { it.toSubscription() })
   }
 
   fun subscribesTo(subscriptionId: Long): Boolean =
     subscriptions.any { it.id == subscriptionId }
-
+  
 }
-
-@Entity
-data class RoleEntity(
-  @Id
-  @GeneratedValue
-  val id: Long? = null,
-
-  var roleName: String = "",
-
-  @ManyToMany(mappedBy = "roles")
-  var accounts: List<AccountEntity> = emptyList()
-)

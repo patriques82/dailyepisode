@@ -24,7 +24,7 @@ data class Account(
   val email: String,
   val password: String?,
   val notificationIntervalInDays: Int,
-  val roles: List<String>,
+  val isAdmin: Boolean,
   val subscriptions: List<Subscription>
 )
 

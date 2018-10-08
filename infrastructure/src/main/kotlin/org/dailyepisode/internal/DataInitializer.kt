@@ -2,8 +2,9 @@ package org.dailyepisode.internal
 
 import org.dailyepisode.account.AccountEntity
 import org.dailyepisode.account.AccountRepository
-import org.dailyepisode.account.RoleEntity
+
 import org.dailyepisode.subscription.SubscriptionEntity
+import org.dailyepisode.subscription.SubscriptionRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -15,7 +16,8 @@ import org.springframework.stereotype.Component
 @Component
 @Profile("dev")
 internal class DataInitializer(val passwordEncoder: PasswordEncoder,
-                               val accountRepository: AccountRepository): CommandLineRunner {
+                               val accountRepository: AccountRepository,
+                               val subscriptionRepository: SubscriptionRepository): CommandLineRunner {
 
   override fun run(vararg args: String?) {
     val gameOfThrones = SubscriptionEntity(null, 1, "game of thrones", "Winter is coming...", "image",
@@ -28,13 +30,10 @@ internal class DataInitializer(val passwordEncoder: PasswordEncoder,
       6, 7.5, "2009-05-18", "2017-02-29", listOf("Crime", "Drama"),
       "www.lineofduty.com", 48, 5, emptyList())
 
-    val user = RoleEntity(null, "ROLE_USER")
-    val admin = RoleEntity(null, "ROLE_ADMIN")
-
     val accounts = mutableListOf<AccountEntity>()
-    accounts.add(AccountEntity(null,  "patrik", "patrik@gmail.com", passwordEncoder.encode("kirtap"), 1, listOf(user, admin), listOf(breakingBad, lineOfDuty)))
-    accounts.add(AccountEntity(null, "alexia", "alexia@gmail.com", passwordEncoder.encode("aixela"), 9, listOf(user), listOf()))
-    accounts.add(AccountEntity(null, "kristoffer", "kristoffer@gmail.com", passwordEncoder.encode("reffotsirk"), 30, listOf(user), listOf(lineOfDuty, gameOfThrones)))
+    accounts.add(AccountEntity(null,  "patrik", "patrik@gmail.com", passwordEncoder.encode("kirtap"), 1, true, listOf(breakingBad, lineOfDuty)))
+    accounts.add(AccountEntity(null, "alexia", "alexia@gmail.com", passwordEncoder.encode("aixela"), 9, false, listOf()))
+    accounts.add(AccountEntity(null, "kristoffer", "kristoffer@gmail.com", passwordEncoder.encode("reffotsirk"), 30, false, listOf(lineOfDuty, gameOfThrones)))
 
     accountRepository.saveAll(accounts)
   }

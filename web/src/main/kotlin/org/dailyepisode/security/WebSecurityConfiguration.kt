@@ -2,6 +2,7 @@ package org.dailyepisode.security
 
 import org.dailyepisode.account.Account
 import org.dailyepisode.account.AccountStorageService
+import org.dailyepisode.account.Role
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -72,8 +73,12 @@ internal class UserDetailsServiceImpl(private val accountStorageService: Account
     return object : UserDetails {
       override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val grantedAuthorities = mutableListOf<GrantedAuthority>()
-        account.roles.forEach {
-          grantedAuthorities.add(SimpleGrantedAuthority(it))
+        val adminRole = SimpleGrantedAuthority("ROLE_ADMIN")
+        val userRole = SimpleGrantedAuthority("ROLE_USER")
+        if (account.isAdmin) {
+          grantedAuthorities.addAll(listOf(adminRole, userRole))
+        } else {
+          grantedAuthorities.add(userRole)
         }
         return grantedAuthorities
       }
