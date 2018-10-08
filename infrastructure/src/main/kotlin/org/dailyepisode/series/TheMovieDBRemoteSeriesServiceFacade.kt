@@ -22,7 +22,7 @@ internal class TheMovieDBRemoteSeriesServiceFacade(private val theMovieDBConnect
     theMovieDBConnector.fetchSearchResultForPage(query, page)
 
   private fun TheMovieDBSeriesSearchInfo.toSeriesSearchInfo() =
-    SeriesSearchInfo(id, name, overview, resolveImageUrl(poster_path), vote_count, vote_average)
+    SeriesSearchInfo(id, name, overview, resolveImageUrl(poster_path), vote_count ?: 0, vote_average ?: 0.0)
 
   private fun resolveImageUrl(poster_path: String?): String? =
     if (poster_path != null) "$imageBaseUrl/w$thumbnailSize/$poster_path" else null
@@ -34,8 +34,8 @@ internal class TheMovieDBRemoteSeriesServiceFacade(private val theMovieDBConnect
 
   private fun TheMovieDBLookupResult.toSeriesLookupResult() =
     SeriesLookupResult(
-      id, name, overview, resolveImageUrl(poster_path), vote_count, vote_average, first_air_date,
-      last_air_date, genres.map { it.name }, homepage, number_of_episodes, number_of_seasons)
+      id, name, overview, resolveImageUrl(poster_path), vote_count ?: 0, vote_average ?: 0.0, first_air_date ?: "Unknown first air date",
+      last_air_date ?: "Unknown last air data", genres.map { it.name }, homepage, number_of_episodes ?: 0, number_of_seasons ?: 0)
 
   override fun updatesSinceYesterday(): UpdatedSeriesResult {
     val updatedSeriesIds = fetchUpdatesAllPages()

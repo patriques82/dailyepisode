@@ -50,5 +50,12 @@ class AccountController(private val accountStorageService: AccountStorageService
   private fun PasswordChangeRequestDto.toPasswordChangeRequest(): PasswordUpdateRequest =
     PasswordUpdateRequest(accountId, newPassword)
 
+  @DeleteMapping
+  fun deleteAccount(): ResponseEntity<Unit> {
+    val account = accountResolverService.resolve()
+    accountStorageService.delete(account.id)
+    return ResponseEntity(HttpStatus.ACCEPTED)
+  }
+
 }
 

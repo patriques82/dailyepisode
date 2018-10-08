@@ -57,24 +57,24 @@ data class TheMovieDBSeriesSearchInfo(
   val name: String,
   val overview: String?,
   val poster_path: String?,
-  val vote_count: Int,
-  val vote_average: Double
+  val vote_count: Int?,
+  val vote_average: Double?
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class TheMovieDBLookupResult(
   val id: Int,
   val name: String,
-  val overview: String,
+  val overview: String?,
   val poster_path: String?,
-  val vote_count: Int,
-  val vote_average: Double,
-  val first_air_date: String,
-  val last_air_date: String,
+  val vote_count: Int?,
+  val vote_average: Double?,
+  val first_air_date: String?,
+  val last_air_date: String?,
   val genres: List<TheMovieDbGenre>,
-  val homepage: String,
-  val number_of_episodes: Int,
-  val number_of_seasons: Int
+  val homepage: String?,
+  val number_of_episodes: Int?,
+  val number_of_seasons: Int?
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)

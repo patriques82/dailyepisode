@@ -9,6 +9,7 @@ interface AccountStorageService {
   fun findAll(): List<Account>
   fun findById(accountId: Long): Account?
   fun findByUserName(userName: String): Account?
+  fun delete(accountId: Long)
 }
 
 data class AccountRegistrationRequest(

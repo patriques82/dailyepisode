@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service
 @Service
 internal class AccountStorageServiceImpl(private val accountRepository: AccountRepository,
                                          private val passwordEncoder: PasswordEncoder): AccountStorageService {
-
   override fun createAccount(accountRegistrationRequest: AccountRegistrationRequest) {
     AccountValidator.validate(accountRegistrationRequest)
     val storedAccount = accountRepository.findByEmail(accountRegistrationRequest.email!!)
@@ -67,5 +66,13 @@ internal class AccountStorageServiceImpl(private val accountRepository: AccountR
       account.password = passwordEncoder.encode(newPassword)
       accountRepository.save(account)
     }
+  }
+
+  override fun delete(accountId: Long) {
+    val account = accountRepository.findById(accountId).orElse(null)
+    if (account == null) {
+      throw NoAccountFoundException("No account found for id")
+    }
+    accountRepository.delete(account)
   }
 }
