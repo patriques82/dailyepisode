@@ -24,7 +24,7 @@ class AccountEntity(
   var notificationIntervalInDays: Int = 0,
   var isAdmin: Boolean = false,
 
-  @ManyToMany(cascade = arrayOf(CascadeType.ALL))
+  @ManyToMany(cascade = arrayOf(CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH))
   @JoinTable(
     name = "account_subscription",
     joinColumns = arrayOf(JoinColumn(name = "account_id", referencedColumnName = "id")),
@@ -41,5 +41,5 @@ class AccountEntity(
 
   fun subscribesTo(subscriptionId: Long): Boolean =
     subscriptions.any { it.id == subscriptionId }
-  
+
 }
