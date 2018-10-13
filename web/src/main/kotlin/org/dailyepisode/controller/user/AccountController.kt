@@ -12,15 +12,29 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/user")
 class AccountController(private val accountStorageService: AccountStorageService,
                         private val accountResolverService: AccountResolverService) {
+  @GetMapping
+  fun getAllAccounts(): ResponseEntity<List<AccountDto>> {
+    val accounts = accountStorageService.findAll().map { it.toDto()}
+    return ResponseEntity(accounts, HttpStatus.OK)
+  }
+
+  private fun Account.toDto(): AccountDto =
+    AccountDto(id, username, email, notificationIntervalInDays, isAdmin, subscriptions.size)
+
+  @GetMapping("/{accountId}")
+  fun getAccount(@PathVariable accountId: Long): ResponseEntity<AccountDto> {
+    val account: Account? = accountStorageService.findById(accountId)
+    if (account == null) {
+      return ResponseEntity(HttpStatus.NO_CONTENT)
+    }
+    return ResponseEntity(account.toDto(), HttpStatus.OK)
+  }
 
   @GetMapping("/me")
   fun getCurrentAccount(): ResponseEntity<AccountDto> {
     val account = accountResolverService.resolve()
     return ResponseEntity(account.toDto(), HttpStatus.OK)
   }
-
-  private fun Account.toDto(): AccountDto =
-    AccountDto(id, username, email, notificationIntervalInDays)
 
   @PutMapping("/update")
   fun updatePreferences(@RequestBody accountUpdateRequestDto: AccountUpdateRequestDto?): ResponseEntity<Unit> {

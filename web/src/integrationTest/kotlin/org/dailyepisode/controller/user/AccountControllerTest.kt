@@ -34,6 +34,47 @@ class AccountControllerTest: AbstractControllerIntegrationTest() {
   }
 
   @Test
+  fun `get all accounts should return accounts and 200 Ok`() {
+    val expectedJson = """[
+      {"username":"patrik","email":"patrik@gmail.com","notificationIntervalInDays":1},
+      {"username":"alexia","email":"alexia@gmail.com","notificationIntervalInDays":9},
+      {"username":"kristoffer","email":"kristoffer@gmail.com","notificationIntervalInDays":30}
+      ]""".trimIndent()
+
+    mockMvc.perform(get("/api/user")
+      .with(csrf())
+      .with(httpBasic("patrik", "kirtap"))
+      .contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isOk)
+      .andExpect(content().json(expectedJson))
+  }
+
+  @Test
+  fun `get account with existing account id should return account and 200 Ok`() {
+    val kristoffer = accountStorageService.findByUserName("kristoffer")!!
+
+    val expectedJson = """
+      {"username":"kristoffer","email":"kristoffer@gmail.com","notificationIntervalInDays":30},
+    """.trimIndent()
+
+    mockMvc.perform(get("/api/user/${kristoffer.id}")
+      .with(csrf())
+      .with(httpBasic("patrik", "kirtap"))
+      .contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isOk)
+      .andExpect(content().json(expectedJson))
+  }
+
+  @Test
+  fun `get account with non-existing account id should return 204 No Content`() {
+    mockMvc.perform(get("/api/user/666")
+      .with(csrf())
+      .with(httpBasic("patrik", "kirtap"))
+      .contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isNoContent)
+  }
+
+  @Test
   fun `get current account with valid user account should return user details and 200 Ok`() {
     val expectedJson = """
       {"username":"alexia","email":"alexia@gmail.com","notificationIntervalInDays":9}

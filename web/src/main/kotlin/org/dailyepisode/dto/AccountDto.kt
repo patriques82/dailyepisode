@@ -7,7 +7,9 @@ data class AccountDto(
   val id: Long?,
   val username: String,
   val email: String,
-  val notificationIntervalInDays: Int
+  val notificationIntervalInDays: Int,
+  val isAdmin: Boolean,
+  val nrOfSubscriptions: Int
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

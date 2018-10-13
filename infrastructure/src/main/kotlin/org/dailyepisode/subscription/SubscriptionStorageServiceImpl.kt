@@ -38,10 +38,6 @@ internal class SubscriptionStorageServiceImpl(private val subscriptionRepository
     SubscriptionEntity(null, remoteId, name, overview, imageUrl, voteCount, voteAverage,
       firstAirDate, lastAirDate, genres, homepage, numberOfEpisodes, numberOfSeasons, emptyList())
 
-  private fun Subscription.toEntity(): SubscriptionEntity =
-    SubscriptionEntity(id, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
-      genres, homepage, numberOfEpisodes, numberOfSeasons, emptyList())
-
   override fun findAll(): List<Subscription> =
     subscriptionRepository.findAll()
       .map { it.toSubscription() }

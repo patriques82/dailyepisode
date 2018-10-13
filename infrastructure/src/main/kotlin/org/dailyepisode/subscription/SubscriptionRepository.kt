@@ -21,7 +21,7 @@ data class SubscriptionEntity(
   var remoteId: Int,
   var name: String,
 
-  @Column(length = 1000)
+  @Column(length = 3000)
   var overview: String?,
   var imageUrl: String?,
   var voteCount: Int,
