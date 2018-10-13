@@ -25,4 +25,10 @@ class AdminAccountController(private val accountStorageService: AccountStorageSe
   private fun AccountRegistrationRequestDto.toAccountRegistrationRequest(): AccountRegistrationRequest =
     AccountRegistrationRequest(username, email, password)
 
+  @DeleteMapping("/{accountId}")
+  fun delete(@PathVariable accountId: Long): ResponseEntity<Unit> {
+    accountStorageService.delete(accountId)
+    return ResponseEntity(HttpStatus.ACCEPTED)
+  }
+
 }

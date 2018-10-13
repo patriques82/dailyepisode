@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -66,6 +65,29 @@ class AdminAccountControllerTest : AbstractControllerIntegrationTest() {
 
     val account = accountStorageService.findByUserName("user")
     assertThat(account).isNotNull()
+  }
+
+  @Test
+  fun `delete invalid account should return 409 Conflict`() {
+    mockMvc.perform(delete("/admin/user/666")
+      .with(csrf())
+      .with(httpBasic("patrik", "kirtap"))
+      .contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isConflict)
+  }
+
+  @Test
+  fun `delete valid account should return 202 Accepted`() {
+    val accountBefore = accountStorageService.findByUserName("kristoffer")!!
+
+    mockMvc.perform(delete("/admin/user/${accountBefore.id}")
+      .with(csrf())
+      .with(httpBasic("patrik", "kirtap"))
+      .contentType(MediaType.APPLICATION_JSON))
+      .andExpect(status().isAccepted)
+
+    val accountAfter = accountStorageService.findByUserName("kristoffer")
+    assertThat(accountAfter).isNull()
   }
 
 }
