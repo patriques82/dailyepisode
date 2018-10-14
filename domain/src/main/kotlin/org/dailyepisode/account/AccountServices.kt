@@ -3,7 +3,7 @@ package org.dailyepisode.account
 import org.dailyepisode.subscription.Subscription
 
 interface AccountStorageService {
-  fun createAccount(accountRegistrationRequest: AccountRegistrationRequest)
+  fun createAccount(accountRegistrationRequest: AccountRegistrationRequest): Account
   fun updateAccount(accountId: Long, accountUpdateRequest: AccountUpdateRequest)
   fun updatePassword(accountId: Long, passwordUpdateRequest: PasswordUpdateRequest)
   fun findAll(): List<Account>
@@ -13,9 +13,11 @@ interface AccountStorageService {
 }
 
 data class AccountRegistrationRequest(
-  val username: String?,
-  val email: String?,
-  val password: String?
+  val username: String,
+  val email: String,
+  val password: String,
+  val notificationIntervalInDays: Int,
+  val isAdmin: Boolean
 )
 
 data class Account(

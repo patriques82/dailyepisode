@@ -4,6 +4,7 @@ import org.dailyepisode.account.*
 import org.dailyepisode.dto.AccountDto
 import org.dailyepisode.dto.AccountUpdateRequestDto
 import org.dailyepisode.dto.PasswordChangeRequestDto
+import org.dailyepisode.dto.toDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,9 +18,6 @@ class AccountController(private val accountStorageService: AccountStorageService
     val accounts = accountStorageService.findAll().map { it.toDto()}
     return ResponseEntity(accounts, HttpStatus.OK)
   }
-
-  private fun Account.toDto(): AccountDto =
-    AccountDto(id, username, email, notificationIntervalInDays, isAdmin, subscriptions.size)
 
   @GetMapping("/{accountId}")
   fun getAccount(@PathVariable accountId: Long): ResponseEntity<AccountDto> {

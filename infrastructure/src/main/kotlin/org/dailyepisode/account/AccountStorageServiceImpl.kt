@@ -6,17 +6,17 @@ import org.springframework.stereotype.Service
 @Service
 internal class AccountStorageServiceImpl(private val accountRepository: AccountRepository,
                                          private val passwordEncoder: PasswordEncoder): AccountStorageService {
-  override fun createAccount(accountRegistrationRequest: AccountRegistrationRequest) {
+  override fun createAccount(accountRegistrationRequest: AccountRegistrationRequest): Account {
     AccountValidator.validate(accountRegistrationRequest)
-    val storedAccount = accountRepository.findByEmail(accountRegistrationRequest.email!!)
+    val storedAccount = accountRepository.findByEmail(accountRegistrationRequest.email)
     if (storedAccount != null) {
       throw EmailAlreadyInUseException("Email address is already in use")
     }
-    accountRepository.save(accountRegistrationRequest.toEntity())
+    return accountRepository.save(accountRegistrationRequest.toEntity()).toAccount()
   }
 
   private fun AccountRegistrationRequest.toEntity(): AccountEntity =
-    AccountEntity(null, username!!, email!!, passwordEncoder.encode(password))
+    AccountEntity(null, username, email, passwordEncoder.encode(password), notificationIntervalInDays, isAdmin)
 
   override fun findByUserName(userName: String): Account? {
     return accountRepository.findByUsername(userName)?.toAccount()
