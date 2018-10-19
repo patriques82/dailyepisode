@@ -7,6 +7,7 @@ import org.dailyepisode.series.SeriesLookupResult
 import org.dailyepisode.series.SeriesUpdatedLookupResult
 import org.dailyepisode.subscription.Subscription
 import org.junit.Test
+import java.util.*
 
 class UpdateNotificationServiceTest {
 
@@ -15,9 +16,9 @@ class UpdateNotificationServiceTest {
     val notificationSender: NotificationSender = spyk()
     val updateNotificationService = UpdateNotificationService(notificationSender)
 
-    val friends = Subscription(1, 1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17", "2014-10-22", listOf(), "www.friends.com", 103, 15)
-    val homeland = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23", "2017-08-12", listOf(), "www.homeland.com", 6, 68)
-    val account = Account(1, "dummy", "dummy", "dummy", 0, false, listOf(friends, homeland))
+    val friends = Subscription(1, 1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17", "2014-10-22", listOf(), "www.friends.com", 103, 15, Date(), Date())
+    val homeland = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23", "2017-08-12", listOf(), "www.homeland.com", 6, 68, Date(), Date())
+    val account = Account(1, "dummy", "dummy", "dummy", 0, false, listOf(friends, homeland), Date(), Date())
 
     val seriesLookupResult = SeriesUpdatedLookupResult(3, "newimage", "2017-05-31", 90, 8)
 
@@ -31,10 +32,10 @@ class UpdateNotificationServiceTest {
     val notificationSender: NotificationSender = spyk()
     val updateNotificationService = UpdateNotificationService(notificationSender)
 
-    val friends = Subscription(1, 1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17", "2014-10-22", listOf(), "www.friends.com", 103, 15)
-    val homeland = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23", "2017-08-12", listOf(), "www.homeland.com", 6, 68)
-    val theBigBangTheory = Subscription(3, 3, "the big bang theory", "nerds being funny", "image", 30, 6.9, "2010-05-04", "2017-05-05", listOf("Comedy"), null, 89, 8)
-    val account = Account(1, "dummy", "dummy", "dummy", 0, false, listOf(friends, homeland, theBigBangTheory))
+    val friends = Subscription(1, 1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17", "2014-10-22", listOf(), "www.friends.com", 103, 15, Date(), Date())
+    val homeland = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23", "2017-08-12", listOf(), "www.homeland.com", 6, 68, Date(), Date())
+    val theBigBangTheory = Subscription(3, 3, "the big bang theory", "nerds being funny", "image", 30, 6.9, "2010-05-04", "2017-05-05", listOf("Comedy"), null, 89, 8, Date(), Date())
+    val account = Account(1, "dummy", "dummy", "dummy", 0, false, listOf(friends, homeland, theBigBangTheory), Date(), Date())
 
     val seriesLookupResult = SeriesUpdatedLookupResult(3, "newimage", "2017-05-31", 90, 8)
 

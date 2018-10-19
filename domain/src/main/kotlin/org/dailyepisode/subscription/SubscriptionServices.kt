@@ -1,5 +1,7 @@
 package org.dailyepisode.subscription
 
+import java.util.*
+
 interface SubscriptionStorageService {
   fun createSubscriptions(subscriptionCreateRequest: SubscriptionCreateRequest): Subscription?
   fun findAll(): List<Subscription>
@@ -31,5 +33,7 @@ data class Subscription(
   val genres: List<String>,
   val homepage: String?,
   val numberOfEpisodes: Int,
-  val numberOfSeasons: Int
+  val numberOfSeasons: Int,
+  val createdAt: Date,
+  val updatedAt: Date
 )

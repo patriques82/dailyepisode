@@ -1,6 +1,7 @@
 package org.dailyepisode.account
 
 import org.dailyepisode.subscription.Subscription
+import java.util.*
 
 interface AccountStorageService {
   fun createAccount(accountRegistrationRequest: AccountRegistrationRequest): Account
@@ -27,7 +28,9 @@ data class Account(
   val password: String?,
   val notificationIntervalInDays: Int,
   val isAdmin: Boolean,
-  val subscriptions: List<Subscription>
+  val subscriptions: List<Subscription>,
+  val createdAt: Date,
+  val notifiedAt: Date
 )
 
 data class AccountUpdateRequest(

@@ -12,19 +12,19 @@ class AccountValidatorTest {
 
   @Test(expected = InvalidUserNameException::class)
   fun `validate registration request with invalid username should throw InvalidAccountException`() {
-    val invalidRequest = AccountRegistrationRequest(INVALID_USERNAME, validEmail, validPassword)
+    val invalidRequest = AccountRegistrationRequest(INVALID_USERNAME, validEmail, validPassword, 0, false)
     AccountValidator.validate(invalidRequest)
   }
 
   @Test(expected = InvalidEmailException::class)
   fun `validate registration request with invalid email should throw InvalidAccountException`() {
-    val invalidRequest = AccountRegistrationRequest(validUsername, INVALID_EMAIL, validPassword)
+    val invalidRequest = AccountRegistrationRequest(validUsername, INVALID_EMAIL, validPassword, 0, false)
     AccountValidator.validate(invalidRequest)
   }
 
   @Test(expected = InvalidPasswordException::class)
   fun `validate registration request with invalid password should throw InvalidAccountException`() {
-    val invalidRequest = AccountRegistrationRequest(validUsername, validEmail, INVALID_PASSWORD)
+    val invalidRequest = AccountRegistrationRequest(validUsername, validEmail, INVALID_PASSWORD, 0, false)
     AccountValidator.validate(invalidRequest)
   }
 

@@ -1,8 +1,11 @@
 package org.dailyepisode.subscription
 
 import org.dailyepisode.account.AccountEntity
+import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import java.util.*
 import javax.persistence.*
 
 @Repository
@@ -37,13 +40,20 @@ data class SubscriptionEntity(
   var numberOfSeasons: Int,
 
   @ManyToMany(mappedBy = "subscriptions")
-  var accounts: List<AccountEntity>
+  var accounts: List<AccountEntity>,
+
+  @field: CreationTimestamp
+  @field: Column(updatable = false)
+  val createdAt: Date = Date(),
+
+  @field: UpdateTimestamp
+  val updatedAt: Date = Date()
 ) {
   fun toSubscription(): Subscription {
     if (id == null) {
       throw IllegalStateException("Only non transient subscription entities can be transformed to subscriptions")
     }
     return Subscription(id!!, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
-                        genres, homepage, numberOfEpisodes, numberOfSeasons)
+                        genres, homepage, numberOfEpisodes, numberOfSeasons, createdAt, updatedAt)
   }
 }

@@ -1,8 +1,11 @@
 package org.dailyepisode.account
 
 import org.dailyepisode.subscription.SubscriptionEntity
+import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import java.util.*
 import javax.persistence.*
 
 @Repository
@@ -29,14 +32,20 @@ class AccountEntity(
     name = "account_subscription",
     joinColumns = arrayOf(JoinColumn(name = "account_id", referencedColumnName = "id")),
     inverseJoinColumns = arrayOf(JoinColumn(name = "subscription_id", referencedColumnName = "id")))
-  var subscriptions: List<SubscriptionEntity> = emptyList()
+  var subscriptions: List<SubscriptionEntity> = emptyList(),
+
+  @field: CreationTimestamp
+  @field: Column(updatable = false)
+  val createdAt: Date = Date(),
+
+  val notifiedAt: Date = Date()
 ) {
 
   fun toAccount(): Account {
     if (id == null) {
       throw IllegalStateException("Only non transient account entities can be transformed to account")
     }
-    return Account(id!!, username, email, password, notificationIntervalInDays, isAdmin, subscriptions.map { it.toSubscription() })
+    return Account(id!!, username, email, password, notificationIntervalInDays, isAdmin, subscriptions.map { it.toSubscription() }, createdAt, notifiedAt)
   }
 
   fun subscribesTo(subscriptionId: Long): Boolean =
