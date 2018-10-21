@@ -1,11 +1,7 @@
 buildscript {
     ext {
-        kotlinVersion = properties["kotlin.version"]
         springBootVersion = properties["spring.boot.version"]
-        junitVersion = properties["junit.version"]
-        junitPlatformVersion = properties["junit.platform.version"]
-        spekVersion = properties["spek.version"]
-        mockkVersion = properties["mockk.version"]
+        kotlinVersion = properties["kotlin.version"]
     }
     repositories {
         mavenCentral()
@@ -65,7 +61,4 @@ dependencies {
 
     runtime "com.h2database:h2"
     runtime "mysql:mysql-connector-java"
-
-    testCompile "org.springframework.boot:spring-boot-starter-test"
-    testImplementation "io.mockk:mockk:1.8.7"
 }
