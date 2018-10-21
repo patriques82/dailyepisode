@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component
 import java.text.SimpleDateFormat
 import java.util.*
 
+const val EXECUTION_TIME_CRON_EXPRESSION = "0 0 0 * ? *" // 12:00 AM every day
+
 @Component
 class ScheduledUpdateNotifier(private val accountStorageService: AccountStorageService,
                               private val subscriptionStorageService: SubscriptionStorageService,
@@ -22,7 +24,7 @@ class ScheduledUpdateNotifier(private val accountStorageService: AccountStorageS
   private val updateSearchService = UpdateSearchService(remoteSeriesServiceFacade)
   private val updateNotificationService = UpdateNotificationService(notificationSender, accountStorageService)
 
-  @Scheduled(fixedDelay = 3000)
+  @Scheduled(cron = EXECUTION_TIME_CRON_EXPRESSION)
   fun notifyAndPersistUpdates() {
     logger.info("Notification sending and persisting started: {}", dateFormat.format(Date()))
 
