@@ -2,6 +2,7 @@ package org.dailyepisode.update
 
 import org.dailyepisode.account.AccountStorageService
 import org.dailyepisode.series.RemoteSeriesServiceFacade
+import org.dailyepisode.series.toSubscriptionUpdateRequest
 import org.dailyepisode.subscription.SubscriptionStorageService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
@@ -19,8 +20,7 @@ class ScheduledUpdateNotifier(private val accountStorageService: AccountStorageS
   private val dateFormat = SimpleDateFormat("EEEEE MMMMM yyyy HH:mm:ss")
 
   private val updateSearchService = UpdateSearchService(remoteSeriesServiceFacade)
-  private val updateNotificationSendService = UpdateNotificationService(notificationSender)
-  private val updatePersistService = UpdatePersistService(subscriptionStorageService)
+  private val updateNotificationService = UpdateNotificationService(notificationSender, accountStorageService)
 
   @Scheduled(fixedDelay = 3000)
   fun notifyAndPersistUpdates() {
@@ -28,10 +28,10 @@ class ScheduledUpdateNotifier(private val accountStorageService: AccountStorageS
 
     val accounts = accountStorageService.findAll()
     val subscriptions = subscriptionStorageService.findAll()
-    val updates = updateSearchService.searchForUpdates(subscriptions)
+    val updatedSeries = updateSearchService.search(subscriptions)
 
-    accounts.forEach { updateNotificationSendService.sendTo(it, updates) }
-    updates.forEach { updatePersistService.persist(it) }
+    updatedSeries.forEach { subscriptionStorageService.update(it.toSubscriptionUpdateRequest()) }
+    accounts.forEach { updateNotificationService.notify(it) }
 
     logger.info("Notification sending and persisting ended: {}", dateFormat.format(Date()))
   }

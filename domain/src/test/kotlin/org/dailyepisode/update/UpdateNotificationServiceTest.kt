@@ -3,45 +3,43 @@ package org.dailyepisode.update
 import io.mockk.spyk
 import io.mockk.verify
 import org.dailyepisode.account.Account
-import org.dailyepisode.series.SeriesLookupResult
-import org.dailyepisode.series.SeriesUpdatedLookupResult
+import org.dailyepisode.account.AccountStorageService
 import org.dailyepisode.subscription.Subscription
 import org.junit.Test
-import java.util.*
+import java.time.LocalDateTime
 
 class UpdateNotificationServiceTest {
+  val today = LocalDateTime.now()
+  val yesterday = today.minusDays(1)
+  val twoDaysAgo = today.minusDays(2)
+  val oneWeekAgo = today.minusWeeks(1)
+  val oneYearAgo = today.minusYears(1)
+  val updatedSubscription = Subscription(1, 1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17", "2014-10-22", listOf(), "www.friends.com", 103, 15, oneYearAgo, yesterday)
+  val nonUpdatedSubscription = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23", "2017-08-12", listOf(), "www.homeland.com", 6, 68, oneYearAgo, oneWeekAgo)
 
   @Test
-  fun `send to account with non-overlapping subscriptions and updates should send with empty lookup results`() {
+  fun `notify account with updated subscriptions should send the updated subscriptions`() {
     val notificationSender: NotificationSender = spyk()
-    val updateNotificationService = UpdateNotificationService(notificationSender)
+    val accountStorageService: AccountStorageService = spyk()
+    val updateNotificationService = UpdateNotificationService(notificationSender, accountStorageService)
+    val notifiableAccount = Account(1, "dummy", "dummy", "dummy", 1, false, listOf(updatedSubscription, nonUpdatedSubscription), oneYearAgo, twoDaysAgo)
 
-    val friends = Subscription(1, 1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17", "2014-10-22", listOf(), "www.friends.com", 103, 15, Date(), Date())
-    val homeland = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23", "2017-08-12", listOf(), "www.homeland.com", 6, 68, Date(), Date())
-    val account = Account(1, "dummy", "dummy", "dummy", 0, false, listOf(friends, homeland), Date(), Date())
+    updateNotificationService.notify(notifiableAccount)
 
-    val seriesLookupResult = SeriesUpdatedLookupResult(3, "newimage", "2017-05-31", 90, 8)
-
-    updateNotificationService.sendTo(account, listOf(seriesLookupResult))
-
-    verify { notificationSender.send(account, emptyList()) }
+    verify { notificationSender.send(notifiableAccount, listOf(updatedSubscription)) }
+    verify { accountStorageService.updateNotifiedAt(notifiableAccount.id, any()) }
   }
 
   @Test
-  fun `send to account with overlapping subscriptions and updates should send with overlapping lookup results`() {
+  fun `notify account with no updated subscriptions should not send anything`() {
     val notificationSender: NotificationSender = spyk()
-    val updateNotificationService = UpdateNotificationService(notificationSender)
+    val accountStorageService: AccountStorageService = spyk()
+    val updateNotificationService = UpdateNotificationService(notificationSender, accountStorageService)
+    val nonNotifiableAccount = Account(1, "dummy", "dummy", "dummy", 1, false, listOf(nonUpdatedSubscription), oneYearAgo, yesterday)
 
-    val friends = Subscription(1, 1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17", "2014-10-22", listOf(), "www.friends.com", 103, 15, Date(), Date())
-    val homeland = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23", "2017-08-12", listOf(), "www.homeland.com", 6, 68, Date(), Date())
-    val theBigBangTheory = Subscription(3, 3, "the big bang theory", "nerds being funny", "image", 30, 6.9, "2010-05-04", "2017-05-05", listOf("Comedy"), null, 89, 8, Date(), Date())
-    val account = Account(1, "dummy", "dummy", "dummy", 0, false, listOf(friends, homeland, theBigBangTheory), Date(), Date())
+    updateNotificationService.notify(nonNotifiableAccount)
 
-    val seriesLookupResult = SeriesUpdatedLookupResult(3, "newimage", "2017-05-31", 90, 8)
-
-    updateNotificationService.sendTo(account, listOf(seriesLookupResult))
-
-    verify { notificationSender.send(account, listOf(seriesLookupResult)) }
+    verify(inverse = true) { accountStorageService.updateNotifiedAt(nonNotifiableAccount.id, any()) }
   }
 
 }

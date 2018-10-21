@@ -2,6 +2,7 @@ package org.dailyepisode.account
 
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 internal class AccountStorageServiceImpl(private val accountRepository: AccountRepository,
@@ -66,6 +67,18 @@ internal class AccountStorageServiceImpl(private val accountRepository: AccountR
       account.password = passwordEncoder.encode(newPassword)
       accountRepository.save(account)
     }
+  }
+
+  override fun updateNotifiedAt(accountId: Long, newNotificationDate: Date) {
+    val account = accountRepository.findById(accountId).orElse(null)
+    if (account == null) {
+      throw NoAccountFoundException("No account found for id")
+    }
+    if (newNotificationDate.before(account.notifiedAt)) {
+      throw IllegalArgumentException("Notification date is older than accounts current notification date")
+    }
+    account.notifiedAt = newNotificationDate
+    accountRepository.save(account)
   }
 
   override fun delete(accountId: Long) {

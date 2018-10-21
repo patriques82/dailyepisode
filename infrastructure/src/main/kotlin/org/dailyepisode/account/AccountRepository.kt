@@ -5,6 +5,9 @@ import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import java.sql.Timestamp
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 import javax.persistence.*
 
@@ -38,15 +41,18 @@ class AccountEntity(
   @field: Column(updatable = false)
   val createdAt: Date = Date(),
 
-  val notifiedAt: Date = Date()
+  var notifiedAt: Date = Date()
 ) {
 
   fun toAccount(): Account {
     if (id == null) {
       throw IllegalStateException("Only non transient account entities can be transformed to account")
     }
-    return Account(id!!, username, email, password, notificationIntervalInDays, isAdmin, subscriptions.map { it.toSubscription() }, createdAt, notifiedAt)
+    return Account(id!!, username, email, password, notificationIntervalInDays, isAdmin, subscriptions.map { it.toSubscription() }, convert(createdAt), convert(notifiedAt))
   }
+
+  private fun convert(date: Date): LocalDateTime =
+    date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
 
   fun subscribesTo(subscriptionId: Long): Boolean =
     subscriptions.any { it.id == subscriptionId }

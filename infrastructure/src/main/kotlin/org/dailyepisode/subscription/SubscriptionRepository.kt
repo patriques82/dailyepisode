@@ -5,6 +5,8 @@ import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 import javax.persistence.*
 
@@ -54,6 +56,9 @@ data class SubscriptionEntity(
       throw IllegalStateException("Only non transient subscription entities can be transformed to subscriptions")
     }
     return Subscription(id!!, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
-                        genres, homepage, numberOfEpisodes, numberOfSeasons, createdAt, updatedAt)
+                        genres, homepage, numberOfEpisodes, numberOfSeasons, convert(createdAt), convert(updatedAt))
   }
+
+  private fun convert(date: Date): LocalDateTime =
+    date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
 }

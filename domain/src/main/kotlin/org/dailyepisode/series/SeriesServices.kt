@@ -1,5 +1,7 @@
 package org.dailyepisode.series
 
+import org.dailyepisode.subscription.SubscriptionUpdateRequest
+
 interface RemoteSeriesServiceFacade {
   fun search(seriesSearchRequest: SeriesSearchRequest): SeriesSearchResult
   fun lookup(remoteId: Int): SeriesLookupResult?
@@ -34,21 +36,27 @@ data class SeriesLookupResult(
   val imageUrl: String?,
   val voteCount: Int,
   val voteAverage: Double,
-  val firstAirDate: String,
-  val lastAirDate: String,
+  val firstAirDate: String?,
+  val lastAirDate: String?,
   val genres: List<String>,
   val homepage: String?,
   val numberOfEpisodes: Int,
   val numberOfSeasons: Int
 )
 
+fun SeriesLookupResult.toSeriesUpdatedLookupResult(): SeriesUpdatedLookupResult =
+  SeriesUpdatedLookupResult(remoteId, imageUrl, lastAirDate, numberOfEpisodes, numberOfSeasons)
+
 data class SeriesUpdatedLookupResult(
   val remoteId: Int,
   val imageUrl: String?,
-  val lastAirDate: String,
+  val lastAirDate: String?,
   val numberOfEpisodes: Int,
   val numberOfSeasons: Int
 )
+
+fun SeriesUpdatedLookupResult.toSubscriptionUpdateRequest(): SubscriptionUpdateRequest =
+  SubscriptionUpdateRequest(remoteId, imageUrl, lastAirDate, numberOfEpisodes, numberOfSeasons)
 
 data class UpdatedSeriesResult(val changedSeriesRemoteIds: List<Int>)
 

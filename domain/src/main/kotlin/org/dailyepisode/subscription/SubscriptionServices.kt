@@ -1,6 +1,6 @@
 package org.dailyepisode.subscription
 
-import java.util.*
+import java.time.LocalDateTime
 
 interface SubscriptionStorageService {
   fun createSubscriptions(subscriptionCreateRequest: SubscriptionCreateRequest): Subscription?
@@ -8,6 +8,7 @@ interface SubscriptionStorageService {
   fun findById(subscriptionId: Long): Subscription?
   fun findByRemoteId(remoteId: Int): Subscription?
   fun deleteSubscription(subscriptionDeleteRequest: SubscriptionDeleteRequest)
+  fun update(subscriptionUpdateRequest: SubscriptionUpdateRequest)
 }
 
 data class SubscriptionCreateRequest(
@@ -18,6 +19,14 @@ data class SubscriptionCreateRequest(
 data class SubscriptionDeleteRequest(
   val accountId: Long,
   val subscriptionId: Long
+)
+
+data class SubscriptionUpdateRequest(
+  val remoteId: Int,
+  val imageUrl: String?,
+  val lastAirDate: String?,
+  val numberOfEpisodes: Int,
+  val numberOfSeasons: Int
 )
 
 data class Subscription(
@@ -34,6 +43,6 @@ data class Subscription(
   val homepage: String?,
   val numberOfEpisodes: Int,
   val numberOfSeasons: Int,
-  val createdAt: Date,
-  val updatedAt: Date
+  val createdAt: LocalDateTime,
+  val updatedAt: LocalDateTime
 )

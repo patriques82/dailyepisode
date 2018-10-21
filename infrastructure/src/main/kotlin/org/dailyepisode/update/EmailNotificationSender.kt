@@ -16,20 +16,18 @@ internal class EmailNotificationSender(private val emailSender: JavaMailSender,
 
   private val logger = LoggerFactory.getLogger(EmailNotificationSender::class.java)
 
-  override fun send(account: Account, accountUpdates: List<SeriesUpdatedLookupResult>) {
-    if (accountUpdates.isNotEmpty()) {
-
+  override fun send(account: Account, updatedSubscriptions: List<Subscription>) {
+    if (updatedSubscriptions.isNotEmpty()) {
       logger.info("Sending notification email to: {}", account.email)
-
       val message = SimpleMailMessage()
       message.setTo(account.email)
       message.setSubject(messageSubject)
-      message.setText(createMessage(account.subscriptions, accountUpdates))
+      message.setText(createMessage(updatedSubscriptions))
       emailSender.send(message)
     }
   }
 
-  private fun createMessage(subscriptions: List<Subscription>, updates: List<SeriesUpdatedLookupResult>): String {
+  private fun createMessage(subscriptions: List<Subscription>): String {
     return ""
   }
 

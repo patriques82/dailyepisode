@@ -9,7 +9,7 @@ import org.dailyepisode.series.SeriesUpdatedLookupResult
 import org.dailyepisode.series.UpdatedSeriesResult
 import org.dailyepisode.subscription.Subscription
 import org.junit.Test
-import java.util.*
+import java.time.LocalDateTime
 
 class UpdateSearchServiceTest {
 
@@ -19,11 +19,11 @@ class UpdateSearchServiceTest {
     every { mockRemoteSeriesServiceFacade.updatesSinceYesterday() } returns UpdatedSeriesResult(listOf(3))
     val updateSearchService = UpdateSearchService(mockRemoteSeriesServiceFacade)
 
-    val friends = Subscription(1, 1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17", "2014-10-22", listOf(), "www.friends.com", 103, 15, Date(), Date())
-    val homeland = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23", "2017-08-12", listOf(), "www.homeland.com", 6, 68, Date(), Date())
+    val friends = Subscription(1, 1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17", "2014-10-22", listOf(), "www.friends.com", 103, 15, LocalDateTime.now(), LocalDateTime.now())
+    val homeland = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23", "2017-08-12", listOf(), "www.homeland.com", 6, 68, LocalDateTime.now(), LocalDateTime.now())
     val subscriptions = listOf(friends, homeland)
 
-    val updateLookupResults = updateSearchService.searchForUpdates(subscriptions)
+    val updateLookupResults = updateSearchService.search(subscriptions)
 
     assertThat(updateLookupResults).isEmpty()
   }
@@ -36,10 +36,10 @@ class UpdateSearchServiceTest {
     every { mockRemoteSeriesServiceFacade.lookup(2) } returns updatedHomeland
     val updateSearchService = UpdateSearchService(mockRemoteSeriesServiceFacade)
 
-    val friends = Subscription(1, 1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17", "2014-10-22", listOf(), "www.friends.com", 103, 15, Date(), Date())
-    val homeland = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23", "2017-08-12", listOf(), "www.homeland.com", 68, 5, Date(), Date())
+    val friends = Subscription(1, 1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17", "2014-10-22", listOf(), "www.friends.com", 103, 15, LocalDateTime.now(), LocalDateTime.now())
+    val homeland = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23", "2017-08-12", listOf(), "www.homeland.com", 68, 5, LocalDateTime.now(), LocalDateTime.now())
     val subscriptions = listOf(friends, homeland)
-    val updateLookupResults = updateSearchService.searchForUpdates(subscriptions)
+    val updateLookupResults = updateSearchService.search(subscriptions)
 
     val expectedUpdatedLookupResult = SeriesUpdatedLookupResult(2, "newimage", "2018-05-19", 77, 6)
     assertThat(updateLookupResults).isEqualTo(listOf(expectedUpdatedLookupResult))

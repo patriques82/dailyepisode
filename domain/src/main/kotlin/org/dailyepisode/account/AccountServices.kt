@@ -1,12 +1,14 @@
 package org.dailyepisode.account
 
 import org.dailyepisode.subscription.Subscription
+import java.time.LocalDateTime
 import java.util.*
 
 interface AccountStorageService {
   fun createAccount(accountRegistrationRequest: AccountRegistrationRequest): Account
   fun updateAccount(accountId: Long, accountUpdateRequest: AccountUpdateRequest)
   fun updatePassword(accountId: Long, passwordUpdateRequest: PasswordUpdateRequest)
+  fun updateNotifiedAt(accountId: Long, date: Date)
   fun findAll(): List<Account>
   fun findById(accountId: Long): Account?
   fun findByUserName(userName: String): Account?
@@ -29,8 +31,8 @@ data class Account(
   val notificationIntervalInDays: Int,
   val isAdmin: Boolean,
   val subscriptions: List<Subscription>,
-  val createdAt: Date,
-  val notifiedAt: Date
+  val createdAt: LocalDateTime,
+  val notifiedAt: LocalDateTime
 )
 
 data class AccountUpdateRequest(
