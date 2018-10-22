@@ -7,6 +7,7 @@ import java.util.*
 @Service
 internal class AccountStorageServiceImpl(private val accountRepository: AccountRepository,
                                          private val passwordEncoder: PasswordEncoder): AccountStorageService {
+
   override fun createAccount(accountRegistrationRequest: AccountRegistrationRequest): Account {
     AccountValidator.validate(accountRegistrationRequest)
     val storedAccount = accountRepository.findByEmail(accountRegistrationRequest.email)
@@ -69,15 +70,15 @@ internal class AccountStorageServiceImpl(private val accountRepository: AccountR
     }
   }
 
-  override fun updateNotifiedAt(accountId: Long, newNotificationDate: Date) {
+  override fun updateNotifiedAt(accountId: Long, date: Date) {
     val account = accountRepository.findById(accountId).orElse(null)
     if (account == null) {
       throw NoAccountFoundException("No account found for id")
     }
-    if (newNotificationDate.before(account.notifiedAt)) {
+    if (date.before(account.notifiedAt)) {
       throw IllegalArgumentException("Notification date is older than accounts current notification date")
     }
-    account.notifiedAt = newNotificationDate
+    account.notifiedAt = date
     accountRepository.save(account)
   }
 
@@ -88,4 +89,5 @@ internal class AccountStorageServiceImpl(private val accountRepository: AccountR
     }
     accountRepository.delete(account)
   }
+
 }

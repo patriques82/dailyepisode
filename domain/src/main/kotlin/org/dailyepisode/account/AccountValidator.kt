@@ -28,7 +28,7 @@ object AccountValidator {
     } else {
       if (!password.matches(VALID_PASSWORD_PATTERN)) {
         throw InvalidPasswordException("""Invalid password
-        - At least 8 chars
+        - At least 6 chars
         - Contains any lower, upper case character or digit only
       """.trimIndent())
       }
