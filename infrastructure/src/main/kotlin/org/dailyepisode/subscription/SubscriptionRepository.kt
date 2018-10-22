@@ -59,6 +59,7 @@ data class SubscriptionEntity(
                         genres, homepage, numberOfEpisodes, numberOfSeasons, convert(createdAt), convert(updatedAt))
   }
 
+  // TODO generalize (for accaount to)
   private fun convert(date: Date): LocalDateTime =
     date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
 }

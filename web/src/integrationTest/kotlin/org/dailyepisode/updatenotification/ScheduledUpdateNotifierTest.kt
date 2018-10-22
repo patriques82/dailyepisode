@@ -1,4 +1,4 @@
-package org.dailyepisode.update
+package org.dailyepisode.updatenotification
 
 import io.mockk.every
 import io.mockk.mockk

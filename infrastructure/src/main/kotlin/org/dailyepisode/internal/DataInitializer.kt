@@ -2,22 +2,14 @@ package org.dailyepisode.internal
 
 import org.dailyepisode.account.AccountEntity
 import org.dailyepisode.account.AccountRepository
-
 import org.dailyepisode.subscription.SubscriptionEntity
-import org.dailyepisode.subscription.SubscriptionRepository
 import org.springframework.boot.CommandLineRunner
-import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
-
-// TODO remove me! (create sql file in integration test resource folder)
-
-@Component
-@Profile("dev")
+//@Component
 internal class DataInitializer(val passwordEncoder: PasswordEncoder,
-                               val accountRepository: AccountRepository,
-                               val subscriptionRepository: SubscriptionRepository): CommandLineRunner {
+                               val accountRepository: AccountRepository): CommandLineRunner {
 
   override fun run(vararg args: String?) {
     val gameOfThrones = SubscriptionEntity(null, 1, "game of thrones", "Winter is coming...", "image",

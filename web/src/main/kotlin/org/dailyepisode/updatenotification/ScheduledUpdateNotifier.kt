@@ -1,4 +1,4 @@
-package org.dailyepisode.update
+package org.dailyepisode.updatenotification
 
 import org.dailyepisode.account.AccountStorageService
 import org.dailyepisode.series.RemoteSeriesServiceFacade
@@ -22,7 +22,7 @@ class ScheduledUpdateNotifier(private val accountStorageService: AccountStorageS
   private val dateFormat = SimpleDateFormat("EEEEE MMMMM yyyy HH:mm:ss")
 
   private val updateSearchService = UpdateSearchService(remoteSeriesServiceFacade)
-  private val updateNotificationService = UpdateNotificationService(notificationSender, accountStorageService)
+  private val updateNotificationService = NotificationService(notificationSender, accountStorageService)
 
   @Scheduled(cron = EXECUTION_TIME_CRON_EXPRESSION)
   fun notifyAndPersistUpdates() {

@@ -1,7 +1,6 @@
-package org.dailyepisode.update
+package org.dailyepisode.updatenotification
 
 import org.dailyepisode.account.Account
-import org.dailyepisode.series.SeriesUpdatedLookupResult
 import org.dailyepisode.subscription.Subscription
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -17,16 +16,15 @@ internal class EmailNotificationSender(private val emailSender: JavaMailSender,
   private val logger = LoggerFactory.getLogger(EmailNotificationSender::class.java)
 
   override fun send(account: Account, updatedSubscriptions: List<Subscription>) {
-    if (updatedSubscriptions.isNotEmpty()) {
-      logger.info("Sending notification email to: {}", account.email)
-      val message = SimpleMailMessage()
-      message.setTo(account.email)
-      message.setSubject(messageSubject)
-      message.setText(createMessage(updatedSubscriptions))
-      emailSender.send(message)
-    }
+    logger.info("Sending notification email to: {}", account.email)
+    val message = SimpleMailMessage()
+    message.setTo(account.email)
+    message.setSubject(messageSubject)
+    message.setText(createMessage(updatedSubscriptions))
+    emailSender.send(message)
   }
 
+  // TODO
   private fun createMessage(subscriptions: List<Subscription>): String {
     return ""
   }

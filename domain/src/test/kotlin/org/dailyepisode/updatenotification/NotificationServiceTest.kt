@@ -1,4 +1,4 @@
-package org.dailyepisode.update
+package org.dailyepisode.updatenotification
 
 import io.mockk.spyk
 import io.mockk.verify
@@ -8,7 +8,7 @@ import org.dailyepisode.subscription.Subscription
 import org.junit.Test
 import java.time.LocalDateTime
 
-class UpdateNotificationServiceTest {
+class NotificationServiceTest {
   val today = LocalDateTime.now()
   val yesterday = today.minusDays(1)
   val twoDaysAgo = today.minusDays(2)
@@ -21,7 +21,7 @@ class UpdateNotificationServiceTest {
   fun `notify account with updated subscriptions should send the updated subscriptions`() {
     val notificationSender: NotificationSender = spyk()
     val accountStorageService: AccountStorageService = spyk()
-    val updateNotificationService = UpdateNotificationService(notificationSender, accountStorageService)
+    val updateNotificationService = NotificationService(notificationSender, accountStorageService)
     val notifiableAccount = Account(1, "dummy", "dummy", "dummy", 1, false, listOf(updatedSubscription, nonUpdatedSubscription), oneYearAgo, twoDaysAgo)
 
     updateNotificationService.notify(notifiableAccount)
@@ -34,7 +34,7 @@ class UpdateNotificationServiceTest {
   fun `notify account with no updated subscriptions should not send anything`() {
     val notificationSender: NotificationSender = spyk()
     val accountStorageService: AccountStorageService = spyk()
-    val updateNotificationService = UpdateNotificationService(notificationSender, accountStorageService)
+    val updateNotificationService = NotificationService(notificationSender, accountStorageService)
     val nonNotifiableAccount = Account(1, "dummy", "dummy", "dummy", 1, false, listOf(nonUpdatedSubscription), oneYearAgo, yesterday)
 
     updateNotificationService.notify(nonNotifiableAccount)

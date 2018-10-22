@@ -51,10 +51,10 @@ class AccountEntity(
     return Account(id!!, username, email, password, notificationIntervalInDays, isAdmin, subscriptions.map { it.toSubscription() }, convert(createdAt), convert(notifiedAt))
   }
 
+  // TODO generalize (for accaount to)
   private fun convert(date: Date): LocalDateTime =
     date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
 
-  fun subscribesTo(subscriptionId: Long): Boolean =
-    subscriptions.any { it.id == subscriptionId }
+  fun subscribesTo(subscriptionId: Long): Boolean = subscriptions.any { it.id == subscriptionId }
 
 }

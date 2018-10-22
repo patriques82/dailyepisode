@@ -1,10 +1,9 @@
-package org.dailyepisode.update
+package org.dailyepisode.updatenotification
 
 import org.dailyepisode.account.Account
 import org.dailyepisode.account.AccountStorageService
 import org.dailyepisode.series.*
 import org.dailyepisode.subscription.Subscription
-import org.dailyepisode.subscription.SubscriptionStorageService
 import java.time.LocalDateTime
 import java.util.*
 
@@ -12,8 +11,8 @@ interface NotificationSender {
   fun send(account: Account, updatedSubscriptions: List<Subscription>)
 }
 
-class UpdateNotificationService(private val notificationSender: NotificationSender,
-                                private val accountStorageService: AccountStorageService) {
+class NotificationService(private val notificationSender: NotificationSender,
+                          private val accountStorageService: AccountStorageService) {
 
   fun notify(account: Account) {
     val updatedSubscriptions = findUpdatedSubscriptions(account.notifiedAt, account.subscriptions)
