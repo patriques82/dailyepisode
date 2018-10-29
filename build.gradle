@@ -1,4 +1,4 @@
 allprojects {
     group = "org.dailyepisode"
-    version = "1.0-SNAPSHOT"
+    version = "1.0-SNAPSHOT" // TODO change to final when deploy
 }

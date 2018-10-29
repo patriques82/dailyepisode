@@ -2,6 +2,9 @@ buildscript {
     ext {
         kotlinVersion = properties["kotlin.version"]
         commonsValidatorVersion = properties["commons.validator.version"]
+        mockkVersion = properties["mockk.version"]
+        junitVersion = properties["junit.version"]
+        assertjVersion = properties["assertj.version"]
     }
     repositories {
         mavenCentral()
@@ -37,8 +40,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile "org.jetbrains.kotlin:kotlin-reflect"
     compile "commons-validator:commons-validator:$commonsValidatorVersion"
-    testCompile "junit:junit:4.12"
-    testCompile "org.assertj:assertj-core:3.11.1"
-    testImplementation "io.mockk:mockk:1.8.7"
-
+    testCompile "junit:junit:$junitVersion"
+    testCompile "org.assertj:assertj-core:$assertjVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
 }
