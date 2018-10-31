@@ -5,14 +5,16 @@ import org.dailyepisode.series.RemoteSeriesServiceFacade
 import org.dailyepisode.series.toSubscriptionUpdateRequest
 import org.dailyepisode.subscription.SubscriptionStorageService
 import org.slf4j.LoggerFactory
+import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.text.SimpleDateFormat
 import java.util.*
 
-const val EXECUTION_TIME_CRON_EXPRESSION = "0 0 0 * ? *" // 12:00 AM every day
+const val EXECUTION_TIME_CRON_EXPRESSION = "0 0 0 * * ?" // 12:00 AM every day
 
 @Component
+@Profile("prod")
 class ScheduledUpdateNotifier(private val accountStorageService: AccountStorageService,
                               private val subscriptionStorageService: SubscriptionStorageService,
                               remoteSeriesServiceFacade: RemoteSeriesServiceFacade,

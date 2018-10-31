@@ -18,7 +18,7 @@ import org.springframework.web.context.WebApplicationContext
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes = arrayOf(Application::class))
-@TestPropertySource("classpath:integrationtest.properties")
+@TestPropertySource("classpath:application-test.properties")
 @Transactional // Roll back database after each test method
 abstract class AbstractControllerIntegrationTest {
 

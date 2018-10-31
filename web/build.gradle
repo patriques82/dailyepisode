@@ -40,6 +40,10 @@ compileTestKotlin {
 
 bootJar.mainClassName = "org.dailyepisode.ApplicationKt"
 
+bootRun {
+    systemProperties = System.properties
+}
+
 repositories {
     mavenCentral()
     maven { setUrl("https://repo.spring.io/milestone") }
@@ -70,7 +74,6 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin"
     compile "org.springframework.security:spring-security-test"
-
     compile "io.mockk:mockk:$mockkVersion"
-    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile "org.springframework.boot:spring-boot-starter-test"
 }
