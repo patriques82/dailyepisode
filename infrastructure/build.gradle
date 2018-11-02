@@ -2,6 +2,7 @@ buildscript {
     ext {
         springBootVersion = properties["spring.boot.version"]
         kotlinVersion = properties["kotlin.version"]
+        freemarkerVersion = properties["freemarker.version"]
     }
     repositories {
         mavenCentral()
@@ -54,6 +55,7 @@ dependencies {
     compile "org.springframework:spring-jdbc"
     compile "com.fasterxml.jackson.core:jackson-databind"
     compile "org.springframework.boot:spring-boot-starter-mail"
+    compile "org.freemarker:freemarker:$freemarkerVersion"
     compile "org.springframework.boot:spring-boot-starter-security"
     runtime "com.h2database:h2"
     runtime "mysql:mysql-connector-java"
