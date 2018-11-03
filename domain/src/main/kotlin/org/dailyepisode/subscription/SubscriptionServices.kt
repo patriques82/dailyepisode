@@ -23,9 +23,6 @@ data class SubscriptionDeleteRequest(
 
 data class SubscriptionUpdateRequest(
   val remoteId: Int,
-  val imageUrl: String?,
-  val lastAirDate: String?,
-  val numberOfEpisodes: Int,
   val numberOfSeasons: Int
 )
 

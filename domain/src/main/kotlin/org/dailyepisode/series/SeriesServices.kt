@@ -56,7 +56,7 @@ data class SeriesUpdatedLookupResult(
 )
 
 fun SeriesUpdatedLookupResult.toSubscriptionUpdateRequest(): SubscriptionUpdateRequest =
-  SubscriptionUpdateRequest(remoteId, imageUrl, lastAirDate, numberOfEpisodes, numberOfSeasons)
+  SubscriptionUpdateRequest(remoteId, numberOfSeasons)
 
 data class UpdatedSeriesResult(val changedSeriesRemoteIds: List<Int>)
 
