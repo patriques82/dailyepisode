@@ -85,7 +85,7 @@ class ScheduledUpdateNotifierTest {
   }
 
   private fun verifySubscriptionStorageService(subscriptionStorageService: SubscriptionStorageService) {
-    val expectedSubscriptionUpdateRequest = SubscriptionUpdateRequest(1, 15)
+    val expectedSubscriptionUpdateRequest = SubscriptionUpdateRequest(1, "image", "2018-11-23", 103, 15)
     verify { subscriptionStorageService.update(expectedSubscriptionUpdateRequest) }
   }
 

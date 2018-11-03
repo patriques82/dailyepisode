@@ -67,15 +67,18 @@ internal class SubscriptionStorageServiceImpl(private val subscriptionRepository
   override fun update(subscriptionUpdateRequest: SubscriptionUpdateRequest) {
     val subscriptionEntity = subscriptionRepository.findByRemoteId(subscriptionUpdateRequest.remoteId)
     subscriptionEntity?.let {
-      if (it.toSubscriptionUpdateRequest() != subscriptionUpdateRequest) {
+      if (subscriptionUpdateRequest.hasSeasonChange(it)) {
+        it.imageUrl = subscriptionUpdateRequest.imageUrl
+        it.lastAirDate = subscriptionUpdateRequest.lastAirDate
+        it.numberOfEpisodes = subscriptionUpdateRequest.numberOfEpisodes
         it.numberOfSeasons = subscriptionUpdateRequest.numberOfSeasons
         subscriptionRepository.save(it)
       }
     }
   }
 
-  private fun SubscriptionEntity.toSubscriptionUpdateRequest(): SubscriptionUpdateRequest =
-    SubscriptionUpdateRequest(remoteId, numberOfSeasons)
+  private fun SubscriptionUpdateRequest.hasSeasonChange(subscriptionEntity: SubscriptionEntity): Boolean =
+    numberOfSeasons != subscriptionEntity.numberOfSeasons
 
 }
 
