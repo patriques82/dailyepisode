@@ -1,0 +1,1 @@
+$ ./gradlew web:integrationTest -Dspring.profiles.active=test

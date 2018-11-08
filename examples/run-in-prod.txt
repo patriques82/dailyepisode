@@ -1,0 +1,16 @@
+$ docker pull {repo-name}/{image-name}
+$ docker run --env-file ./{env-file} {image-name}
+
+The --env-file flag takes a filename as an argument and expects each line to be in the VAR=VAL format,
+mimicking the argument passed to --env. Comment lines need only be prefixed with #
+
+example of contents of env-file:
+
+    spring.datasource.data=classpath:prod.sql
+    spring.datasource.driver-class-name=org.h2.Driver
+    spring.datasource.url=jdbc:h2:mem:db;DB_CLOSE_DELAY=-1
+    spring.datasource.username=sa
+    spring.datasource.password=sa
+    spring.datasource.initialization-mode=always
+
+    etc...

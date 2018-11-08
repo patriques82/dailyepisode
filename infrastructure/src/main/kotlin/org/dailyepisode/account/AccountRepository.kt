@@ -1,18 +1,16 @@
 package org.dailyepisode.account
 
 import org.dailyepisode.subscription.SubscriptionEntity
+import org.dailyepisode.util.toLocalDateTime
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Modifying
-import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.*
 import javax.persistence.*
 
 @Repository
-interface AccountRepository: JpaRepository<AccountEntity, Long> {
+interface AccountRepository : JpaRepository<AccountEntity, Long> {
   fun findByEmail(email: String): AccountEntity?
   fun findByUsername(username: String): AccountEntity?
 }
@@ -23,7 +21,7 @@ class AccountEntity(
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   var id: Long? = null,
-  @Column(unique=true)
+  @Column(unique = true)
   var username: String,
   var email: String,
   var password: String,
@@ -41,6 +39,7 @@ class AccountEntity(
   @field: Column(updatable = false)
   val createdAt: Date = Date(),
 
+  @field: UpdateTimestamp
   var notifiedAt: Date = Date()
 ) {
 
@@ -48,12 +47,8 @@ class AccountEntity(
     if (id == null) {
       throw IllegalStateException("Only non transient account entities can be transformed to account")
     }
-    return Account(id!!, username, email, password, notificationIntervalInDays, isAdmin, subscriptions.map { it.toSubscription() }, convert(createdAt), convert(notifiedAt))
+    return Account(id!!, username, email, password, notificationIntervalInDays, isAdmin, subscriptions.map { it.toSubscription() }, createdAt.toLocalDateTime(), notifiedAt.toLocalDateTime())
   }
-
-  // TODO generalize (for accaount to)
-  private fun convert(date: Date): LocalDateTime =
-    date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
 
   fun subscribesTo(subscriptionId: Long): Boolean = subscriptions.any { it.id == subscriptionId }
 
