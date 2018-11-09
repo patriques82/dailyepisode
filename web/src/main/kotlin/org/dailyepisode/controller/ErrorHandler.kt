@@ -40,6 +40,10 @@ class ErrorHandler {
   fun illegalNotificationInterval(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.BAD_REQUEST)
 
+  @ExceptionHandler(ToManyLoginAttempts::class)
+  fun toManyLoginAttempts(exception: Exception): ResponseEntity<ErrorDto> =
+    ResponseEntity(ErrorDto(exception.message!!), HttpStatus.FORBIDDEN)
+
   @ExceptionHandler(NonMatchingAccoundId::class)
   fun nonMatchingAccountId(exception: Exception): ResponseEntity<ErrorDto> =
     ResponseEntity(ErrorDto(exception.message!!), HttpStatus.BAD_REQUEST)

@@ -10,6 +10,8 @@ class ForbiddenAccessException(message: String): RuntimeException(message)
 
 class IllegalNotificationInterval(message: String): RuntimeException(message)
 
+class ToManyLoginAttempts(message: String): RuntimeException(message)
+
 class NonMatchingAccoundId(message: String): RuntimeException(message)
 
 class InvalidUserNameException(message: String) : RuntimeException(message)

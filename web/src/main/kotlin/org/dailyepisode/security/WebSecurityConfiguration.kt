@@ -2,6 +2,8 @@ package org.dailyepisode.security
 
 import org.dailyepisode.account.Account
 import org.dailyepisode.account.AccountStorageService
+import org.dailyepisode.account.ToManyLoginAttempts
+import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -17,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.stereotype.Component
+import org.springframework.web.context.request.RequestContextListener
+import javax.servlet.annotation.WebListener
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -57,14 +61,26 @@ class WebSecurityConfiguration(private val userDetailsService: UserDetailsServic
 }
 
 @Component
-internal class UserDetailsServiceImpl(private val accountStorageService: AccountStorageService) : UserDetailsService {
+internal class UserDetailsServiceImpl(private val accountStorageService: AccountStorageService,
+                                      private val loginAttemptService: LoginAttemptService,
+                                      private val request: HttpServletRequest)
+  : UserDetailsService {
 
   override fun loadUserByUsername(username: String?): UserDetails {
+    val ip = getClientIP()
+    if (loginAttemptService.isBlocked(ip)) {
+      throw ToManyLoginAttempts("blocked");
+    }
     val account = username?.let { accountStorageService.findByUserName(it) }
     if (account == null) {
       throw UsernameNotFoundException("Username: '$username' does not exists")
     }
     return createUserDetails(account)
+  }
+
+  private fun getClientIP(): String {
+    val xfHeader = request.getHeader("X-Forwarded-For") ?: return request.remoteAddr
+    return xfHeader.split(",".toRegex())[0]
   }
 
   private fun createUserDetails(account: Account): UserDetails {
@@ -104,3 +120,7 @@ internal class AuthenticationEntryPointImpl: AuthenticationEntryPoint {
 
 @Component
 internal class PasswordEncoderImpl: PasswordEncoder by BCryptPasswordEncoder()
+
+@Configuration
+@WebListener
+internal class RequestContextListenerImpl: RequestContextListener()
