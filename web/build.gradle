@@ -72,7 +72,6 @@ dependencies {
     compile project(':infrastructure')
     compile project(':domain')
     compile "org.springframework.boot:spring-boot-starter-web"
-    compile "org.springframework.boot:spring-boot-starter-actuator"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin"
     compile "org.springframework.security:spring-security-test"
     compile 'com.google.guava:guava:27.0-jre' //TODO version

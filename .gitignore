@@ -7,3 +7,4 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 
 web/**/main/resources/
+docker-compose.yaml
