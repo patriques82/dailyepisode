@@ -6,5 +6,7 @@ build/
 */out/
 !gradle/wrapper/gradle-wrapper.jar
 
-web/**/main/resources/
+web/**/main/resources/application-prod.properties
+web/**/main/resources/prod.sql
+
 docker-compose.yaml
