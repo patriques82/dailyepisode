@@ -60,8 +60,10 @@ class SeriesControllerTest: AbstractControllerIntegrationTest() {
 
   @Test
   fun `lookup with existing remote id should return series and 200 Ok`() {
+    val nextEpisodeToAir = NextEpisodeToAir("2018-03-23", 1)
+    val lastEpisodeToAir = LastEpisodeToAir("2018-03-03", 9)
     val lookupResult = TheMovieDBLookupResult(1, "game of thrones", "Seven noble families fight", "thrones", 10, 9.2,
-      "2011-01-01", "2018-03-03", listOf(TheMovieDbGenre("drama"), TheMovieDbGenre("fantasy")), "www.got.com", 77, 8)
+      "2011-01-01", "2018-03-03", listOf(TheMovieDbGenre("drama"), TheMovieDbGenre("fantasy")), nextEpisodeToAir,lastEpisodeToAir, "www.got.com", 77, 8)
     given(theMovieDBConnector.fetchLookupResult(1)).willReturn(lookupResult)
 
     val expectedJson = """

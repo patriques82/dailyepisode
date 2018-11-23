@@ -5,7 +5,6 @@ import org.dailyepisode.subscription.SubscriptionUpdateRequest
 interface RemoteSeriesServiceFacade {
   fun search(seriesSearchRequest: SeriesSearchRequest): SeriesSearchResult
   fun lookup(remoteId: Int): SeriesLookupResult?
-  fun updatesSinceYesterday(): UpdatedSeriesResult
 }
 
 data class SeriesSearchRequest(
@@ -38,25 +37,32 @@ data class SeriesLookupResult(
   val voteAverage: Double,
   val firstAirDate: String?,
   val lastAirDate: String?,
+  val lastAirDateIsNewSeason: Boolean?,
   val genres: List<String>,
   val homepage: String?,
   val numberOfEpisodes: Int,
-  val numberOfSeasons: Int
+  val numberOfSeasons: Int,
+  val nextAirDate: String?,
+  val nextAirDateIsNewSeason: Boolean?
 )
 
 fun SeriesLookupResult.toSeriesUpdatedLookupResult(): SeriesUpdatedLookupResult =
-  SeriesUpdatedLookupResult(remoteId, imageUrl, lastAirDate, numberOfEpisodes, numberOfSeasons)
+  SeriesUpdatedLookupResult(remoteId, imageUrl, lastAirDate, numberOfEpisodes, numberOfSeasons,
+    nextAirDate, nextAirDateIsNewSeason)
 
 data class SeriesUpdatedLookupResult(
   val remoteId: Int,
   val imageUrl: String?,
   val lastAirDate: String?,
   val numberOfEpisodes: Int,
-  val numberOfSeasons: Int
+  val numberOfSeasons: Int,
+  val nextAirDate: String?,
+  val nextAirDateIsNewSeason: Boolean?
 )
 
 fun SeriesUpdatedLookupResult.toSubscriptionUpdateRequest(): SubscriptionUpdateRequest =
-  SubscriptionUpdateRequest(remoteId, imageUrl, lastAirDate, numberOfEpisodes, numberOfSeasons)
+  SubscriptionUpdateRequest(remoteId, imageUrl, lastAirDate, numberOfEpisodes, numberOfSeasons,
+    nextAirDate, nextAirDateIsNewSeason)
 
 data class UpdatedSeriesResult(val changedSeriesRemoteIds: List<Int>)
 

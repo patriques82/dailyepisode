@@ -9,7 +9,6 @@ import org.springframework.web.client.HttpClientErrorException
 interface TheMovieDBConnector {
   fun fetchSearchResultForPage(query: String, page: Int): TheMovieDBSeriesSearchResult
   fun fetchLookupResult(remoteId: Int): TheMovieDBLookupResult?
-  fun fetchUpdatesForPage(page: Int): TheMovieDBUpdateResult
 }
 
 @Component
@@ -37,11 +36,6 @@ class TheMovieDBConnectorImpl(templateBuilder: RestTemplateBuilder,
 
   private fun isStatusCodeNotFound(ex: HttpClientErrorException)=
     ex.statusCode.value() == 404
-
-  override fun fetchUpdatesForPage(page: Int): TheMovieDBUpdateResult {
-    val resource = "/tv/changes?api_key=$apiKey&page=$page"
-    return restTemplate.getForEntity(resource, TheMovieDBUpdateResult::class.java).body!!
-  }
 }
 
 class TheMovieDBSeriesSearchResult(
@@ -72,20 +66,22 @@ data class TheMovieDBLookupResult(
   val first_air_date: String?,
   val last_air_date: String?,
   val genres: List<TheMovieDbGenre>,
+  val next_episode_to_air: NextEpisodeToAir?,
+  val last_episode_to_air: LastEpisodeToAir?,
   val homepage: String?,
   val number_of_episodes: Int?,
   val number_of_seasons: Int?
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class TheMovieDbGenre(val name: String)
+data class NextEpisodeToAir(
+  val air_date: String?,
+  val episode_number: Int?
+)
 
-data class TheMovieDBUpdateResult(
-  val results: List<TheMovieDBChangedSeries>,
-  val page: Int,
-  val total_pages: Int,
-  val total_result: Int
+data class LastEpisodeToAir(
+  val air_date: String?,
+  val episode_number: Int?
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class TheMovieDBChangedSeries(val id: Int)
+data class TheMovieDbGenre(val name: String)

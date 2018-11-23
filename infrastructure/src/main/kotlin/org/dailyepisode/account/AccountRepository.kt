@@ -1,7 +1,7 @@
 package org.dailyepisode.account
 
 import org.dailyepisode.subscription.SubscriptionEntity
-import org.dailyepisode.util.toLocalDateTime
+import org.dailyepisode.util.toLocalDate
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import org.springframework.data.jpa.repository.JpaRepository
@@ -47,7 +47,7 @@ class AccountEntity(
     if (id == null) {
       throw IllegalStateException("Only non transient account entities can be transformed to account")
     }
-    return Account(id!!, username, email, password, notificationIntervalInDays, isAdmin, subscriptions.map { it.toSubscription() }, createdAt.toLocalDateTime(), notifiedAt.toLocalDateTime())
+    return Account(id!!, username, email, password, notificationIntervalInDays, isAdmin, subscriptions.map { it.toSubscription() }, createdAt.toLocalDate(), notifiedAt.toLocalDate())
   }
 
   fun subscribesTo(subscriptionId: Long): Boolean = subscriptions.any { it.id == subscriptionId }

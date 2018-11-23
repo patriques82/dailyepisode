@@ -1,7 +1,7 @@
 package org.dailyepisode.subscription
 
 import org.dailyepisode.account.AccountEntity
-import org.dailyepisode.util.toLocalDateTime
+import org.dailyepisode.util.toLocalDate
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import org.springframework.data.jpa.repository.JpaRepository
@@ -31,7 +31,9 @@ data class SubscriptionEntity(
   var voteCount: Int,
   var voteAverage: Double,
   var firstAirDate: String?,
+
   var lastAirDate: String?,
+  var lastAirDateIsNewSeason: Boolean?,
 
   @Column
   @ElementCollection
@@ -48,13 +50,20 @@ data class SubscriptionEntity(
   val createdAt: Date = Date(),
 
   @field: UpdateTimestamp
-  val updatedAt: Date = Date()
+  val updatedAt: Date = Date(),
+
+  var lastUpdate: Date? = Date(),
+  var seasonLastUpdate: Int,
+
+  var nextAirDate: String?,
+  var nextAirDateIsNewSeason: Boolean?
 ) {
   fun toSubscription(): Subscription {
     if (id == null) {
       throw IllegalStateException("Only non transient subscription entities can be transformed to subscriptions")
     }
-    return Subscription(id!!, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
-                        genres, homepage, numberOfEpisodes, numberOfSeasons, createdAt.toLocalDateTime(), updatedAt.toLocalDateTime())
+    return Subscription(id!!, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate?.toLocalDate(), lastAirDate?.toLocalDate(),
+                        lastAirDateIsNewSeason, genres, homepage, numberOfEpisodes, numberOfSeasons, createdAt.toLocalDate(), updatedAt.toLocalDate(),
+                        lastUpdate?.toLocalDate(), seasonLastUpdate, nextAirDate?.toLocalDate(), nextAirDateIsNewSeason)
   }
 }

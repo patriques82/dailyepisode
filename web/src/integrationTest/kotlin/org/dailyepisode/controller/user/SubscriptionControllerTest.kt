@@ -4,9 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.dailyepisode.account.AccountStorageService
 import org.dailyepisode.controller.AbstractControllerIntegrationTest
 import org.dailyepisode.dto.SubscriptionRequestDto
-import org.dailyepisode.series.TheMovieDBConnector
-import org.dailyepisode.series.TheMovieDBLookupResult
-import org.dailyepisode.series.TheMovieDbGenre
+import org.dailyepisode.series.*
 import org.dailyepisode.subscription.SubscriptionStorageService
 import org.junit.Test
 import org.mockito.BDDMockito.given
@@ -55,9 +53,12 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
   @Test
   fun `create subscription with valid subscription data should return 201 Created`() {
     val genres = listOf(TheMovieDbGenre("Comedy"), TheMovieDbGenre("Sci-fi"))
+    val nextEpisodeToAir = NextEpisodeToAir("2018-10-23", 67)
+    val lastEpisodeToAir = LastEpisodeToAir("2017-02-28", 66)
+
     val rickAndMorty = TheMovieDBLookupResult(4, "rick and morty", "space explorers", "image",
-      6, 7.5, "2009-05-18", "2017-02-29", genres,
-      "www.rickandmorty.com", 60, 5)
+      6, 7.5, "2009-05-18", "2017-02-28", genres,
+      nextEpisodeToAir, lastEpisodeToAir, "www.rickandmorty.com", 60, 5)
     given(theMovieDBConnector.fetchLookupResult(4)).willReturn(rickAndMorty)
 
     val alexiaBefore = accountStorageService.findByUserName("alexia")!!
@@ -88,7 +89,7 @@ class SubscriptionControllerTest : AbstractControllerIntegrationTest() {
         "voteCount":6,
         "voteAverage":7.5,
         "firstAirDate":"2009-05-18",
-        "lastAirDate":"2017-02-29",
+        "lastAirDate":"2017-02-28",
         "genres":["Crime","Drama"],
         "homepage":"www.lineofduty.com",
         "numberOfEpisodes":48,

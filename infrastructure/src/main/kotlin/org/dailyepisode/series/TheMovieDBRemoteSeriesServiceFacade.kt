@@ -34,23 +34,8 @@ internal class TheMovieDBRemoteSeriesServiceFacade(private val theMovieDBConnect
 
   private fun TheMovieDBLookupResult.toSeriesLookupResult() =
     SeriesLookupResult(
-      id, name, overview, resolveImageUrl(poster_path), vote_count ?: 0, vote_average ?: 0.0, first_air_date ?: "Unknown first air date",
-      last_air_date ?: "Unknown last air data", genres.map { it.name }, homepage, number_of_episodes ?: 0, number_of_seasons ?: 0)
-
-  override fun updatesSinceYesterday(): UpdatedSeriesResult {
-    val updatedSeriesIds = fetchUpdatesAllPages()
-    return UpdatedSeriesResult(updatedSeriesIds)
-  }
-
-  private fun fetchUpdatesAllPages(): List<Int> {
-    var page = 0
-    val updatedSeriesIds = mutableListOf<Int>()
-    do {
-      page++
-      val updates = theMovieDBConnector.fetchUpdatesForPage(page)
-      updatedSeriesIds += updates.results.map { it.id }
-    } while (page < updates.total_pages && page < MAX_UPDATES_PAGES)
-    return updatedSeriesIds
-  }
+      id, name, overview, resolveImageUrl(poster_path), vote_count ?: 0, vote_average ?: 0.0, first_air_date,
+      last_air_date, last_episode_to_air?.episode_number == 1, genres.map { it.name }, homepage, number_of_episodes ?: 0, number_of_seasons ?: 0,
+      next_episode_to_air?.air_date, next_episode_to_air?.episode_number == 1)
 
 }

@@ -1,7 +1,7 @@
 package org.dailyepisode.account
 
 import org.dailyepisode.subscription.Subscription
-import java.time.LocalDateTime
+import java.time.LocalDate
 import java.util.*
 
 interface AccountStorageService {
@@ -31,8 +31,8 @@ data class Account(
   val notificationIntervalInDays: Int,
   val isAdmin: Boolean,
   val subscriptions: List<Subscription>,
-  val createdAt: LocalDateTime,
-  val notifiedAt: LocalDateTime
+  val createdAt: LocalDate,
+  val notifiedAt: LocalDate
 )
 
 data class AccountUpdateRequest(

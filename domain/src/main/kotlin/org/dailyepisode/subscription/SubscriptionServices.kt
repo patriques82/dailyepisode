@@ -1,6 +1,6 @@
 package org.dailyepisode.subscription
 
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 interface SubscriptionStorageService {
   fun createSubscriptions(subscriptionCreateRequest: SubscriptionCreateRequest): Subscription?
@@ -26,7 +26,9 @@ data class SubscriptionUpdateRequest(
   val imageUrl: String?,
   val lastAirDate: String?,
   val numberOfEpisodes: Int,
-  val numberOfSeasons: Int
+  val numberOfSeasons: Int,
+  val nextAirDate: String?,
+  val nextAirDateIsNewSeason: Boolean?
 )
 
 data class Subscription(
@@ -37,12 +39,17 @@ data class Subscription(
   val imageUrl: String?,
   val voteCount: Int,
   val voteAverage: Double,
-  val firstAirDate: String?,
-  val lastAirDate: String?,
+  val firstAirDate: LocalDate?,
+  val lastAirDate: LocalDate?,
+  val lastAirDateIsNewSeason: Boolean?,
   val genres: List<String>,
   val homepage: String?,
   val numberOfEpisodes: Int,
   val numberOfSeasons: Int,
-  val createdAt: LocalDateTime,
-  val updatedAt: LocalDateTime
+  val createdAt: LocalDate,
+  val updatedAt: LocalDate,
+  val lastUpdate: LocalDate?,
+  val seasonLastUpdate: Int,
+  val nextAirDate: LocalDate?,
+  val nextAirDateIsNewSeason: Boolean?
 )

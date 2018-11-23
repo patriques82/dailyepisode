@@ -59,7 +59,7 @@ class AdminSubscriptionControllerTest: AbstractControllerIntegrationTest() {
        "voteCount":6,
        "voteAverage":7.5,
        "firstAirDate":"2009-05-18",
-       "lastAirDate":"2017-02-29",
+       "lastAirDate":"2017-02-28",
        "genres":["Crime","Drama"],
        "homepage":"www.lineofduty.com",
        "numberOfEpisodes":48,

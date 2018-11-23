@@ -19,10 +19,10 @@ class SeriesLookupBatchServiceTest {
   }
 
   @Test
-  fun `lookup by remote ids with only existing ids should throw RemoteIdNullPointerException`() {
+  fun `lookup by remote ids with only existing ids should not throw RemoteIdNullPointerException`() {
     val mockRemoteSeriesServiceFacade: RemoteSeriesServiceFacade = mockk(relaxed = true)
-    val friends = SeriesLookupResult(1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17", "2014-10-22", listOf(), "www.friends.com", 103, 15)
-    val homeland = SeriesLookupResult(2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23", "2017-08-12", listOf(), "www.homeland.com", 6, 68)
+    val friends = SeriesLookupResult(1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17", "2014-10-22", null, listOf(), "www.friends.com", 103, 15, null, null)
+    val homeland = SeriesLookupResult(2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23", "2017-08-12", null, listOf(), "www.homeland.com", 6, 68, null, null)
     every { mockRemoteSeriesServiceFacade.lookup(1) } returns friends
     every { mockRemoteSeriesServiceFacade.lookup(2) } returns homeland
     val seriesBatchService = SeriesLookupBatchService(mockRemoteSeriesServiceFacade)

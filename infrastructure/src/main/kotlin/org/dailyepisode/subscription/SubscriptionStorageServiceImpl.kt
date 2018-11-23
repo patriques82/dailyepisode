@@ -4,8 +4,8 @@ import org.dailyepisode.account.AccountEntity
 import org.dailyepisode.account.AccountHasNoMatchingSubscriptionException
 import org.dailyepisode.account.AccountRepository
 import org.dailyepisode.account.NoAccountFoundException
-import org.dailyepisode.series.SeriesLookupResult
 import org.dailyepisode.series.RemoteSeriesServiceFacade
+import org.dailyepisode.series.SeriesLookupResult
 import org.springframework.stereotype.Service
 
 @Service
@@ -36,7 +36,8 @@ internal class SubscriptionStorageServiceImpl(private val subscriptionRepository
 
   private fun SeriesLookupResult.toSubscriptionEntity(): SubscriptionEntity =
     SubscriptionEntity(null, remoteId, name, overview, imageUrl, voteCount, voteAverage,
-      firstAirDate, lastAirDate, genres, homepage, numberOfEpisodes, numberOfSeasons, emptyList())
+      firstAirDate, lastAirDate, lastAirDateIsNewSeason, genres, homepage, numberOfEpisodes, numberOfSeasons, emptyList(),
+      lastUpdate = null, seasonLastUpdate = numberOfSeasons, nextAirDate = nextAirDate, nextAirDateIsNewSeason = nextAirDateIsNewSeason)
 
   override fun findAll(): List<Subscription> =
     subscriptionRepository.findAll()
@@ -67,18 +68,17 @@ internal class SubscriptionStorageServiceImpl(private val subscriptionRepository
   override fun update(subscriptionUpdateRequest: SubscriptionUpdateRequest) {
     val subscriptionEntity = subscriptionRepository.findByRemoteId(subscriptionUpdateRequest.remoteId)
     subscriptionEntity?.let {
-      if (subscriptionUpdateRequest.hasSeasonChange(it)) {
-        it.imageUrl = subscriptionUpdateRequest.imageUrl
-        it.lastAirDate = subscriptionUpdateRequest.lastAirDate
-        it.numberOfEpisodes = subscriptionUpdateRequest.numberOfEpisodes
-        it.numberOfSeasons = subscriptionUpdateRequest.numberOfSeasons
-        subscriptionRepository.save(it)
-      }
+      it.lastUpdate = it.updatedAt
+      it.seasonLastUpdate = it.numberOfSeasons
+      it.imageUrl = subscriptionUpdateRequest.imageUrl
+      it.lastAirDate = subscriptionUpdateRequest.lastAirDate
+      it.numberOfEpisodes = subscriptionUpdateRequest.numberOfEpisodes
+      it.numberOfSeasons = subscriptionUpdateRequest.numberOfSeasons
+      it.nextAirDate = subscriptionUpdateRequest.nextAirDate
+      it.nextAirDateIsNewSeason = subscriptionUpdateRequest.nextAirDateIsNewSeason
+      subscriptionRepository.save(it)
     }
   }
-
-  private fun SubscriptionUpdateRequest.hasSeasonChange(subscriptionEntity: SubscriptionEntity): Boolean =
-    numberOfSeasons != subscriptionEntity.numberOfSeasons
 
 }
 

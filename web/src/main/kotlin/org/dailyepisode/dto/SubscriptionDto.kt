@@ -31,5 +31,5 @@ data class SubscriptionDto(
 )
 
 fun Subscription.toDto(): SubscriptionDto =
-  SubscriptionDto(id, remoteId, name, overview, imageUrl, voteCount, voteAverage, firstAirDate, lastAirDate,
-    genres, homepage, numberOfEpisodes, numberOfSeasons)
+  SubscriptionDto(id, remoteId, name, overview, imageUrl, voteCount, voteAverage,
+    firstAirDate?.toString(), lastAirDate?.toString(), genres, homepage, numberOfEpisodes, numberOfSeasons)

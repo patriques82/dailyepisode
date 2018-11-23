@@ -4,7 +4,7 @@ import org.dailyepisode.account.Account
 import org.dailyepisode.account.AccountStorageService
 import org.dailyepisode.series.*
 import org.dailyepisode.subscription.Subscription
-import java.time.LocalDateTime
+import java.time.LocalDate
 import java.util.*
 
 interface NotificationSender {
@@ -15,27 +15,43 @@ class NotificationService(private val notificationSender: NotificationSender,
                           private val accountStorageService: AccountStorageService) {
 
   fun notify(account: Account) {
-    val updatedSubscriptions = findUpdatedSubscriptions(account.notifiedAt, account.subscriptions)
-    if (!updatedSubscriptions.isEmpty() && isTimeForUpdate(account.notifiedAt, account.notificationIntervalInDays)) {
+    val updatedSubscriptions = account.subscriptions.filter { it.hasNewSeason() }
+    if (!updatedSubscriptions.isEmpty() && isTimeForNotification(account.notifiedAt, account.notificationIntervalInDays)) {
       notificationSender.send(account, updatedSubscriptions)
       accountStorageService.updateNotifiedAt(account.id, Date())
     }
   }
 
-  private fun findUpdatedSubscriptions(lastNotificationDate: LocalDateTime, subscriptions: List<Subscription>) =
-    subscriptions.filter { it.updatedAt.isAfter(lastNotificationDate) }
+  private fun isTimeForNotification(lastNotificationDate: LocalDate, notificationIntervalInDays: Int): Boolean =
+    lastNotificationDate.plusDays(notificationIntervalInDays.toLong()).isBefore(LocalDate.now())
 
-  private fun isTimeForUpdate(lastNotificationDate: LocalDateTime, notificationIntervalInDays: Int): Boolean =
-    lastNotificationDate.plusDays(notificationIntervalInDays.toLong()).isBefore(LocalDateTime.now())
+  private fun Subscription.hasNewSeason(): Boolean {
+    var newSeason = false
+    if (lastAirDate != null && lastUpdate != null && lastAirDateIsNewSeason != null) {
+      if (newSeasonHasBeenReleasedSinceLastUpdate(lastAirDate, lastUpdate, lastAirDateIsNewSeason)) {
+        newSeason = true
+      }
+    }
+    if (nextAirDate != null && nextAirDateIsNewSeason != null) {
+      if (newSeasonTomorrow(nextAirDate, nextAirDateIsNewSeason)) {
+        newSeason = true
+      }
+    }
+    return newSeason
+  }
+
+  private fun newSeasonTomorrow(nextAirDate: LocalDate, nextAirDateIsNewSeason: Boolean) =
+    nextAirDate.equals(LocalDate.now().plusDays(1)) && nextAirDateIsNewSeason
+
+  private fun Subscription.newSeasonHasBeenReleasedSinceLastUpdate(lastAirDate: LocalDate, lastUpdate: LocalDate, lastAirDateIsNewSeason: Boolean) =
+    lastAirDate.isAfter(lastUpdate) && numberOfSeasons > seasonLastUpdate && lastAirDateIsNewSeason
 }
 
-class UpdateSearchService(private val remoteSeriesServiceFacade: RemoteSeriesServiceFacade) {
+class UpdateSearchService(remoteSeriesServiceFacade: RemoteSeriesServiceFacade) {
   private val seriesLookupBatchService = SeriesLookupBatchService(remoteSeriesServiceFacade)
 
   fun search(subscriptions: List<Subscription>): List<SeriesUpdatedLookupResult> {
-    val changedRemoteIds = remoteSeriesServiceFacade.updatesSinceYesterday().changedSeriesRemoteIds
-    val updatedSubscriptions = subscriptions.filter { changedRemoteIds.contains(it.remoteId) }
-    val updatedLookups = seriesLookupBatchService.lookup(updatedSubscriptions.map { it.remoteId })
+    val updatedLookups = seriesLookupBatchService.lookup(subscriptions.map { it.remoteId })
     return updatedLookups.map { it.toSeriesUpdatedLookupResult() }
   }
 
