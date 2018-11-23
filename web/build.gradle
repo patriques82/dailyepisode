@@ -3,6 +3,7 @@ buildscript {
         kotlinVersion = properties["kotlin.version"]
         springBootVersion = properties["spring.boot.version"]
         mockkVersion = properties["mockk.version"]
+        guavaVersion = properties["guava.version"]
     }
     repositories {
         mavenCentral()
@@ -74,7 +75,7 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin"
     compile "org.springframework.security:spring-security-test"
-    compile 'com.google.guava:guava:27.0-jre' //TODO version
+    compile "com.google.guava:guava:$guavaVersion"
     compile "io.mockk:mockk:$mockkVersion"
     testCompile "org.springframework.boot:spring-boot-starter-test"
 }

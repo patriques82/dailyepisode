@@ -35,6 +35,12 @@ class ScheduledUpdateNotifier(private val accountStorageService: AccountStorageS
     val updatedSeries = updateSearchService.search(subscriptions)
 
     updatedSeries.forEach { subscriptionStorageService.update(it.toSubscriptionUpdateRequest()) }
+    if (updatedSeries.size != subscriptions.size) {
+      logger.warn("Updated ${updatedSeries.size}/${subscriptions.size} subscriptions")
+    } else {
+      logger.info("Updated ${updatedSeries.size}/${subscriptions.size} subscriptions")
+    }
+    
     accounts.forEach { updateNotificationService.notify(it) }
     logger.info("Notification sending and persisting ended: {}", dateFormat.format(Date()))
   }
