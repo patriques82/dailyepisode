@@ -35,8 +35,9 @@ class ScheduledUpdateNotifier(private val accountStorageService: AccountStorageS
     val updatedSeries = updateSearchService.search(subscriptions)
 
     updatedSeries.forEach { subscriptionStorageService.update(it.toSubscriptionUpdateRequest()) }
-    accounts.forEach { updateNotificationService.notify(it) }
+    logger.info("Updated ${updatedSeries.size} subscriptions.")
 
+    accounts.forEach { updateNotificationService.notify(it) }
     logger.info("Notification sending and persisting ended: {}", dateFormat.format(Date()))
   }
 
