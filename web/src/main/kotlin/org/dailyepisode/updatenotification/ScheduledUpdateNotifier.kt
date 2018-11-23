@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 import java.text.SimpleDateFormat
 import java.util.*
 
-const val EXECUTION_TIME_CRON_EXPRESSION = "0 0 0 * * ?" // 12:00 AM every day
+const val EXECUTION_TIME_CRON_EXPRESSION = "0 0 * * * *" // every hour
 
 @Component
 @Profile("prod")
