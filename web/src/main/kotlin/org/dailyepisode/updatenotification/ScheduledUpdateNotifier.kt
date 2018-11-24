@@ -40,7 +40,7 @@ class ScheduledUpdateNotifier(private val accountStorageService: AccountStorageS
     } else {
       logger.info("Updated ${updatedSeries.size}/${subscriptions.size} subscriptions")
     }
-    
+
     accounts.forEach { updateNotificationService.notify(it) }
     logger.info("Notification sending and persisting ended: {}", dateFormat.format(Date()))
   }

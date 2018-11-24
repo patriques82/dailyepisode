@@ -15,7 +15,7 @@ class NotificationService(private val notificationSender: NotificationSender,
                           private val accountStorageService: AccountStorageService) {
 
   fun notify(account: Account) {
-    val updatedSubscriptions = account.subscriptions.filter { it.hasNewSeason() }
+    val updatedSubscriptions = account.subscriptions.filter { it.hasNewSeason(account.notifiedAt) }
     if (!updatedSubscriptions.isEmpty() && isTimeForNotification(account.notifiedAt, account.notificationIntervalInDays)) {
       notificationSender.send(account, updatedSubscriptions)
       accountStorageService.updateNotifiedAt(account.id, Date())
@@ -23,12 +23,12 @@ class NotificationService(private val notificationSender: NotificationSender,
   }
 
   private fun isTimeForNotification(lastNotificationDate: LocalDate, notificationIntervalInDays: Int): Boolean =
-    lastNotificationDate.plusDays(notificationIntervalInDays.toLong()).isBefore(LocalDate.now())
+    lastNotificationDate.plusDays(notificationIntervalInDays.toLong()).isBefore(LocalDate.now().plusDays(1))
 
-  private fun Subscription.hasNewSeason(): Boolean {
+  private fun Subscription.hasNewSeason(notifiedAt: LocalDate): Boolean {
     var newSeason = false
-    if (lastAirDate != null && lastUpdate != null && lastAirDateIsNewSeason != null) {
-      if (newSeasonHasBeenReleasedSinceLastUpdate(lastAirDate, lastUpdate, lastAirDateIsNewSeason)) {
+    if (lastAirDate != null && lastAirDateIsNewSeason != null) {
+      if (newSeasonHasBeenReleasedSinceLastNotification(lastAirDate, notifiedAt, lastAirDateIsNewSeason)) {
         newSeason = true
       }
     }
@@ -43,8 +43,8 @@ class NotificationService(private val notificationSender: NotificationSender,
   private fun newSeasonTomorrow(nextAirDate: LocalDate, nextAirDateIsNewSeason: Boolean) =
     nextAirDate.equals(LocalDate.now().plusDays(1)) && nextAirDateIsNewSeason
 
-  private fun Subscription.newSeasonHasBeenReleasedSinceLastUpdate(lastAirDate: LocalDate, lastUpdate: LocalDate, lastAirDateIsNewSeason: Boolean) =
-    lastAirDate.isAfter(lastUpdate) && numberOfSeasons > seasonLastUpdate && lastAirDateIsNewSeason
+  private fun newSeasonHasBeenReleasedSinceLastNotification(lastAirDate: LocalDate, notifiedAt: LocalDate, lastAirDateIsNewSeason: Boolean) =
+    lastAirDate.minusDays(1).isAfter(notifiedAt) && lastAirDateIsNewSeason
 }
 
 class UpdateSearchService(remoteSeriesServiceFacade: RemoteSeriesServiceFacade) {
