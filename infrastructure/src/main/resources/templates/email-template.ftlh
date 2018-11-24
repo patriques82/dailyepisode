@@ -19,16 +19,17 @@
             <#list subscriptions as subscription>
                 <div class="row">
                     <div style="padding: 20px; margin-bottom: 30px; border: 1px solid #adadad;">
-                        <img class="float-left" src="${subscription.imageUrl}" alt="img" />
+                        <img class="float-left" src="${(subscription.imageUrl)!"no-image"}" alt="img" />
                         <div class="caption">
-                            <h3><a href="${subscription.homepage}">${subscription.name}</a> <small>(${subscription.firstAirDate} - ${subscription.lastAirDate})</small></h3>
+                            <h3><a href="${(subscription.homepage)!"no-homepage"}">${subscription.name}</a> <small>(${(subscription.firstAirDate)!"Unknown"} - ${(subscription.lastAirDate)!"Unknown"})</small></h3>
                             <details>
                                 <summary>release information</summary>
                                 <div class="well">
-                                    <p class="last-air-date">last air date: ${subscription.lastAirDate}</p>
+                                    <p class="last-air-date">last air date: ${(subscription.lastAirDate)!"Unknown"}</p>
+                                    <p class="last-air-date">next air date: ${(subscription.nextAirDate)!"Unknown"}</p>
                                     <p class="info">nr of episodes: ${subscription.numberOfEpisodes}</p>
                                     <p class="info">nr of seasons: ${subscription.numberOfSeasons}</p>
-                                    <p class="info">updated: ${subscription.updatedAt}</p>
+                                    <p class="info">updated: ${(subscription.updatedAt)!"Unknown"}</p>
                                 </div>
                             </details>
                         </div>

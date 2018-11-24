@@ -42,9 +42,27 @@ internal class EmailNotificationSender(private val emailSender: JavaMailSender,
     val html = FreeMarkerTemplateUtils.processTemplateIntoString(template, mapOf(
       "username" to account.username,
       "nrOfUpdates" to updatedSubscriptions.size,
-      "subscriptions" to updatedSubscriptions
+      "subscriptions" to updatedSubscriptions.map { it.toEmailSubscriptionModel() }
     ))
     return html
   }
 
 }
+
+internal fun Subscription.toEmailSubscriptionModel(): EmailSubscriptionModel =
+  EmailSubscriptionModel(
+    name, imageUrl, firstAirDate?.toString(), lastAirDate?.toString(), homepage, numberOfEpisodes, numberOfSeasons,
+    updatedAt.toString(), nextAirDate?.toString()
+  )
+
+internal data class EmailSubscriptionModel(
+  val name: String,
+  val imageUrl: String?,
+  val firstAirDate: String?,
+  val lastAirDate: String?,
+  val homepage: String?,
+  val numberOfEpisodes: Int,
+  val numberOfSeasons: Int,
+  val updatedAt: String?,
+  val nextAirDate: String?
+)
