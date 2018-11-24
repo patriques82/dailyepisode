@@ -17,7 +17,7 @@ class NotificationServiceTest {
   val oneYearAgo = today.minusYears(1)
 
   val newSeasonTomorrowSubscription = Subscription(1, 1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17".toLocalDate(), "2014-10-22".toLocalDate(), false, listOf(), "www.friends.com", 103, 15, oneYearAgo, yesterday, twoDaysAgo, 15, tomorrow, true)
-  val newSeasonAfterLastUpdateSubcription = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23".toLocalDate(), "2017-08-12".toLocalDate(), true, listOf(), "www.homeland.com", 68, 6, oneYearAgo, today, "2017-08-10".toLocalDate(), 5, null, null)
+  val newSeasonAfterLastNotificationSubcription = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23".toLocalDate(), today, true, listOf(), "www.homeland.com", 68, 6, oneYearAgo, today, "2017-08-10".toLocalDate(), 5, null, null)
   val noNewSeasonSubscription = Subscription(3, 3, "airwolf", "amazing helicopter", "image", 44, 9.5, "2008-01-23".toLocalDate(), "2017-08-12".toLocalDate(), false, listOf(), "www.airwolf.com", 68, 6, oneYearAgo, yesterday, twoDaysAgo, 6, null, null)
 
   @Test
@@ -25,11 +25,11 @@ class NotificationServiceTest {
     val notificationSender: NotificationSender = spyk()
     val accountStorageService: AccountStorageService = spyk()
     val updateNotificationService = NotificationService(notificationSender, accountStorageService)
-    val notifiableAccount = Account(1, "dummy", "dummy", "dummy", 1, false, listOf(newSeasonTomorrowSubscription, newSeasonAfterLastUpdateSubcription, noNewSeasonSubscription), oneYearAgo, twoDaysAgo)
+    val notifiableAccount = Account(1, "dummy", "dummy", "dummy", 1, false, listOf(newSeasonTomorrowSubscription, newSeasonAfterLastNotificationSubcription, noNewSeasonSubscription), oneYearAgo, twoDaysAgo)
 
     updateNotificationService.notify(notifiableAccount)
 
-    verify { notificationSender.send(notifiableAccount, listOf(newSeasonTomorrowSubscription, newSeasonAfterLastUpdateSubcription)) }
+    verify { notificationSender.send(notifiableAccount, listOf(newSeasonTomorrowSubscription, newSeasonAfterLastNotificationSubcription)) }
     verify { accountStorageService.updateNotifiedAt(notifiableAccount.id, any()) }
   }
 

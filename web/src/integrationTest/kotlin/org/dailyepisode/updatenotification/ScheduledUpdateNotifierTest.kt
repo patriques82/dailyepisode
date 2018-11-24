@@ -25,13 +25,13 @@ class ScheduledUpdateNotifierTest {
 
   // Subscriptions
   val newSeasonTomorrowSubscription = Subscription(1, 1, "friends", "friends in appartment", "image", 32, 7.5, "2005-01-17".toLocalDate(), "2014-10-22".toLocalDate(), false, listOf(), "www.friends.com", 103, 15, oneYearAgo, yesterday, twoDaysAgo, 15, tomorrow, true)
-  val newSeasonAfterLastUpdateSubcription = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23".toLocalDate(), "2017-08-12".toLocalDate(), true, listOf(), "www.homeland.com", 68, 6, oneYearAgo, today, "2017-08-10".toLocalDate(), 5, null, null)
+  val newSeasonAfterLastNotificationSubcription = Subscription(2, 2, "homeland", "terrorist chasing carrie", "image", 44, 9.5, "2008-01-23".toLocalDate(), today, true, listOf(), "www.homeland.com", 68, 6, oneYearAgo, today, "2017-08-10".toLocalDate(), 5, null, null)
   val noNewSeasonSubscription = Subscription(3, 3, "airwolf", "amazing helicopter", "image", 44, 9.5, "2008-01-23".toLocalDate(), "2017-08-12".toLocalDate(), false, listOf(), "www.airwolf.com", 68, 6, oneYearAgo, yesterday, twoDaysAgo, 6, null, null)
 
   // Accounts
-  val notifiable = createAccount(1, 1, listOf(newSeasonTomorrowSubscription, newSeasonAfterLastUpdateSubcription), twoDaysAgo)
+  val notifiable = createAccount(1, 1, listOf(newSeasonTomorrowSubscription, newSeasonAfterLastNotificationSubcription), twoDaysAgo)
   val nonNotifiableDueSubscriptions = createAccount(2, 1, listOf(noNewSeasonSubscription), twoDaysAgo)
-  val nonNotifiableDueToNotificationInterval = createAccount(3, 8, listOf(newSeasonTomorrowSubscription, newSeasonAfterLastUpdateSubcription), oneWeekAgo)
+  val nonNotifiableDueToNotificationInterval = createAccount(3, 8, listOf(newSeasonTomorrowSubscription, newSeasonAfterLastNotificationSubcription), oneWeekAgo)
 
   private fun createAccount(id: Long, notificationInterval: Int, subscriptions: List<Subscription>, lastNotification: LocalDate) =
     Account(id, "x", "x", "x", notificationInterval, false, subscriptions, oneYearAgo, lastNotification)
@@ -62,9 +62,9 @@ class ScheduledUpdateNotifierTest {
 
   private fun mockSubscriptionsStorageService(): SubscriptionStorageService {
     val subscriptionStorageService: SubscriptionStorageService = spyk()
-    every { subscriptionStorageService.findAll() } returns listOf(newSeasonTomorrowSubscription, newSeasonAfterLastUpdateSubcription, noNewSeasonSubscription)
+    every { subscriptionStorageService.findAll() } returns listOf(newSeasonTomorrowSubscription, newSeasonAfterLastNotificationSubcription, noNewSeasonSubscription)
     every { subscriptionStorageService.findByRemoteId(1) } returns newSeasonTomorrowSubscription
-    every { subscriptionStorageService.findByRemoteId(2) } returns newSeasonAfterLastUpdateSubcription
+    every { subscriptionStorageService.findByRemoteId(2) } returns newSeasonAfterLastNotificationSubcription
     every { subscriptionStorageService.findByRemoteId(3) } returns noNewSeasonSubscription
     every { subscriptionStorageService.update(any()) }
     return subscriptionStorageService
@@ -84,7 +84,7 @@ class ScheduledUpdateNotifierTest {
   }
 
   private fun verifyNotificationSender(notificationSender: NotificationSender) {
-    verify { notificationSender.send(notifiable, listOf(newSeasonTomorrowSubscription, newSeasonAfterLastUpdateSubcription)) }
+    verify { notificationSender.send(notifiable, listOf(newSeasonTomorrowSubscription, newSeasonAfterLastNotificationSubcription)) }
     verify(inverse = true) { notificationSender.send(nonNotifiableDueSubscriptions, any()) }
     verify(inverse = true) { notificationSender.send(nonNotifiableDueToNotificationInterval, any()) }
   }
