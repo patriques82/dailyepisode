@@ -41,10 +41,10 @@ class NotificationService(private val notificationSender: NotificationSender,
   }
 
   private fun newSeasonTomorrow(nextAirDate: LocalDate, nextAirDateIsNewSeason: Boolean) =
-    nextAirDate.equals(LocalDate.now().plusDays(1)) && nextAirDateIsNewSeason
+    nextAirDateIsNewSeason && nextAirDate.equals(LocalDate.now().plusDays(1))
 
   private fun newSeasonHasBeenReleasedSinceLastNotification(lastAirDate: LocalDate, notifiedAt: LocalDate, lastAirDateIsNewSeason: Boolean) =
-    lastAirDate.minusDays(1).isAfter(notifiedAt) && lastAirDateIsNewSeason
+    lastAirDateIsNewSeason && lastAirDate.minusDays(1).isAfter(notifiedAt)
 }
 
 class UpdateSearchService(remoteSeriesServiceFacade: RemoteSeriesServiceFacade) {
