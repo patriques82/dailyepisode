@@ -1,10 +1,7 @@
 #!/bin/bash
 
-echo "Stopping containers..."
+echo "Stopping and removing containers..."
 docker-compose down
-
-echo "Removing containers..."
-docker rm $(docker ps -a -q)
 
 echo "Removing images..."
 docker rmi $(docker images -a -q)
